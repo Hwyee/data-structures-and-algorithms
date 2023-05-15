@@ -1,13 +1,13 @@
-package com.hwyee.datastructures;
+package cn.hwyee.algorithms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DatastructuresApplication {
+public class AlgorithmsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DatastructuresApplication.class, args);
+        SpringApplication.run(AlgorithmsApplication.class, args);
     }
 
 }

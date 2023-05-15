@@ -1,10 +1,10 @@
-package com.hwyee.datastructures;
+package cn.hwyee.algorithms;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DatastructuresApplicationTests {
+class AlgorithmsApplicationTests {
 
     @Test
     void contextLoads() {
