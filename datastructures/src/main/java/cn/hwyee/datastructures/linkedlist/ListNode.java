@@ -1,5 +1,7 @@
 package cn.hwyee.datastructures.linkedlist;
 
+import lombok.NoArgsConstructor;
+
 /**
  * @author hwyee@foxmail.com
  * @version 1.0
@@ -8,6 +10,7 @@ package cn.hwyee.datastructures.linkedlist;
  * @date 2023/5/15
  * @since JDK 1.8
  */
+@NoArgsConstructor
 public class ListNode {
     public int val;
     public ListNode next = null;
