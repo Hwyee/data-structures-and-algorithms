@@ -98,4 +98,32 @@ public class LinkedListUtil {
         return pre;
     }
 
+    /**
+     * merge: 
+     * 合并两个排序的链表 合并后也是有序的
+     * @author hui
+     * @version 1.0
+     * @param list1 
+     * @param list2  
+     * @return cn.hwyee.datastructures.linkedlist.ListNode
+     * @date 2023/5/28 1:03
+     */
+    public ListNode merge(ListNode list1,ListNode list2) {
+        if(list1==null) return list2;
+        if(list2==null) return list1;
+        ListNode l = new ListNode(-1);
+        ListNode t = l;
+        while(list1 != null && list2 !=null){
+            if(list1.val < list2.val){
+                t.next=list1;
+                list1=list1.next;
+            }else{
+                t.next=list2;
+                list2=list2.next;
+            }
+            t=t.next;
+        }
+        t.next=list1==null?list2:list1;
+        return l.next;
+    }
 }
