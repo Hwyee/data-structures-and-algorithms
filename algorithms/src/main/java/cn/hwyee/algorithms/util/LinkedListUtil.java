@@ -3,6 +3,8 @@ package cn.hwyee.algorithms.util;
 import cn.hwyee.datastructures.linkedlist.ListNode;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+
 /**
  * @author hwyee@foxmail.com
  * @version 1.0
@@ -125,5 +127,42 @@ public class LinkedListUtil {
         }
         t.next=list1==null?list2:list1;
         return l.next;
+    }
+
+    
+    /**
+     * divideMerge: 
+     * 划分合并区间函数
+     * @author hui
+     * @version 1.0
+     * @param lists 
+     * @param left 
+     * @param right  
+     * @return cn.hwyee.datastructures.linkedlist.ListNode
+     * @date 2023/5/29 0:23
+     */
+    ListNode divideMerge(ArrayList<ListNode> lists, int left, int right){
+        if(left > right)
+            return null;
+            //中间一个的情况
+        else if(left == right)
+            return lists.get(left);
+        //从中间分成两段，再将合并好的两段合并
+        int mid = (left + right) / 2;
+        return merge(divideMerge(lists, left, mid), divideMerge(lists, mid + 1, right));
+    }
+
+    /**
+     * mergeKLists: 
+     * 合并k个已排序的链表
+     * @author hui
+     * @version 1.0
+     * @param lists  
+     * @return cn.hwyee.datastructures.linkedlist.ListNode
+     * @date 2023/5/29 0:23
+     */
+    public ListNode mergeKLists(ArrayList<ListNode> lists) {
+        //k个链表归并排序
+        return divideMerge(lists, 0, lists.size() - 1);
     }
 }
