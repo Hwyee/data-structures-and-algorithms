@@ -4,6 +4,8 @@ import cn.hwyee.datastructures.linkedlist.ListNode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  * @author hwyee@foxmail.com
@@ -153,7 +155,7 @@ public class LinkedListUtil {
     }
 
     /**
-     * mergeKLists: 
+     * mergeKLists: 归并排序
      * 合并k个已排序的链表
      * @author hui
      * @version 1.0
@@ -164,5 +166,43 @@ public class LinkedListUtil {
     public ListNode mergeKLists(ArrayList<ListNode> lists) {
         //k个链表归并排序
         return divideMerge(lists, 0, lists.size() - 1);
+    }
+
+    /**
+     * mergeKLists2:
+     * 合并k个已排序的链表
+     * 优先队列 "先进先出" 堆顶即第一个元素
+     * 分为大顶堆与小顶堆，大顶堆的堆顶为最大元素，其余更小的元素在堆下方，小顶堆与其刚好相反。
+     * @author hui
+     * @version 1.0
+     * @param lists
+     * @return cn.hwyee.datastructures.linkedlist.ListNode
+     * @date 2023/5/29 0:36
+     */
+    public ListNode mergeKLists2(ArrayList<ListNode> lists) {
+        //小顶堆
+        Queue<ListNode> pq = new PriorityQueue<>((v1, v2) -> v1.val - v2.val);
+        //遍历所有链表第一个元素
+        for(int i = 0; i < lists.size(); i++){
+            //不为空则加入小顶堆
+            if(lists.get(i) != null)
+                pq.add(lists.get(i));
+        }
+        //加一个表头
+        ListNode res = new ListNode(-1);
+        ListNode head = res;
+        //直到小顶堆为空
+        while(!pq.isEmpty()){
+            //取出最小的元素
+            ListNode temp = pq.poll();
+            //连接
+            head.next = temp;
+            head = head.next;
+            //每次取出链表的后一个元素加入小顶堆
+            if(temp.next != null)
+                pq.add(temp.next);
+        }
+        //去掉表头
+        return res.next;
     }
 }
