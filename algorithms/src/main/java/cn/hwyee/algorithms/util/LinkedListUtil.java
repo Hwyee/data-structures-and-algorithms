@@ -58,13 +58,19 @@ public class LinkedListUtil {
         for(int i=0;i<m-1;i++){
             pre = pre.next;
         }
-
+        //m节点的位置
         ListNode cur = pre.next;
         ListNode Cur_next ;
+        //让m每次与后面的节点互换位置
         for(int i=0;i<n-m;i++){
+            //m-1       m           m+1             m+2
+            //pre      cur          Cur_next
             Cur_next = cur.next;
+            //          cur                         cur.next
             cur.next = Cur_next.next;
+            //       Cur_next.next
             Cur_next .next = pre.next;
+            //                      pre.next
             pre.next = Cur_next ;
         }
         return dummyNode.next;
@@ -205,4 +211,39 @@ public class LinkedListUtil {
         //去掉表头
         return res.next;
     }
+
+
+    /**
+     * hasCycle:
+     * 判断链表中是否有环
+     * 时间复杂度：O(n)，最坏情况下遍历链表n个节点
+     * 空间复杂度：O(1)，仅使用了两个指针，没有额外辅助空间
+     * @author hui
+     * @version 1.0
+     * @param head  
+     * @return boolean
+     * @date 2023/5/30 0:01
+     */
+    public boolean hasCycle(ListNode head) {
+        //先判断链表为空的情况
+        if(head == null) {
+            return false;
+        }
+        //快慢双指针
+        ListNode fast = head;
+        ListNode slow = head;
+        //如果没环快指针会先到链表尾
+        while(fast != null && fast.next != null){
+            //快指针移动两步
+            fast = fast.next.next;
+            //慢指针移动一步
+            slow = slow.next;
+            //相遇则有环
+            if(fast == slow)
+                return true;
+        }
+        //到末尾则没有环
+        return false;
+    }
+
 }
