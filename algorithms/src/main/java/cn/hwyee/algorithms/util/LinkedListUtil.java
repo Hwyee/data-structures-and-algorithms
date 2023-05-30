@@ -88,8 +88,9 @@ public class LinkedListUtil {
         //遍历k次到尾部
         for(int i = 0; i < k; i++){
             //如果不足k到了链表尾，直接返回，不翻转
-            if(tail == null)
+            if(tail == null) {
                 return head;
+            }
             tail = tail.next;
         }
         //翻转时需要的前序和当前节点
@@ -244,6 +245,51 @@ public class LinkedListUtil {
         }
         //到末尾则没有环
         return false;
+    }
+
+    public ListNode hasCycle1(ListNode head) {
+        //先判断链表为空的情况
+        if (head == null)
+            return null;
+        //快慢双指针
+        ListNode fast = head;
+        ListNode slow = head;
+        //如果没环快指针会先到链表尾
+        while (fast != null && fast.next != null) {
+            //快指针移动两步
+            fast = fast.next.next;
+            //慢指针移动一步
+            slow = slow.next;
+            //相遇则有环，返回相遇的位置
+            if (fast == slow)
+                return slow;
+        }
+        //到末尾说明没有环，返回null
+        return null;
+    }
+
+    /**
+     * entryNodeOfLoop: 
+     * 链表中环的入口结点 数学问题
+     * @author hui
+     * @version 1.0
+     * @param pHead  
+     * @return cn.hwyee.datastructures.linkedlist.ListNode
+     * @date 2023/5/30 21:47
+     */
+    public ListNode entryNodeOfLoop(ListNode pHead) {
+        ListNode slow = hasCycle1(pHead);
+        //没有环
+        if(slow == null)
+            return null;
+        //快指针回到表头
+        ListNode fast = pHead;
+        //再次相遇即是环入口
+        while(fast != slow){
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
     }
 
 }
