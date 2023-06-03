@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  * @author hwyee@foxmail.com
@@ -374,7 +375,7 @@ public class LinkedListUtil {
      * @version 1.0
      * @date 2023/6/3 0:04
      */
-    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+    public ListNode findFirstCommonNode(ListNode pHead1, ListNode pHead2) {
         ListNode l1 = pHead1, l2 = pHead2;
         while (l1 != l2) {
             l1 = (l1 == null) ? pHead2 : l1.next;
@@ -436,4 +437,60 @@ public class LinkedListUtil {
         return reverseLinkedList(head.next);
     }
 
+    /**
+     * 判断一个链表是否为回文结构
+     * 回文是指该字符串正序逆序完全一致。
+     * 304ms
+     * 占用内存
+     * 27384KB
+     * @param head ListNode类 the head
+     * @return bool布尔型
+     */
+    public boolean isPailMy (ListNode head) {
+        // write code here
+        if(head.next == null) return true;
+        int i = 0;
+        ListNode tmp = head;
+        Stack<ListNode> stack = new Stack<>();
+        while (tmp != null){
+            stack.push(tmp);
+            tmp = tmp.next;
+            i++;
+        }
+        for (int j = 0; j < i / 2; j++) {
+            if (head.val!=stack.pop().val) return false;
+            head=head.next;
+        }
+        return true;
+    }
+
+    /**
+     * 判断一个链表是否为回文结构 双指针
+     * @param head ListNode类 the head
+     * @return bool布尔型
+     */
+    public boolean isPail(ListNode head) {
+        ListNode q= head, p= head;
+        //通过快慢指针找到中点
+        while (q != null && q.next != null) {
+            q = q.next.next;
+            p = p.next;
+        }
+        //如果q不为空，说明链表的长度是奇数个
+        if (q != null) {
+            p = p.next;
+        }
+        //反转后半部分链表
+        p = reverseLinkedList(p);
+
+        q = head;
+        while (p != null) {
+            //然后比较，判断节点值是否相等
+            if (q.val != p.val)
+                return false;
+            q = q.next;
+            p = p.next;
+        }
+        return true;
+    }
 }
