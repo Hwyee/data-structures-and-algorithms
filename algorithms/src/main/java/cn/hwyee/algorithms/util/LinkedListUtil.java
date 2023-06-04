@@ -563,4 +563,28 @@ public class LinkedListUtil {
         return head;
     }
 
+    /**
+     * 删除有序链表中重复的元素-I
+     * 删除给出链表中的重复元素（链表中元素从小到大有序），使链表中的所有元素都只出现一次
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode deleteDuplicates (ListNode head) {
+        //空链表
+        if(head == null)
+            return null;
+        //遍历指针
+        ListNode cur = head;
+        //指针当前和下一位不为空
+        while(cur != null && cur.next != null){
+            //如果当前与下一位相等则忽略下一位
+            if(cur.val == cur.next.val)
+                cur.next = cur.next.next;
+                //否则指针正常遍历
+            else
+                cur = cur.next;
+        }
+        return head;
+    }
+
 }
