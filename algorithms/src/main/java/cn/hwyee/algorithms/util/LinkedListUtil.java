@@ -586,5 +586,203 @@ public class LinkedListUtil {
         }
         return head;
     }
+    /**
+     * 给出一个升序排序的链表，删除链表中的所有重复出现的元素，只保留原链表中只出现一次的元素。
+     * 可以跳过多个相同的值。
+     * 运行时间
+     * 74ms
+     * 占用内存
+     * 12896KB
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode deleteDuplicates2 (ListNode head) {
+        //空链表
+        if(head == null)
+            return null;
+        ListNode res = new ListNode(0);
+        //在链表前加一个表头
+        res.next = head;
+        ListNode cur = res;
+        while(cur.next != null && cur.next.next != null){
+            //遇到相邻两个节点值相同
+            if(cur.next.val == cur.next.next.val){
+                int temp = cur.next.val;
+                //将所有相同的都跳过
+                while (cur.next != null && cur.next.val == temp)
+                    cur.next = cur.next.next;
+            }
+            else
+                cur = cur.next;
+        }
+        //返回时去掉表头
+        return res.next;
+    }
 
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 二分查找-I
+     *
+     * @param nums int整型一维数组
+     * @param target int整型
+     * @return int整型
+     */
+    public int search (int[] nums, int target) {
+        // write code here
+        if (nums.length == 0)return -1;
+        int start = 0;
+        int end = nums.length - 1;
+        int mid = (start + end) / 2;
+        while (start <= end) {
+
+            if (target == nums[mid]) return mid;
+            if (target > nums[mid]) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+            mid = (start + end) / 2;
+        }
+
+        return -1;
+    }
+
+    /**
+     * find:二维数组中的查找 线性搜索 利用二维数组行列递增特性
+     * 在一个二维数组array中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，
+     * 每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+     * @author hui
+     * @version 1.0
+     * @param target
+     * @param array
+     * @return boolean
+     * @date 2023/6/5 23:39
+     */
+    public boolean find(int target, int [][] array) {
+        //优先判断特殊
+        if (array.length == 0)
+            return false;
+        int n = array.length;
+        if (array[0].length == 0)
+            return false;
+        int m = array[0].length;
+        //从最左下角的元素开始往左或往上
+        for (int i = n - 1, j = 0; i >= 0 && j < m; ) {
+            //元素较大，往上走
+            if (array[i][j] > target)
+                i--;
+                //元素较小，往右走
+            else if (array[i][j] < target)
+                j++;
+            else
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * 双二分查找
+     * 解题思路： 利用数组行列递增特性。
+     * 主要思路：一维的二分查找可以舍弃一半的查找范围，二维的二分可以舍弃左上部分或者右下部分1/4的查找范围。
+     * public:
+     *     bool double_binary(vector<vector<int>> arr,int x1,int x2,int y1, int y2,int target){
+     *         if(x1 == x2 || y1 == y2) return false;
+     *         int xmid = (x1+x2)/2, ymid = (y1+y2)/2;
+     *         int num = arr[xmid][ymid];
+     *         if(num == target) return true;
+     *         if(num > target)
+     *         {
+     *            if(double_binary(arr, x1, xmid, y1, y2, target)) return true;
+     *            if(double_binary(arr,xmid,x2,y1,ymid,target)) return true;
+     *         }
+     *         else
+     *         {
+     *             if(double_binary(arr, xmid+1, x2, y1, y2, target)) return true;
+     *             if(double_binary(arr, x1, xmid+1, ymid+1, y2, target)) return true;
+     *         }
+     *         return false;
+     *     }
+     *     bool Find(int target, vector<vector<int> > array) {
+     *         if(array.size() == 0) return false;
+     *         return double_binary(array, 0, array.size(), 0, array[0].size(), target);
+     *     }
+     *
+     */
+    public boolean find1(int target, int [][] array) {
+        return false;
+    }
+    /**
+     *  寻找峰值
+     * 给定一个长度为n的数组，返回其中任何一个峰值的索引
+     * 峰值元素是指其值严格大于左右相邻值的元素
+     * 数组两个边界可以看成是最小，nums[−1]=nums[n]=−∞
+     * 峰值不存在平的情况，即相邻元素不会相等
+     * 因为题目将数组边界看成最小值，而我们只需要找到其中一个波峰，因此只要不断地往高处走，一定会有波峰。
+     * @param nums int整型一维数组
+     * @return int整型
+     */
+    public int findPeakElement (int[] nums) {
+        // write code here
+        int left = 0;
+        int right = nums.length - 1;
+        //二分法
+        while (left < right) {
+            int mid = (left + right) / 2;
+            //右边是往下，不一定有坡峰
+            if (nums[mid] > nums[mid + 1])
+                right = mid;
+                //右边是往上，一定能找到波峰
+            else
+                left = mid + 1;
+        }
+        //其中一个波峰
+        return right;
+    }
+
+    public int mergeSort(int left, int right, int [] data, int [] temp){
+        int mod = 1000000007;
+        //停止划分
+        if(left >= right)
+            return 0;
+        //取中间
+        int mid = (left + right) / 2;
+        //左右划分合并
+        int res = mergeSort(left, mid, data, temp) + mergeSort(mid + 1, right, data, temp);
+        //防止溢出
+        res %= mod;
+        int i = left, j = mid + 1;
+        for(int k = left; k <= right; k++)
+            temp[k] = data[k];
+        for(int k = left; k <= right; k++){
+            if(i == mid + 1)
+                data[k] = temp[j++];
+            else if(j == right + 1 || temp[i] <= temp[j])
+                data[k] = temp[i++];
+                //左边比右边大，答案增加
+            else{
+                data[k] = temp[j++];
+                // 统计逆序对
+                res += mid - i + 1;
+            }
+        }
+        return res % mod;
+    }
+    
+    /**
+     * inversePairs:
+     * 数组中的逆序对
+     * 如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。
+     * 输入一个数组，求一个数组的全部逆序对，答案对1000000007取模
+     * 题目保证输入的数组中没有的相同的数字
+     * @author hui
+     * @version 1.0
+     * @param array  
+     * @return int
+     * @date 2023/6/6 23:53
+     */
+    public int inversePairs(int [] array) {
+        int n = array.length;
+        int[] res = new int[n];
+        return mergeSort(0, n - 1, array, res);
+    }
 }
