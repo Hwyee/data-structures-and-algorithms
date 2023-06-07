@@ -126,8 +126,12 @@ public class LinkedListUtil {
      * @date 2023/5/28 1:03
      */
     public ListNode merge(ListNode list1, ListNode list2) {
-        if (list1 == null) return list2;
-        if (list2 == null) return list1;
+        if (list1 == null) {
+            return list2;
+        }
+        if (list2 == null) {
+            return list1;
+        }
         ListNode l = new ListNode(-1);
         ListNode t = l;
         while (list1 != null && list2 != null) {
@@ -158,11 +162,13 @@ public class LinkedListUtil {
      * @date 2023/5/29 0:23
      */
     ListNode divideMerge(ArrayList<ListNode> lists, int left, int right) {
-        if (left > right)
+        if (left > right) {
             return null;
+        }
             //中间一个的情况
-        else if (left == right)
+        else if (left == right) {
             return lists.get(left);
+        }
         //从中间分成两段，再将合并好的两段合并
         int mid = (left + right) / 2;
         return merge(divideMerge(lists, left, mid), divideMerge(lists, mid + 1, right));
@@ -201,8 +207,9 @@ public class LinkedListUtil {
         //遍历所有链表第一个元素
         for (int i = 0; i < lists.size(); i++) {
             //不为空则加入小顶堆
-            if (lists.get(i) != null)
+            if (lists.get(i) != null) {
                 pq.add(lists.get(i));
+            }
         }
         //加一个表头
         ListNode res = new ListNode(-1);
@@ -215,8 +222,9 @@ public class LinkedListUtil {
             head.next = temp;
             head = head.next;
             //每次取出链表的后一个元素加入小顶堆
-            if (temp.next != null)
+            if (temp.next != null) {
                 pq.add(temp.next);
+            }
         }
         //去掉表头
         return res.next;
@@ -250,8 +258,9 @@ public class LinkedListUtil {
             //慢指针移动一步
             slow = slow.next;
             //相遇则有环
-            if (fast == slow)
+            if (fast == slow) {
                 return true;
+            }
         }
         //到末尾则没有环
         return false;
@@ -259,8 +268,9 @@ public class LinkedListUtil {
 
     public ListNode hasCycle1(ListNode head) {
         //先判断链表为空的情况
-        if (head == null)
+        if (head == null) {
             return null;
+        }
         //快慢双指针
         ListNode fast = head;
         ListNode slow = head;
@@ -271,8 +281,9 @@ public class LinkedListUtil {
             //慢指针移动一步
             slow = slow.next;
             //相遇则有环，返回相遇的位置
-            if (fast == slow)
+            if (fast == slow) {
                 return slow;
+            }
         }
         //到末尾说明没有环，返回null
         return null;
@@ -291,8 +302,9 @@ public class LinkedListUtil {
     public ListNode entryNodeOfLoop(ListNode pHead) {
         ListNode slow = hasCycle1(pHead);
         //没有环
-        if (slow == null)
+        if (slow == null) {
             return null;
+        }
         //快指针回到表头
         ListNode fast = pHead;
         //再次相遇即是环入口
@@ -317,11 +329,13 @@ public class LinkedListUtil {
         ListNode slow = pHead;
         //快指针先行k步
         for (int i = 0; i < k; i++) {
-            if (fast != null)
+            if (fast != null) {
                 fast = fast.next;
+            }
                 //达不到k步说明链表过短，没有倒数k
-            else
+            else {
                 return slow = null;
+            }
         }
         //快慢指针同步，快指针先到底，慢指针指向倒数第k个
         while (fast != null) {
@@ -448,7 +462,9 @@ public class LinkedListUtil {
      */
     public boolean isPailMy (ListNode head) {
         // write code here
-        if(head.next == null) return true;
+        if(head.next == null) {
+            return true;
+        }
         int i = 0;
         ListNode tmp = head;
         Stack<ListNode> stack = new Stack<>();
@@ -458,7 +474,9 @@ public class LinkedListUtil {
             i++;
         }
         for (int j = 0; j < i / 2; j++) {
-            if (head.val!=stack.pop().val) return false;
+            if (head.val!=stack.pop().val) {
+                return false;
+            }
             head=head.next;
         }
         return true;
@@ -486,8 +504,9 @@ public class LinkedListUtil {
         q = head;
         while (p != null) {
             //然后比较，判断节点值是否相等
-            if (q.val != p.val)
+            if (q.val != p.val) {
                 return false;
+            }
             q = q.next;
             p = p.next;
         }
@@ -540,8 +559,9 @@ public class LinkedListUtil {
      */
     public ListNode oddEvenList (ListNode head) {
         //如果链表为空，不用重排
-        if(head == null)
+        if(head == null) {
             return head;
+        }
         //even开头指向第二个节点，可能为空
         ListNode even = head.next;
         //odd开头指向第一个节点
@@ -571,18 +591,21 @@ public class LinkedListUtil {
      */
     public ListNode deleteDuplicates (ListNode head) {
         //空链表
-        if(head == null)
+        if(head == null) {
             return null;
+        }
         //遍历指针
         ListNode cur = head;
         //指针当前和下一位不为空
         while(cur != null && cur.next != null){
             //如果当前与下一位相等则忽略下一位
-            if(cur.val == cur.next.val)
+            if(cur.val == cur.next.val) {
                 cur.next = cur.next.next;
+            }
                 //否则指针正常遍历
-            else
+            else {
                 cur = cur.next;
+            }
         }
         return head;
     }
@@ -598,8 +621,9 @@ public class LinkedListUtil {
      */
     public ListNode deleteDuplicates2 (ListNode head) {
         //空链表
-        if(head == null)
+        if(head == null) {
             return null;
+        }
         ListNode res = new ListNode(0);
         //在链表前加一个表头
         res.next = head;
@@ -609,11 +633,13 @@ public class LinkedListUtil {
             if(cur.next.val == cur.next.next.val){
                 int temp = cur.next.val;
                 //将所有相同的都跳过
-                while (cur.next != null && cur.next.val == temp)
+                while (cur.next != null && cur.next.val == temp) {
                     cur.next = cur.next.next;
+                }
             }
-            else
+            else {
                 cur = cur.next;
+            }
         }
         //返回时去掉表头
         return res.next;
@@ -629,13 +655,17 @@ public class LinkedListUtil {
      */
     public int search (int[] nums, int target) {
         // write code here
-        if (nums.length == 0)return -1;
+        if (nums.length == 0) {
+            return -1;
+        }
         int start = 0;
         int end = nums.length - 1;
         int mid = (start + end) / 2;
         while (start <= end) {
 
-            if (target == nums[mid]) return mid;
+            if (target == nums[mid]) {
+                return mid;
+            }
             if (target > nums[mid]) {
                 start = mid + 1;
             } else {
@@ -660,22 +690,26 @@ public class LinkedListUtil {
      */
     public boolean find(int target, int [][] array) {
         //优先判断特殊
-        if (array.length == 0)
+        if (array.length == 0) {
             return false;
+        }
         int n = array.length;
-        if (array[0].length == 0)
+        if (array[0].length == 0) {
             return false;
+        }
         int m = array[0].length;
         //从最左下角的元素开始往左或往上
         for (int i = n - 1, j = 0; i >= 0 && j < m; ) {
             //元素较大，往上走
-            if (array[i][j] > target)
+            if (array[i][j] > target) {
                 i--;
+            }
                 //元素较小，往右走
-            else if (array[i][j] < target)
+            else if (array[i][j] < target) {
                 j++;
-            else
+            } else {
                 return true;
+            }
         }
         return false;
     }
@@ -729,11 +763,13 @@ public class LinkedListUtil {
         while (left < right) {
             int mid = (left + right) / 2;
             //右边是往下，不一定有坡峰
-            if (nums[mid] > nums[mid + 1])
+            if (nums[mid] > nums[mid + 1]) {
                 right = mid;
+            }
                 //右边是往上，一定能找到波峰
-            else
+            else {
                 left = mid + 1;
+            }
         }
         //其中一个波峰
         return right;
@@ -742,8 +778,9 @@ public class LinkedListUtil {
     public int mergeSort(int left, int right, int [] data, int [] temp){
         int mod = 1000000007;
         //停止划分
-        if(left >= right)
+        if(left >= right) {
             return 0;
+        }
         //取中间
         int mid = (left + right) / 2;
         //左右划分合并
@@ -751,13 +788,15 @@ public class LinkedListUtil {
         //防止溢出
         res %= mod;
         int i = left, j = mid + 1;
-        for(int k = left; k <= right; k++)
+        for(int k = left; k <= right; k++) {
             temp[k] = data[k];
+        }
         for(int k = left; k <= right; k++){
-            if(i == mid + 1)
+            if(i == mid + 1) {
                 data[k] = temp[j++];
-            else if(j == right + 1 || temp[i] <= temp[j])
+            } else if(j == right + 1 || temp[i] <= temp[j]) {
                 data[k] = temp[i++];
+            }
                 //左边比右边大，答案增加
             else{
                 data[k] = temp[j++];
