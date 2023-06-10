@@ -47,4 +47,39 @@ public class TreeUtil {
             traverse(list,node.right);
         }
     }
+
+
+    public void inorder(List<Integer> list, TreeNode root){
+        //遇到空节点则返回
+        if(root == null)
+            return;
+        //先去左子树
+        inorder(list, root.left);
+        //再访问根节点
+        list.add(root.val);
+        //最后去右子树
+        inorder(list, root.right);
+    }
+
+    /**
+     * inorderTraversal:
+     *  二叉树的中序遍历
+     *  中序遍历就是从最左边开始，把每个节点垂直投影到同一直线上，然后从左往右读值
+     * @author hui
+     * @version 1.0
+     * @param root  
+     * @return int[]
+     * @date 2023/6/11 0:21
+     */
+    public int[] inorderTraversal (TreeNode root) {
+        //添加遍历结果的数组
+        List<Integer> list = new ArrayList();
+        //递归中序遍历
+        inorder(list, root);
+        //返回的结果
+        int[] res = new int[list.size()];
+        for(int i = 0; i < list.size(); i++)
+            res[i] = list.get(i);
+        return res;
+    }
 }
