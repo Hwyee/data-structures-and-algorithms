@@ -3,6 +3,7 @@ package cn.hwyee.algorithms.util;
 import cn.hwyee.datastructures.tree.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -120,5 +121,36 @@ public class TreeUtil {
         inorder(list, root.right);
         //再访问根节点
         list.add(root.val);
+    }
+
+    /**
+     * 二叉树的层序遍历
+     * 从左到右，一层一层地遍历
+     * @param root TreeNode类
+     * @return int整型ArrayList<ArrayList<>>
+     */
+    public ArrayList<ArrayList<Integer>> levelOrder (TreeNode root) {
+        ArrayList<ArrayList<Integer>> arrayLists = new ArrayList<>();
+        if (root==null) {
+            return arrayLists;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            ArrayList<Integer> list = new ArrayList<>();
+            int size = queue.size();
+            for(int i = 0; i < size; i++) {
+                TreeNode poll = queue.poll();
+                list.add(poll.val);
+                if (poll.left!=null){
+                    queue.add(poll.left);
+                }
+                if (poll.right!=null){
+                    queue.add(poll.right);
+                }
+            }
+            arrayLists.add(list);
+        }
+        return arrayLists;
     }
 }
