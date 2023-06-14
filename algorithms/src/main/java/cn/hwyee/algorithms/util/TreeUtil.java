@@ -400,4 +400,117 @@ public class TreeUtil {
         return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
     }
 
+
+    /**
+     * 二叉树中和为某一值的路径(一)
+     * 给定一个二叉树root和一个值 sum ，判断是否有从根节点到叶子节点的节点值之和等于 sum 的路径。
+     * 1.该题路径定义为从树的根结点开始往下一直到叶子结点所经过的结点
+     * 2.叶子节点是指没有子节点的节点
+     * 3.路径只能从父节点到子节点，不能从子节点到父节点
+     * 4.总节点数目为n
+     * @param root TreeNode类
+     * @param sum int整型
+     * @return bool布尔型
+     */
+    public boolean hasPathSum (TreeNode root, int sum) {
+        // write code here
+        if(root == null){
+            return false;
+        }
+        //如果是叶子节点，且路径和为sum
+        if(root.left==null&&root.right==null&& sum-root.val==0){
+            return true;
+        }
+        return hasPathSum(root.left,sum-root.val) || hasPathSum(root.right,sum-root.val);
+    }
+
+
+    /**
+     * hasPathSumStack:
+     * 二叉树中和为某一值的路径
+     *
+     * @author hui
+     * @version 1.0
+     * @param root
+     * @param sum
+     * @return boolean
+     * @date 2023/6/14 23:47
+     */
+    public boolean hasPathSumStack (TreeNode root, int sum) {
+        //空节点找不到路径
+        if(root == null) {
+            return false;
+        }
+        //栈辅助深度优先遍历
+        Stack<TreeNode> s1 = new Stack<TreeNode>();
+        //跟随s1记录到相应节点为止的路径和
+        Stack<Integer> s2 = new Stack<Integer>();
+        s1.push(root);
+        s2.push(root.val);
+        while(!s1.isEmpty()){
+            //弹出相应节点
+            TreeNode temp = s1.pop();
+            //弹出到该点为止的当前路径和
+            int cur_sum = s2.pop();
+            //叶子节点且当前路径和等于sum
+            if(temp.left == null && temp.right == null && cur_sum == sum) {
+                return true;
+            }
+            //左节点及路径和入栈
+            if(temp.left != null){
+                s1.push(temp.left);
+                s2.push(cur_sum + temp.left.val);
+            }
+            //右节点及路径和入栈
+            if(temp.right != null){
+                s1.push(temp.right);
+                s2.push(cur_sum + temp.right.val);
+            }
+        }
+        return false;
+    }
+    TreeNode head = null;
+    TreeNode pre = null;
+    /**
+     * convert:
+     * 二叉搜索树与双向链表
+     * 输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表
+     * 1.要求不能创建任何新的结点，只能调整树中结点指针的指向。当转化完成以后，树中节点的左指针需要指向前驱，树中节点的右指针需要指向后继
+     * 2.返回链表中的第一个节点的指针
+     * 3.函数返回的TreeNode，有左右指针，其实可以看成一个双向链表的数据结构
+     * 4.你不用输出双向链表，程序会根据你的返回值自动打印输出
+     *
+     * 二叉查找树（Binary Search Tree），（又：二叉搜索树，二叉排序树）它或者是一棵空树，或者是具有下列性质的二叉树：
+     * 若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值； 若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值；
+     * 它的左、右子树也分别为二叉排序树。二叉搜索树作为一种经典的数据结构，
+     * 它既有链表的快速插入与删除操作的特点，又有数组快速查找的优势；所以应用十分广泛，
+     * 例如在文件系统和数据库系统一般会采用这种数据结构进行高效率的排序与检索操作。
+     * @author hui
+     * @version 1.0
+     * @param pRootOfTree  
+     * @return cn.hwyee.datastructures.tree.TreeNode
+     * @date 2023/6/15 0:35
+     */
+    public TreeNode convert(TreeNode pRootOfTree) {
+        if (pRootOfTree == null) {
+            return null;
+        }
+        convert(pRootOfTree.left);
+        if (pre == null) {
+            //最小的节点
+            head = pRootOfTree;
+
+        } else {
+            //pre的上个节点一定比他大，所以pre.right需要指向比他大的节点也就是root
+            pre.right = pRootOfTree;
+            //相应的pre比它上个节点小,它上个节点的left需要指向pre
+            pRootOfTree.left = pre;
+            //换完后,pre需向上移动一位
+        }
+        pre = pRootOfTree;
+        convert(pRootOfTree.right);
+        return head;
+    }
+
+
 }
