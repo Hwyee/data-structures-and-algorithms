@@ -580,14 +580,14 @@ public class TreeUtil {
      * @param pRoot TreeNode类
      * @return TreeNode类
      */
-    public TreeNode Mirror(TreeNode pRoot) {
+    public TreeNode mirror(TreeNode pRoot) {
         // write code here
         if (pRoot == null) {
             return null;
         }
 
-        TreeNode left = Mirror(pRoot.left);
-        TreeNode right = Mirror(pRoot.right);
+        TreeNode left = mirror(pRoot.left);
+        TreeNode right = mirror(pRoot.right);
         pRoot.left = right;
         pRoot.right = left;
         return pRoot;
@@ -654,6 +654,111 @@ public class TreeUtil {
             queue.offer(cur.right);
         }
         return true;
+    }
+
+
+    /**
+     * 判断是不是平衡二叉树
+     * 平衡二叉树（Balanced Binary Tree），具有以下性质：
+     * 它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。
+     * 约定： 空树是平衡二叉树。
+     * @param pRoot TreeNode类
+     * @return bool布尔型
+     */
+    public boolean isBalancedSolution(TreeNode pRoot) {
+        // write code here
+        //fuck you baby
+        if (pRoot == null) {
+            return true;
+        }
+        int left = deep(pRoot.left);
+        int right = deep(pRoot.right);
+        if (left - right > 1 || left - right < -1) {
+            return false;
+        }
+        return isBalancedSolution(pRoot.left) && isBalancedSolution(pRoot.right);
+
+    }
+
+    /**
+     * deep:
+     * 计算树的深度
+     * @author hui
+     * @version 1.0
+     * @param root
+     * @return int
+     * @date 2023/6/17 9:34
+     */
+    public int deep(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = deep(root.left);
+        int right = deep(root.right);
+        return (left > right) ? left + 1 : right + 1;
+    }
+
+    /**
+     * 二叉搜索树的最近公共祖先
+     * 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
+     * 1.对于该题的最近的公共祖先定义:对于有根树T的两个节点p、q，最近公共祖先LCA(T,p,q)表示一个节点x，满足x是p和q的祖先且x的深度尽可能大。在这里，一个节点也可以是它自己的祖先.
+     * 2.二叉搜索树是若它的左子树不空，则左子树上所有节点的值均小于它的根节点的值； 若它的右子树不空，则右子树上所有节点的值均大于它的根节点的值
+     * 3.所有节点的值都是唯一的。
+     * 4.p、q 为不同节点且均存在于给定的二叉搜索树中。
+     * 数据范围:
+     * 3<=节点总数<=10000
+     * 0<=节点值<=10000
+     * @param root TreeNode类
+     * @param p int整型
+     * @param q int整型
+     * @return int整型
+     */
+    public int lowestCommonAncestor (TreeNode root, int p, int q) {
+        //求根节点到两个节点的路径
+        ArrayList<Integer> path_p = getPath(root, p);
+        ArrayList<Integer> path_q = getPath(root, q);
+        int res = 0;
+        //比较两个路径，找到第一个不同的点
+        for(int i = 0; i < path_p.size() && i < path_q.size(); i++){
+            int x = path_p.get(i);
+            int y = path_q.get(i);
+            //最后一个相同的节点就是最近公共祖先
+            if(x == y) {
+                res = path_p.get(i);
+            } else {
+                break;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * getPath:
+     * 求得根节点到目标节点的路径
+     * @author hui
+     * @version 1.0
+     * @param root
+     * @param target
+     * @return java.util.ArrayList<java.lang.Integer>
+     * @date 2023/6/19 1:22
+     */
+    public ArrayList<Integer> getPath(TreeNode root, int target) {
+        ArrayList<Integer> path = new ArrayList<Integer>();
+        TreeNode node = root;
+        //题目中所有节点值都是唯一的，节点值都不同，可以直接用值比较
+        while(node.val != target){
+            path.add(node.val);
+            //小的在左子树
+            if(target < node.val) {
+                node = node.left;
+            }
+            //大的在右子树
+            else {
+                node = node.right;
+            }
+        }
+        path.add(node.val);
+        return path;
     }
 
 }
