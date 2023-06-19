@@ -662,6 +662,7 @@ public class TreeUtil {
      * 平衡二叉树（Balanced Binary Tree），具有以下性质：
      * 它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。
      * 约定： 空树是平衡二叉树。
+     *
      * @param pRoot TreeNode类
      * @return bool布尔型
      */
@@ -683,10 +684,11 @@ public class TreeUtil {
     /**
      * deep:
      * 计算树的深度
-     * @author hui
-     * @version 1.0
+     *
      * @param root
      * @return int
+     * @author hui
+     * @version 1.0
      * @date 2023/6/17 9:34
      */
     public int deep(TreeNode root) {
@@ -708,22 +710,23 @@ public class TreeUtil {
      * 数据范围:
      * 3<=节点总数<=10000
      * 0<=节点值<=10000
+     *
      * @param root TreeNode类
-     * @param p int整型
-     * @param q int整型
+     * @param p    int整型
+     * @param q    int整型
      * @return int整型
      */
-    public int lowestCommonAncestor (TreeNode root, int p, int q) {
+    public int lowestCommonAncestor(TreeNode root, int p, int q) {
         //求根节点到两个节点的路径
         ArrayList<Integer> path_p = getPath(root, p);
         ArrayList<Integer> path_q = getPath(root, q);
         int res = 0;
         //比较两个路径，找到第一个不同的点
-        for(int i = 0; i < path_p.size() && i < path_q.size(); i++){
+        for (int i = 0; i < path_p.size() && i < path_q.size(); i++) {
             int x = path_p.get(i);
             int y = path_q.get(i);
             //最后一个相同的节点就是最近公共祖先
-            if(x == y) {
+            if (x == y) {
                 res = path_p.get(i);
             } else {
                 break;
@@ -735,21 +738,22 @@ public class TreeUtil {
     /**
      * getPath:
      * 求得根节点到目标节点的路径
-     * @author hui
-     * @version 1.0
+     *
      * @param root
      * @param target
      * @return java.util.ArrayList<java.lang.Integer>
+     * @author hui
+     * @version 1.0
      * @date 2023/6/19 1:22
      */
     public ArrayList<Integer> getPath(TreeNode root, int target) {
         ArrayList<Integer> path = new ArrayList<Integer>();
         TreeNode node = root;
         //题目中所有节点值都是唯一的，节点值都不同，可以直接用值比较
-        while(node.val != target){
+        while (node.val != target) {
             path.add(node.val);
             //小的在左子树
-            if(target < node.val) {
+            if (target < node.val) {
                 node = node.left;
             }
             //大的在右子树
@@ -759,6 +763,79 @@ public class TreeUtil {
         }
         path.add(node.val);
         return path;
+    }
+
+
+    /**
+     * 在二叉树（普通二叉树）中找到两个节点的最近公共祖先
+     * 给定一棵二叉树(保证非空)以及这棵树上的两个节点对应的val值 o1 和 o2，请找到 o1 和 o2 的最近公共祖先节点。
+     * 本题保证二叉树中每个节点的val值均不相同。
+     *
+     * @param root TreeNode类
+     * @param o1   int整型
+     * @param o2   int整型
+     * @return int整型
+     */
+    public int lowestCommonAncestorNormal(TreeNode root, int o1, int o2) {
+        ArrayList<Integer> path1 = new ArrayList<Integer>();
+        ArrayList<Integer> path2 = new ArrayList<Integer>();
+        //求根节点到两个节点的路径
+        dfs(root, path1, o1);
+        //重置flag，查找下一个
+        flag = false;
+        dfs(root, path2, o2);
+        int res = 0;
+        //比较两个路径，找到第一个不同的点
+        for (int i = 0; i < path1.size() && i < path2.size(); i++) {
+            int x = path1.get(i);
+            int y = path2.get(i);
+            if (x == y)
+                //最后一个相同的节点就是最近公共祖先
+            {
+                res = x;
+            } else {
+                break;
+            }
+        }
+        return res;
+    }
+
+    //记录是否找到到o的路径
+    public boolean flag = false;
+
+
+    /**
+     * 求得根节点到目标节点的路径
+     * dfs: deep first search
+     * 深度优先搜索一般用于树或者图的遍历，其他有分支的（如二维矩阵）也适用。它的原理是从初始点开始，
+     * 一直沿着同一个分支遍历，直到该分支结束，然后回溯到上一级继续沿着一个分支走到底，如此往复，直到所有的节点都有被访问到。
+     * @author hui
+     * @version 1.0
+     * @param root
+     * @param path
+     * @param o
+     * @return void
+     * @date 2023/6/19 23:04
+     */
+    public void dfs(TreeNode root, ArrayList<Integer> path, int o) {
+        if (flag || root == null) {
+            return;
+        }
+        path.add(root.val);
+        //节点值都不同，可以直接用值比较
+        if (root.val == o) {
+            flag = true;
+            return;
+        }
+        //dfs遍历查找
+        dfs(root.left, path, o);
+        dfs(root.right, path, o);
+        //找到
+        if (flag) {
+            return;
+        }
+        //回溯
+        path.remove(path.size() - 1);
     }
 
 }
