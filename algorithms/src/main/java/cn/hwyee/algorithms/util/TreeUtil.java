@@ -3,6 +3,7 @@ package cn.hwyee.algorithms.util;
 import cn.hwyee.datastructures.tree.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -790,7 +791,7 @@ public class TreeUtil {
             int x = path1.get(i);
             int y = path2.get(i);
             if (x == y)
-                //最后一个相同的节点就是最近公共祖先
+            //最后一个相同的节点就是最近公共祖先
             {
                 res = x;
             } else {
@@ -809,12 +810,13 @@ public class TreeUtil {
      * dfs: deep first search
      * 深度优先搜索一般用于树或者图的遍历，其他有分支的（如二维矩阵）也适用。它的原理是从初始点开始，
      * 一直沿着同一个分支遍历，直到该分支结束，然后回溯到上一级继续沿着一个分支走到底，如此往复，直到所有的节点都有被访问到。
-     * @author hui
-     * @version 1.0
+     *
      * @param root
      * @param path
      * @param o
      * @return void
+     * @author hui
+     * @version 1.0
      * @date 2023/6/19 23:04
      */
     public void dfs(TreeNode root, ArrayList<Integer> path, int o) {
@@ -836,6 +838,155 @@ public class TreeUtil {
         }
         //回溯
         path.remove(path.size() - 1);
+    }
+
+
+    //序列的下标
+    public int index = 0;
+
+    
+    /**
+     * SerializeFunction: 
+     * 处理序列化的功能函数（递归）
+     * @author hui
+     * @version 1.0
+     * @param root 
+     * @param str  
+     * @return void
+     * @date 2023/6/21 23:59
+     */
+    private void serializeFunction(TreeNode root, StringBuilder str) {
+        //如果节点为空，表示左子节点或右子节点为空，用#表示
+        if (root == null) {
+            str.append('#');
+            return;
+        }
+        //根节点
+        str.append(root.val).append('!');
+        //左子树
+        serializeFunction(root.left, str);
+        //右子树
+        serializeFunction(root.right, str);
+    }
+
+    /**
+     * serialize:
+     * 请实现两个函数，分别用来序列化和反序列化二叉树，不对序列化之后的字符串进行约束，
+     * 但要求能够根据序列化之后的字符串重新构造出一棵与原二叉树相同的树。
+     *
+     * 二叉树的序列化(Serialize)是指：把一棵二叉树按照某种遍历方式的结果以某种格式保存为字符串，从而使得内存中建立起来的二叉树可以持久保存。
+     * 序列化可以基于先序、中序、后序、层序的二叉树等遍历方式来进行修改，序列化的结果是一个字符串，序列化时通过 某种符号表示空节点（#）
+     *
+     * 二叉树的反序列化(Deserialize)是指：根据某种遍历顺序得到的序列化字符串结果str，重构二叉树。
+     * 序列化即将二叉树的节点值取出，放入一个字符串中，我们可以按照前序遍历的思路，遍历二叉树每个节点，并将节点值存储在字符串中，
+     * 我们用‘#’表示空节点，用‘!'表示节点与节点之间的分割。
+     * @author hui
+     * @version 1.0
+     * @param root  
+     * @return java.lang.String
+     * @date 2023/6/21 23:59
+     */
+    public String serialize(TreeNode root) {
+        //处理空树
+        if (root == null) {
+            return "#";
+        }
+        StringBuilder res = new StringBuilder();
+        serializeFunction(root, res);
+        //把str转换成char
+        return res.toString();
+    }
+
+    /**
+     * deserializeFunction:
+     * 处理反序列化的功能函数（递归）
+     * @author hui
+     * @version 1.0
+     * @param str
+     * @return cn.hwyee.datastructures.tree.TreeNode
+     * @date 2023/6/22 0:01
+     */
+    private TreeNode deserializeFunction(String str) {
+        //到达叶节点时，构建完毕，返回继续构建父节点
+        //空节点
+        if (str.charAt(index) == '#') {
+            index++;
+            return null;
+        }
+        //数字转换
+        int val = 0;
+        //遇到分隔符或者结尾
+        while (str.charAt(index) != '!' && index != str.length()) {
+            val = val * 10 + ((str.charAt(index)) - '0');
+            index++;
+        }
+        TreeNode root = new TreeNode(val);
+        //序列到底了，构建完成
+        if (index == str.length()) {
+            return root;
+        } else {
+            index++;
+        }
+        //反序列化与序列化一致，都是前序
+        root.left = deserializeFunction(str);
+        root.right = deserializeFunction(str);
+        return root;
+    }
+
+    /**
+     * deserialize:
+     * 反序列化即根据给定的字符串，将二叉树重建，因为字符串中的顺序是前序遍历，因此我们重建的时候也是前序遍历，即可还原。
+     * @author hui
+     * @version 1.0
+     * @param str
+     * @return cn.hwyee.datastructures.tree.TreeNode
+     * @date 2023/6/22 0:00
+     */
+    public TreeNode deserialize(String str) {
+        //空序列对应空树
+        if (str == "#") {
+            return null;
+        }
+        TreeNode res = deserializeFunction(str);
+        return res;
+    }
+
+
+    /**
+     * 重建二叉树
+     * 给定节点数为 n 的二叉树的前序遍历和中序遍历结果，请重建出该二叉树并返回它的头结点。
+     * 1.vin.length == pre.length
+     * 2.pre 和 vin 均无重复元素
+     * 3.vin出现的元素均出现在 pre里
+     * 4.只需要返回根结点，系统会自动输出整颗树做答案对比
+     * 对于二叉树的前序遍历，我们知道序列的第一个元素必定是根节点的值，因为序列没有重复的元素，因此中序遍历中可以找到相同的这个元素，
+     * 而我们又知道中序遍历中根节点将二叉树分成了左右子树两个部分，见图reBuildTree.png
+     * 我们可以发现，数字1是根节点，并将二叉树分成了(247)和(3568)两棵子树，而子树的的根也是相应前序序列的首位，
+     * 比如左子树的根是数字2，右子树的根是数字3，这样我们就可以利用前序遍历序列找子树的根节点，利用中序遍历序列区分每个子树的节点数。
+     *
+     * @param preOrder int整型一维数组
+     * @param vinOrder int整型一维数组
+     * @return TreeNode类
+     */
+    public TreeNode reConstructBinaryTree(int [] pre,int [] vin) {
+        int n = pre.length;
+        int m = vin.length;
+        //每个遍历都不能为0
+        if(n == 0 || m == 0)
+            return null;
+        //构建根节点
+        TreeNode root = new TreeNode(pre[0]);
+        for(int i = 0; i < vin.length; i++){
+            //找到中序遍历中的前序第一个元素
+            if(pre[0] == vin[i]){
+                //构建左子树
+                root.left = reConstructBinaryTree(Arrays.copyOfRange(pre, 1, i + 1), Arrays.copyOfRange(vin, 0, i));
+                //构建右子树
+                root.right = reConstructBinaryTree(Arrays.copyOfRange(pre, i + 1, pre.length), Arrays.copyOfRange(vin, i + 1, vin.length));
+                break;
+            }
+        }
+        return root;
     }
 
 }
