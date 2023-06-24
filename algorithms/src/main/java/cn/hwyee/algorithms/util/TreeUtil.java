@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -972,8 +974,9 @@ public class TreeUtil {
         int n = pre.length;
         int m = vin.length;
         //每个遍历都不能为0
-        if(n == 0 || m == 0)
+        if(n == 0 || m == 0) {
             return null;
+        }
         //构建根节点
         TreeNode root = new TreeNode(pre[0]);
         for(int i = 0; i < vin.length; i++){
@@ -987,6 +990,141 @@ public class TreeUtil {
             }
         }
         return root;
+    }
+
+
+    /**
+     * buildTree:
+     * 建树函数
+     * 四个int参数分别是前序最左节点下标，前序最右节点下标
+     * 中序最左节点下标，中序最右节点坐标
+     * @author hui
+     * @version 1.0
+     * @param xianxu
+     * @param l1
+     * @param r1
+     * @param zhongxu
+     * @param l2
+     * @param r2
+     * @return cn.hwyee.datastructures.tree.TreeNode
+     * @date 2023/6/24 23:42
+     */
+    public TreeNode buildTree(int[] xianxu, int l1, int r1, int[] zhongxu, int l2, int r2){
+        if(l1 > r1 || l2 > r2) {
+            return null;
+        }
+        //构建节点
+        TreeNode root = new TreeNode(xianxu[l1]);
+        //用来保存根节点在中序遍历列表的下标
+        int rootIndex = 0;
+        //寻找根节点
+        for(int i = l2; i <= r2; i++){
+            if(zhongxu[i] == xianxu[l1]){
+                rootIndex = i;
+                break;
+            }
+        }
+        //左子树大小
+        int leftsize = rootIndex - l2;
+        //右子树大小
+        int rightsize = r2 - rootIndex;
+        //递归构建左子树和右子树
+        root.left = buildTree(xianxu, l1 + 1, l1 + leftsize, zhongxu, l2 , l2 + leftsize - 1);
+        root.right = buildTree(xianxu, r1 - rightsize + 1, r1, zhongxu, rootIndex + 1, r2);
+        return root;
+    }
+
+
+    /**
+     * rightSideView:
+     * 深度优先搜索函数
+     * @author hui
+     * @version 1.0
+     * @param root
+     * @return java.util.ArrayList<java.lang.Integer>
+     * @date 2023/6/24 23:41
+     */
+    public ArrayList<Integer> rightSideView(TreeNode root) {
+        //右边最深处的值
+        Map<Integer, Integer> mp = new HashMap<Integer, Integer>();
+        //记录最大深度
+        int max_depth = -1;
+        //维护深度访问节点
+        Stack<TreeNode> nodes = new Stack<TreeNode>();
+        //维护dfs时的深度
+        Stack<Integer> depths = new Stack<Integer>();
+        nodes.push(root);
+        depths.push(0);
+        while(!nodes.isEmpty()){
+            TreeNode node = nodes.pop();
+            int depth = depths.pop();
+            if(node != null){
+                //维护二叉树的最大深度
+                max_depth = Math.max(max_depth, depth);
+                //如果不存在对应深度的节点我们才插入
+                if(mp.get(depth) == null) {
+                    mp.put(depth, node.val);
+                }
+                nodes.push(node.left);
+                nodes.push(node.right);
+                depths.push(depth + 1);
+                depths.push(depth + 1);
+            }
+        }
+        ArrayList<Integer> res = new ArrayList<Integer>();
+        //结果加入链表
+        for(int i = 0; i <= max_depth; i++) {
+            res.add(mp.get(i));
+        }
+        return res;
+    }
+
+    /**
+     * solve:
+     * 输出二叉树的右视图
+     * 请根据二叉树的前序遍历，中序遍历恢复二叉树，并打印出二叉树的右视图
+     * 可以发现解这道题，我们有两个步骤：
+     *
+     * 建树
+     * 打印右视图
+     * 首先建树方面，前序遍历是根左右的顺序，中序遍历是左根右的顺序，因为节点值互不相同，
+     * 我们可以根据在前序遍历中找到根节点（每个子树部分第一个就是），再在中序遍历中找到对应的值，从其左右分割开，左边就是该树的左子树，
+     * 右边就是该树的右子树，于是将问题划分为了子问题。
+     *
+     * 而打印右视图即找到二叉树每层最右边的节点元素，我们可以采取dfs（深度优先搜索）遍历树，根据记录的深度找到最右值。
+     *
+     * 具体做法：
+     *
+     * step 1：首先检查两个遍历序列的大小，若是为0，则空树不用打印。
+     * step 2：建树函数根据上述说，每次利用前序遍历第一个元素就是根节点，在中序遍历中找到它将二叉树划分为左右子树，
+     * 利用l1 r1 l2 r2分别记录子树部分在数组中分别对应的下标，并将子树的数组部分送入函数进行递归。
+     * step 3：dfs打印右视图时，使用哈希表存储每个深度对应的最右边节点，初始化两个栈辅助遍历，
+     * 第一个栈记录dfs时的节点，第二个栈记录遍历到的深度，根节点先入栈。
+     * step 4：对于每个访问的节点，每次左子节点先进栈，右子节点再进栈，这样访问完一层后，因为栈的先进后出原理，
+     * 每次都是右边被优先访问，因此我们在哈希表该层没有元素时，添加第一个该层遇到的元素就是最右边的节点。
+     * step 5：使用一个变量逐层维护深度最大值，最后遍历每个深度，从哈希表中读出每个深度的最右边节点加入数组中。
+     * @author hui
+     * @version 1.0
+     * @param xianxu
+     * @param zhongxu
+     * @return int[]
+     * @date 2023/6/24 23:42
+     */
+    public int[] solve (int[] xianxu, int[] zhongxu) {
+        //空节点
+        if(xianxu.length == 0) {
+            return new int[0];
+        }
+        //建树
+        TreeNode root = buildTree(xianxu, 0, xianxu.length - 1, zhongxu, 0, zhongxu.length - 1);
+        //获取右视图输出
+        ArrayList<Integer> temp = rightSideView(root);
+        //转化为数组
+        int[] res = new int[temp.size()];
+        for(int i = 0; i < temp.size(); i++) {
+            res[i] = temp.get(i);
+        }
+        return res;
     }
 
 }
