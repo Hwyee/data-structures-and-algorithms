@@ -1,0 +1,148 @@
+package cn.hwyee.algorithms.interview;
+
+import java.util.Scanner;
+
+/**
+ * @author hwyee@foxmail.com
+ * @version 1.0
+ * @ClassName HuaWei
+ * @description 华为机试
+ * @date 2023/6/26
+ * @since JDK 1.8
+ */
+public class HuaWei {
+
+    /**
+     * getLastStringLength:
+     * 字符串最后一个单词的长度
+     * 计算字符串最后一个单词的长度，单词以空格隔开，字符串长度小于5000。（注：字符串末尾不以空格为结尾）
+     * @author hui
+     * @version 1.0
+     * @return void
+     * @date 2023/6/26 17:45
+     */
+    public void getLastStringLength(){
+        Scanner in = new Scanner(System.in);
+        // 注意 hasNext 和 hasNextLine 的区别
+        String s = in.nextLine();
+
+        String t = s.trim();
+        int a = t.lastIndexOf(' ');
+        System.out.println(t.length() - a - 1);
+    }
+
+    /**
+     * calcCharCount:
+     * 计算某字符出现次数
+     * 写出一个程序，接受一个由字母、数字和空格组成的字符串，和一个字符，然后输出输入字符串中该字符的出现次数。（不区分大小写字母）
+     * @author hui
+     * @version 1.0
+     * @return void
+     * @date 2023/6/26 17:51
+     */
+    public void calcCharCount(){
+        Scanner in = new Scanner(System.in);
+        // 注意 hasNext 和 hasNextLine 的区别
+        String s = in.nextLine();
+        String c = in.nextLine();
+        String s1 = s.toLowerCase().replaceAll(c.toLowerCase(),"");
+//        System.out.println((s.length()-s1.length())/c.length());
+        //因为题目是一个字符，所以不用除以长度了。
+        System.out.println(s.length()-s1.length());
+
+    }
+
+    /**
+     * mingmingsRandomNum:
+     * 明明生成了N个1到500之间的随机整数。请你删去其中重复的数字，即相同的数字只保留一个，把其余相同的数去掉，
+     * 然后再把这些数从小到大排序，按照排好的顺序输出。
+     * 数据范围 1<n<1000,输入的数据大小 1<val<500
+     * @author hui
+     * @version 1.0
+     * @date 2023/6/27 0:41
+     */
+    public  void mingmingsRandomNum() {
+        Scanner scanner = new Scanner(System.in);
+        // 注意 hasNext 和 hasNextLine 的区别
+        while (scanner.hasNext()) {
+            int num = scanner.nextInt();
+            //创建501的数组也可以。
+            int[] arr = new int[1001];
+            for (int i = 0; i < num; i++) {
+                int n = scanner.nextInt();
+                arr[n] = 1;
+            }
+            for (int i = 1; i < arr.length; i++) {
+                if (arr[i] == 1) {
+                    System.out.println(i);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * stringSplit8:
+     * 字符串分隔
+     * •输入一个字符串，请按长度为8拆分每个输入字符串并进行输出；
+     * •长度不是8整数倍的字符串请在后面补数字0，空字符串不处理。
+     * @author hui
+     * @version 1.0
+     * @date 2023/6/27 0:53
+     */
+    public void stringSplit8() {
+        Scanner input = new Scanner(System.in);
+        while (input.hasNextLine()) {
+            String s = input.nextLine();
+            split(s);
+        }
+    }
+
+    public static void split(String s) {
+        while (s.length() >= 8) {
+            System.out.println(s.substring(0, 8));
+            s = s.substring(8);
+        }
+        if (s.length() < 8 && s.length() > 0) {
+            s += "00000000";
+            System.out.println(s.substring(0, 8));
+        }
+    }
+
+    /**
+     * Hexadecimal2Ten:
+     * 写出一个程序，接受一个十六进制的数，输出该数值的十进制表示。
+     * @author hui
+     * @version 1.0
+     * @param args  
+     * @return void
+     * @date 2023/6/27 1:11
+     */
+    public void Hexadecimal2Ten(String[] args) {
+        Scanner in = new Scanner(System.in);
+        // 注意 hasNext 和 hasNextLine 的区别
+        while (in.hasNextLine()) { // 注意 while 处理多个 case
+            String s = in.nextLine();
+            int count = 0;
+            for (int i = 0; i < s.length() - 2; i++) {
+                //由于前面两位是ox,所以隔过去
+                char tc = s.charAt(i + 2);
+                //记录字母转化为数值
+                int t = 0;
+                //将字母转换为数值
+                if (tc >= '0' && tc <= '9') {
+                    t = tc - '0';
+                }
+                //字母'A'/'a'~'F'/'f'对应数字10~15
+                else if (tc >= 'A' && tc <= 'F') {
+                    t = tc - 'A' + 10;
+                } else if (tc >= 'a' && tc <= 'f') {
+                    t = tc - 'a' + 10;
+                }
+                //计算加和,16进制，每一进位是16
+                count += t * Math.pow(16, s.length() - i - 3);
+            }
+            System.out.println(count);
+        }
+    }
+}
