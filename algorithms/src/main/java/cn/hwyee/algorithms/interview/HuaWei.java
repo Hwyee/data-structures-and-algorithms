@@ -1,6 +1,9 @@
 package cn.hwyee.algorithms.interview;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 /**
  * @author hwyee@foxmail.com
@@ -122,6 +125,7 @@ public class HuaWei {
         Scanner in = new Scanner(System.in);
         // 注意 hasNext 和 hasNextLine 的区别
         while (in.hasNextLine()) { // 注意 while 处理多个 case
+            in.nextInt();
             String s = in.nextLine();
             int count = 0;
             for (int i = 0; i < s.length() - 2; i++) {
@@ -145,4 +149,134 @@ public class HuaWei {
             System.out.println(count);
         }
     }
+
+    /**
+     * primeFactor1: 
+     * 质数因子
+     * 功能:输入一个正整数，按照从小到大的顺序输出它的所有质因子（重复的也要列举）（如180的质因子为2 2 3 3 5 ）
+     * 此算法超时了，12个例子通过了11个。
+     * @author hui
+     * @version 1.0
+     * @param args  
+     * @return void
+     * @date 2023/6/27 23:41
+     */
+    public static void primeFactor1(String[] args){
+        Scanner scan = new Scanner(System.in);
+        long num = Long.parseLong(scan.next());
+        getPrimer(num);
+    }
+
+    public static void getPrimer(long num){
+        for (int i= 2;i <= num; i++){
+            if (num % i==0){
+                System.out.print(i + " ");
+                getPrimer(num/i);
+                break;
+            }
+            if (i==num){
+                System.out.print( i + "");
+            }
+        }
+    }
+
+    /**
+     * primeFactor2:
+     * 质数因子，此算法可以通过
+     * @author hui
+     * @version 1.0
+     * @param args
+     * @return void
+     * @date 2023/6/27 23:45
+     */
+    public static void primeFactor2(String[] args) {
+        // 处理输入
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNext()){
+            // 获取需要求解的值
+            int target = sc.nextInt();
+            int y = 2;// 因子从2开始算
+            while(target != 1){ // 短除法，除到目标值为1为止
+                if(target % y == 0) // 能能够整除2
+                {
+                    System.out.print(y+" ");
+                    target /= y;
+                }else{// 更新y的值
+                    if(y > target / y) {
+                        y = target;//如果剩余值为质数
+                    } else {
+                        y++;  //y值增加1
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * similarVal:
+     * 取近似值
+     * 写出一个程序，接受一个正浮点数值，输出该数值的近似整数值。如果小数点后数值大于等于 0.5 ,向上取整；小于 0.5 ，则向下取整。
+     * @author hui
+     * @version 1.0
+     * @param args
+     * @return void
+     * @date 2023/6/28 0:04
+     */
+    public static void similarVal(String[] args) {
+        Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+        map.forEach((a,b) ->
+            System.out.println(a + " " + b)
+        );
+
+        Scanner in = new Scanner(System.in);
+        // 注意 hasNext 和 hasNextLine 的区别
+        while (in.hasNextDouble()) { // 注意 while 处理多个 case
+            double a = in.nextDouble();
+            String s = String.valueOf(a);
+            String p = s.substring(s.indexOf('.') + 1,s.indexOf('.')+2);
+            if(Integer.parseInt(p)<5){
+                System.out.print(s.substring(0,s.indexOf('.')));
+            }else{
+                System.out.print(Integer.parseInt(s.substring(0,s.indexOf('.')))+1);
+            }
+        }
+        //简单版
+//        Scanner in = new Scanner(System.in);
+//        double number = in.nextDouble();
+//        System.out.println((int)(number + 0.5));
+    }
+
+    /**
+     * mergeTableRecord:
+     * 合并表记录
+     * 数据表记录包含表索引index和数值value（int范围的正整数），请对表索引相同的记录进行合并，即将相同索引的数值进行求和运算，输出按照index值升序进行输出。
+     * 提示:
+     * 0 <= index <= 11111111
+     * 1 <= value <= 100000
+     * @author hui
+     * @version 1.0
+     * @param args
+     * @return void
+     * @date 2023/6/28 0:20
+     */
+    public static void mergeTableRecord(String[] args) {
+        Scanner in = new Scanner(System.in);
+        // 注意 hasNext 和 hasNextLine 的区别
+        String a = in.nextLine();
+        //使用treeMap,题目的结果输出是按照key排序的,如果使用hashMap通过率是9/11
+        Map<Integer,Integer> map = new TreeMap<>();
+        for(int i = 1 ;i <= Integer.parseInt(a) ; i++)  {
+            int b = in.nextInt();
+            int c = in.nextInt();
+            if(map.containsKey(b)){
+                map.put(b,map.get(b)+c);
+            }else{
+                map.put(b,c);
+            }
+        }
+        map.forEach((q,w) ->
+                System.out.println(q+ " " + w)
+        );
+    }
+
 }
