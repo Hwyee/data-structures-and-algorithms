@@ -106,7 +106,7 @@ public class TreeUtil {
         //添加遍历结果的数组
         List<Integer> list = new ArrayList();
         //递归中序遍历
-        inorder(list, root);
+        postorder(list, root);
         //返回的结果
         int[] res = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
