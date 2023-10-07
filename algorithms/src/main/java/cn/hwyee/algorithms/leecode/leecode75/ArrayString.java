@@ -191,15 +191,90 @@ public class ArrayString {
 //        }
         return String.valueOf(charArray);
     }
+    /**
+     * 给你一个字符串 s ，请你反转字符串中 单词 的顺序。
+     *
+     * 单词 是由非空格字符组成的字符串。s 中使用至少一个空格将字符串中的 单词 分隔开。
+     *
+     * 返回 单词 顺序颠倒且 单词 之间用单个空格连接的结果字符串。
+     *
+     * 注意：输入字符串 s中可能会存在前导空格、尾随空格或者单词间的多个空格。返回的结果字符串中，单词间应当仅用单个空格分隔，且不包含任何额外的空格。: 
+     *
+     * 时间
+     * 详情
+     * 7ms
+     * 击败 51.15%使用 Java 的用户
+     * 内存
+     * 41.47MB
+     * 击败 16.20%使用 Java 的用户
+     * @author hui
+     * @version 1.0
+     * @param s
+     * @return String
+     * @date 2023/10/7 9:32
+     */
+    public String reverseWords(String s) {
+        String[] ss = s.trim().replaceAll("\\s+", " ").split(" ");
+        StringBuilder sb =  new StringBuilder();
+        for (int i = ss.length-1; i >=0; i--) {
+            sb.append(ss[i]).append(" ");
+        }
+        return sb.substring(0,sb.length()-1);
+
+    }
+
+    /**
+     * productExceptSelf: 
+     * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+     *
+     * 题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。
+     *
+     * 请 不要使用除法，且在 O(n) 时间复杂度内完成此题。
+     * @author hui
+     * @version 1.0
+     * @param nums  
+     * @return int[]
+     * @date 2023/10/7 16:54
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int length = nums.length;
+        int res[] = new int[length];
+        //索引0的左边数组乘积是1.
+        res[0]=1;
+        //从索引1开始遍历。
+        for (int i = 1; i < length; i++) {
+            res[i] = nums[i-1] * res[i-1];
+        }
+        //索引的右边数组乘积,不用数组保存了，直接用一个结果保存,然后实时与左边的结果乘积合并。
+        int R = 1;
+        for (int i = length-1;i>=0 ;i--) {
+            res[i]=res[i]*R;
+            R *= nums[i];
+        }
+        return res;
+    }
+
 
     public static void main(String[] args) {
         String s = "hello";
-        ArrayString arrayString = new ArrayString();
-        System.out.println(arrayString.reverseVowels(s));
+//        ArrayString arrayString = new ArrayString();
+//        System.out.println(arrayString.reverseVowels(s));
+        int a = 1;
+        int b = a = 2;
+        System.out.println("a:"+ a +"\nb:"+b);
     }
 }
 
 
+/**
+ * 给你一个字符串 s ，仅反转字符串中的所有元音字母，并返回结果字符串。
+ * 官方答案:
+ *
+ * @author hui
+ * @version 1.0
+ * @return 
+ * @date 2023/10/7 9:31
+ */
 class reverseVowels{
     public String reverseVowels(String s) {
         int n = s.length();
