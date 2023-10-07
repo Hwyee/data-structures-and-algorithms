@@ -254,6 +254,159 @@ public class ArrayString {
         return res;
     }
 
+    /**
+     * increasingTriplet:
+     * 给你一个整数数组 nums ，判断这个数组中是否存在长度为 3 的递增子序列。
+     *
+     * 如果存在这样的三元组下标 (i, j, k) 且满足 i < j < k ，使得 nums[i] < nums[j] < nums[k] ，返回 true ；否则，返回 false 。
+     * @author hui
+     * @version 1.0
+     * @param nums
+     * @return boolean
+     * @date 2023/10/7 20:41
+     */
+    public boolean increasingTriplet(int[] nums) {
+        //1.贪心，只保证有没有这样的三元组，但是找到的三元组可能是乱序的。
+        int length = nums.length;
+        if (length<3){
+            return false;
+        }
+        int first = nums[0];
+        int second = Integer.MAX_VALUE;
+        for (int i = 1; i < length; i++) {
+            if (nums[i]>second){
+                return true;
+            }else if (first<nums[i] && nums[i]<second){
+                second=nums[i];
+            }else if (nums[i]<first){
+                first=nums[i];
+            }
+        }
+        return false;
+        //2.双指针：创建两个长度为n 的数组 leftMin 和 rightMax，对于 0≤i<n0 ，leftMin[i] 表示 nums[0] 到 nums[i]中的最小值，
+        // rightMax[i]\ 表示 nums[i]到 nums[n−1] 中的最大值
+//        int length = nums.length;
+//        if (length<3){
+//            return false;
+//        }
+//        int leftMin[] = new int[length];
+//        leftMin[0] = nums[0];
+//        for (int i = 1; i < nums.length; i++) {
+//            leftMin[i] = Math.min(leftMin[i-1], nums[i]);
+//        }
+//        int rightMax[] = new int[length];
+//        rightMax[length-1] = nums[length-1];
+//        for (int i = length-2; i > 0; i--) {
+//            rightMax[i] = Math.max(rightMax[i+1], nums[i]);
+//        }
+//
+//        for (int i = 1; i < length-1; i++) {
+//            if (nums[i]>leftMin[i-1] && nums[i]<rightMax[i+1]){
+//                return true;
+//            }
+//        }
+//        return false;
+    }
+
+    /**
+     * compress:
+     * 给你一个字符数组 chars ，请使用下述算法压缩：
+     *
+     * 从一个空字符串 s 开始。对于 chars 中的每组 连续重复字符 ：
+     *
+     * 如果这一组长度为 1 ，则将字符追加到 s 中。
+     * 否则，需要向 s 追加字符，后跟这一组的长度。
+     * 压缩后得到的字符串 s 不应该直接返回 ，需要转储到字符数组 chars 中。需要注意的是，如果组长度为 10 或 10 以上，则在 chars 数组中会被拆分为多个字符。
+     *
+     * 请在 修改完输入数组后 ，返回该数组的新长度。
+     *
+     * 你必须设计并实现一个只使用常量额外空间的算法来解决此问题。
+     *
+     * 时间
+     * 1ms
+     * 击败 73.53%使用 Java 的用户
+     * 内存
+     * 40.86MB
+     * 击败 47.72%使用 Java 的用户
+     * @author hui
+     * @version 1.0
+     * @param chars  
+     * @return int
+     * @date 2023/10/7 23:08
+     */
+    public int compress(char[] chars) {
+        int length = chars.length;
+        if (length<=1){
+            return length;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(chars[0]);
+        int repeat = 1;
+        for (int i = 1; i < chars.length; i++) {
+            if (chars[i]==chars[i-1]){
+                repeat++;
+            }else {
+                if (repeat==1){
+                    sb.append(chars[i]);
+                }else {
+                    sb.append(repeat).append(chars[i]);
+                    repeat=1;
+                }
+            }
+        }
+        if (repeat!=1){
+            sb.append(repeat);
+        }
+        sb.getChars(0,sb.length(),chars,0);
+        return sb.length();
+    }
+
+    /**
+     * compressGF:
+     * 官方题解
+     * 时间
+     * 0ms
+     * 击败 100.00%使用 Java 的用户
+     * 内存
+     * 40.78MB
+     * 击败 66.53%使用 Java 的用户
+     * @author hui
+     * @version 1.0
+     * @param chars
+     * @return int
+     * @date 2023/10/7 23:31
+     */
+    public int compressGF(char[] chars) {
+        int n = chars.length;
+        int write = 0, left = 0;
+        for (int read = 0; read < n; read++) {
+            if (read == n - 1 || chars[read] != chars[read + 1]) {
+                chars[write++] = chars[read];
+                int num = read - left + 1;
+                if (num > 1) {
+                    int anchor = write;
+                    while (num > 0) {
+                        chars[write++] = (char) (num % 10 + '0');
+                        num /= 10;
+                    }
+                    reverse(chars, anchor, write - 1);
+                }
+                left = read + 1;
+            }
+        }
+        return write;
+    }
+
+    public void reverse(char[] chars, int left, int right) {
+        while (left < right) {
+            char temp = chars[left];
+            chars[left] = chars[right];
+            chars[right] = temp;
+            left++;
+            right--;
+        }
+    }
+
 
     public static void main(String[] args) {
         String s = "hello";
