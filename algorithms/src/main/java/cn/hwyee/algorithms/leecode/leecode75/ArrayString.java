@@ -13,7 +13,7 @@ import java.util.concurrent.ForkJoinPool;
  * @author hwyee@foxmail.com
  * @version 1.0
  * @ClassName ArrayString
- * @description
+ * @description 数组和字符串
  * @date 2023/8/30
  * @since JDK 1.8
  */
