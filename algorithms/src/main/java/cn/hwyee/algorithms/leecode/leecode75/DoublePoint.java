@@ -225,25 +225,26 @@ public class DoublePoint {
      * @date 2023/10/8 23:45
      */
     public int maxOperations(int[] nums, int k) {
-return 1;
+        return 1;
     }
 
     public static void main(String[] args) {
-        int[] a = new int[]{2, 3, 8, 0, 5 ,111 , 0, 2, 88, 7};
+        int[] a = new int[]{2, 3, 8, 0, 5, 111, 0, 2, 88, 7};
         //1. 冒泡
 //        bubbleSort(a);
         //2. 快排
-        quickSort(a,0,a.length-1);
+        quickSort(a, 0, a.length - 1);
         for (int i = 0; i < a.length; i++) {
             System.out.println(a[i]);
         }
 //        Arrays.stream(a).forEach(t -> log.info(String.valueOf(t)));
     }
+
     public static void quickSort(int[] nums, int start, int end) {
         while (start < end) {
             int i = quickSortSwap(nums, start, end);
-            quickSort(nums, start, i-1);
-            quickSort(nums, i+1, end);
+            quickSort(nums, start, i - 1);
+            quickSort(nums, i + 1, end);
         }
     }
 
@@ -272,27 +273,25 @@ return 1;
         }
         //此时，nums[mid] <= nums[start] <= nums[end]
         int base = nums[start];
-        int i=start,j=end+1;
-        while(true){
-            while(nums[++i]<base&&i<end) {
-
+        int i = start, j = end + 1;
+        while (true) {
+            while (i < end && nums[++i] < base) {
             }
-            while(nums[--j]>base) {
-
+            while (i < end && nums[--j] > base) ;
+            if (i >= j) {
+                break;
             }
-            if (i>=j)break;
-            swap(nums,i,j);
-
+            swap(nums, i, j);
         }
-        nums[start] = nums[j];
-        nums[j] = base;
+        nums[start] = nums[i];
+        nums[i] = base;
 //        for (int i = start + 1; i <= end; i++) {
 //            if (nums[i] < base) {
 //                swap(nums, i, ++baseIndex);
 //            }
 //        }
 //        swap(nums, start,baseIndex);
-        return j;
+        return i;
     }
 
     public static void swap(int[] nums, int a, int b) {
