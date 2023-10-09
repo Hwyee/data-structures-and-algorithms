@@ -225,7 +225,17 @@ public class DoublePoint {
      * @date 2023/10/8 23:45
      */
     public int maxOperations(int[] nums, int k) {
-        return 1;
+        quickSort(nums,0,nums.length-1);
+        Arrays.sort(nums);
+        int i=0,j=nums.length-1;
+        int res=0;
+        if(i<=j){
+            while (nums[j--]==nums[i]){
+                res++;
+                i++;
+            }
+        }
+        return res;
     }
 
     public static void main(String[] args) {
@@ -241,7 +251,7 @@ public class DoublePoint {
     }
 
     public static void quickSort(int[] nums, int start, int end) {
-        while (start < end) {
+        if (start < end) {
             int i = quickSortSwap(nums, start, end);
             quickSort(nums, start, i - 1);
             quickSort(nums, i + 1, end);
@@ -275,23 +285,23 @@ public class DoublePoint {
         int base = nums[start];
         int i = start, j = end + 1;
         while (true) {
-            while (i < end && nums[++i] < base) {
+            while (  nums[++i] < base && i < end) {
             }
-            while (i < end && nums[--j] > base) ;
+            while ( nums[--j] > base) ;
             if (i >= j) {
                 break;
             }
             swap(nums, i, j);
         }
-        nums[start] = nums[i];
-        nums[i] = base;
+        nums[start] = nums[j];
+        nums[j] = base;
 //        for (int i = start + 1; i <= end; i++) {
 //            if (nums[i] < base) {
 //                swap(nums, i, ++baseIndex);
 //            }
 //        }
 //        swap(nums, start,baseIndex);
-        return i;
+        return j;
     }
 
     public static void swap(int[] nums, int a, int b) {
