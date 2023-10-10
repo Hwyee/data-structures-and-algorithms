@@ -31,24 +31,17 @@ public class SildingWindow {
      * @date 2023/10/10 16:32
      */
     public double findMaxAverage(int[] nums, int k) {
-        int[] integers = new int[k];
-        int min= Integer.MAX_VALUE;
-        int minIndex = -1;
-        int kNum = 0;
-        HashMap<Integer, Integer> map = new HashMap<>(2);
+        int sum = 0;
         for (int i = 0; i < k; i++) {
-            if (min>nums[i]){
-                minIndex = i;
-            }
-            integers[i] = nums[i];
+            sum+=nums[i];
         }
+        //连续子数组
+        int res = sum;
         for (int i = k; i < nums.length; i++) {
-            if (nums[i]>nums[minIndex]){
-                nums[minIndex]=nums[i];
-            }
+            sum = sum - nums[i-k]+nums[i];
+            res = Math.max(res,sum);
         }
-        int sum = Arrays.stream(integers).sum();
-        return sum/k;
+        return 1.0* res/k;
     }
 
 }
