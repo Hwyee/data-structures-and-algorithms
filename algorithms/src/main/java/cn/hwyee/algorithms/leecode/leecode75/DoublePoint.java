@@ -216,7 +216,12 @@ public class DoublePoint {
      * 每一步操作中，你需要从数组中选出和为 k 的两个整数，并将它们移出数组。
      * <p>
      * 返回你可以对数组执行的最大操作数。
-     *
+     * 时间
+     * 2136ms
+     * 击败 5.26%使用 Java 的用户
+     * 内存
+     * 52.36MB
+     * 击败 68.98%使用 Java 的用户
      * @param nums
      * @param k
      * @return int
@@ -225,17 +230,70 @@ public class DoublePoint {
      * @date 2023/10/8 23:45
      */
     public int maxOperations(int[] nums, int k) {
-        quickSort(nums,0,nums.length-1);
+        quickSort(nums, 0, nums.length - 1);
         Arrays.sort(nums);
-        int i=0,j=nums.length-1;
-        int res=0;
-        if(i<=j){
-            while (nums[j--]==nums[i]){
+        int i = 0, j = nums.length - 1;
+        int res = 0, jMax = j;
+        while (jMax > 0 && nums[jMax]>=k){
+            jMax--;
+        }
+        while (i < jMax && nums[i] < k) {
+            j = jMax;
+            if (nums[i]>k){
+                break;
+            }
+            while ((k - nums[j--]) != nums[i]) {
+                if (i >= j) {
+                    res--;
+                    j=jMax;
+                    break;
+                }
+            }
+            res++;
+            i++;
+            jMax = j;
+        }
+        return res;
+    }
+
+
+    /**
+     * maxOperationLCG:
+     * leetcode题解改。
+     * 时间
+     * 18ms
+     * 击败 97.20%使用 Java 的用户
+     * 内存
+     * 52.28MB
+     * 击败 81.16%使用 Java 的用户
+     * @author hui
+     * @version 1.0
+     * @param nums
+     * @param k
+     * @return int
+     * @date 2023/10/10 10:57
+     */
+    public int maxOperationLC(int[] nums,int k ){
+        Arrays.sort(nums);
+        int i = 0, j = nums.length - 1;
+        int res = 0;
+        while (j > 0 && nums[j]>=k){
+            j--;
+        }
+        while (i < j && nums[i] < k) {
+            if(nums[i] + nums[j] == k){
                 res++;
+                i++;
+                j--;
+            }else if(nums[i] + nums[j] > k){
+                j--;
+            }else{
                 i++;
             }
         }
         return res;
+
+
     }
 
     public static void main(String[] args) {
@@ -243,11 +301,17 @@ public class DoublePoint {
         //1. 冒泡
 //        bubbleSort(a);
         //2. 快排
-        quickSort(a, 0, a.length - 1);
-        for (int i = 0; i < a.length; i++) {
-            System.out.println(a[i]);
-        }
+//        quickSort(a, 0, a.length - 1);
+//        for (int i = 0; i < a.length; i++) {
+//            System.out.println(a[i]);
+//        }
 //        Arrays.stream(a).forEach(t -> log.info(String.valueOf(t)));
+
+        //k和数对的最大数目
+        int[] ints = {3,1,3,4,3};
+        DoublePoint doublePoint = new DoublePoint();
+        int i = doublePoint.maxOperations(ints, 6);
+        log.info(String.valueOf(i));
     }
 
     public static void quickSort(int[] nums, int start, int end) {
@@ -285,9 +349,9 @@ public class DoublePoint {
         int base = nums[start];
         int i = start, j = end + 1;
         while (true) {
-            while (  nums[++i] < base && i < end) {
+            while (nums[++i] < base && i < end) {
             }
-            while ( nums[--j] > base) ;
+            while (nums[--j] > base) ;
             if (i >= j) {
                 break;
             }
