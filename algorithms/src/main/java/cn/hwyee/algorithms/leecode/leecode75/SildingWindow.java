@@ -44,4 +44,25 @@ public class SildingWindow {
         return 1.0* res/k;
     }
 
+
+
+    /**
+     * maxVowels:
+     * 给你字符串 s 和整数 k 。
+     *
+     * 请返回字符串 s 中长度为 k 的单个子字符串中可能包含的最大元音字母数。
+     *
+     * 英文中的 元音字母 为（a, e, i, o, u）。
+     * @author hui
+     * @version 1.0
+     * @param s
+     * @param k
+     * @return int
+     * @date 2023/10/11 16:06
+     */
+    public int maxVowels(String s, int k) {
+        return 1;
+    }
+
+
 }
