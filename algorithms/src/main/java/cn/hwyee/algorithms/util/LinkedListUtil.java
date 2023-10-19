@@ -4,6 +4,7 @@ import cn.hwyee.datastructures.linkedlist.ListNode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
@@ -18,6 +19,22 @@ import java.util.Stack;
  */
 @Slf4j
 public class LinkedListUtil {
+    public static void main(String[] args) {
+        ListNode l1 = new ListNode(100);
+        ListNode l2 = new ListNode(47);
+        ListNode l3 = new ListNode(66);
+        ListNode l4 = new ListNode(23);
+        ListNode l5 = new ListNode(55);
+        ArrayList list = new ArrayList();
+        list.add(l1);
+        list.add(l2);
+        list.add(l3);
+        list.add(l4);
+        list.add(l5);
+        ListNode listNode = mergeKLists2(list);
+        System.out.println(listNode);
+
+    }
     private LinkedListUtil() {
     }
 
@@ -193,7 +210,8 @@ public class LinkedListUtil {
      * mergeKLists2:
      * 合并k个已排序的链表
      * 优先队列 "先进先出" 堆顶即第一个元素
-     * 分为大顶堆与小顶堆，大顶堆的堆顶为最大元素，其余更小的元素在堆下方，小顶堆与其刚好相反。
+     * 分为大顶堆与小顶堆，大顶堆的堆顶为最大元素(队列最前面那个)，其余更小的元素在堆下方，小顶堆与其刚好相反。
+     * 即：大顶堆是降序，小顶堆是升序。
      *
      * @param lists
      * @return cn.hwyee.datastructures.linkedlist.ListNode
@@ -201,13 +219,15 @@ public class LinkedListUtil {
      * @version 1.0
      * @date 2023/5/29 0:36
      */
-    public ListNode mergeKLists2(ArrayList<ListNode> lists) {
+    public static ListNode mergeKLists2(ArrayList<ListNode> lists) {
         //小顶堆
         Queue<ListNode> pq = new PriorityQueue<>((v1, v2) -> v1.val - v2.val);
         //遍历所有链表第一个元素
         for (int i = 0; i < lists.size(); i++) {
             //不为空则加入小顶堆
             if (lists.get(i) != null) {
+                //添加元素是O(logn)，入列时会进行比较，但不是挨个比较的。此时元素还不是完全按照升序或者降序进行排序的。
+                //元素出列时也是O(logn)，这时也会对元素进行排序，这样一进一出，队列就会完全排序。
                 pq.add(lists.get(i));
             }
         }
