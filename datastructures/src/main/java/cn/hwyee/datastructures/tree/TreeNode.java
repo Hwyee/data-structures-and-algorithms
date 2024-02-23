@@ -19,4 +19,7 @@ public class TreeNode {
     public TreeNode(int val) {
         this.val = val;
     }
+
+    public TreeNode(int i, TreeNode dfs, TreeNode dfs1) {
+    }
 }
