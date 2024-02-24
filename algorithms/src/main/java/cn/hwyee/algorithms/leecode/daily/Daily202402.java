@@ -6,6 +6,7 @@ import cn.hwyee.datastructures.tree.TreeNode;
 import java.security.cert.TrustAnchor;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -304,6 +305,134 @@ public class Daily202402 {
             Collections.sort(levelSumArray);
             return levelSumArray.get(levelSumArray.size() - k);
         }
+    }
+
+
+    /**
+     * 2476. 二叉搜索树最近节点查询:
+     * 给你一个 二叉搜索树 的根节点 root ，和一个由正整数组成、长度为 n 的数组 queries 。
+     * 请你找出一个长度为 n 的 二维 答案数组 answer ，其中 answer[i] = [mini, maxi] ：
+     * mini 是树中小于等于 queries[i] 的 最大值 。如果不存在这样的值，则使用 -1 代替。
+     * maxi 是树中大于等于 queries[i] 的 最小值 。如果不存在这样的值，则使用 -1 代替。
+     * 返回数组 answer 。
+     * 也就是找到queries数组中最接近数组的最大最小值。
+     *
+     * 双5%，我这个map太离谱了。。强行增加时间和空间。
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/2/24 20:26
+     */
+    class Solution_24_1 {
+        public List<List<Integer>> closestNodes(TreeNode root, List<Integer> queries) {
+            //1.先遍历出来中序遍历出来就是有序的List（因为是二叉搜索树）。这次用迭代法
+            List<Integer> list = new ArrayList<Integer>();
+            //用一个map存储所有节点的下标，便于寻找queries数组中最接近数组的最大最小值
+            Map<Integer,Integer> map = new HashMap<>();
+            int index = 0;
+            Stack<TreeNode> stack = new Stack<>();
+            TreeNode temp = root;
+            int lastVal = 1;
+            while (temp != null || !stack.isEmpty()) {
+                //遍历左节点
+                while (temp != null) {
+                    stack.add(temp);
+                    temp = temp.left;
+                }
+                TreeNode pop = stack.pop();
+                list.add(pop.val);
+                temp = pop.right;
+                for (int i = lastVal; i < pop.val; i++) {
+                    map.put(i, index);
+                }
+                index++;
+                lastVal=pop.val+1;
+                map.put(pop.val, -1);
+            }
+            List<List<Integer>> result = new ArrayList<List<Integer>>();
+            //2.遍历queries寻找答案
+            int len = list.size()-1;
+            for (Integer query : queries) {
+                ArrayList<Integer> res = new ArrayList<>();
+                Integer integer = map.get(query);
+                if (integer != null) {
+                    if (integer==-1){
+                        result.add(Arrays.asList(query, query));
+                    }else if (integer==0){
+                        result.add(Arrays.asList(-1, list.get(0)));
+                    }else {
+                        result.add(Arrays.asList(list.get(integer-1), list.get(integer)));
+                    }
+                }else {
+                    result.add(Arrays.asList(list.get(len), -1));
+                }
+            }
+            return result;
+        }
+
+        /**
+         * closestNodes:
+         * 官方二分查找
+         * @author hui
+         * @version 1.0
+         * @param root
+         * @param queries
+         * @return java.util.List<java.util.List<java.lang.Integer>>
+         * @date 2024/2/24 22:23
+         */
+        public List<List<Integer>> closestNodesBS(TreeNode root, List<Integer> queries) {
+            List<Integer> arr = new ArrayList<Integer>();
+            dfs(root, arr);
+
+            List<List<Integer>> res = new ArrayList<List<Integer>>();
+            for (int val : queries) {
+                int maxVal = -1, minVal = -1;
+                int idx = binarySearch(arr, val);
+                if (idx != arr.size()) {
+                    maxVal = arr.get(idx);
+                    if (arr.get(idx) == val) {
+                        minVal = val;
+                        List<Integer> list = new ArrayList<Integer>();
+                        list.add(minVal);
+                        list.add(maxVal);
+                        res.add(list);
+                        continue;
+                    }
+                }
+                if (idx > 0) {
+                    minVal = arr.get(idx - 1);
+                }
+                List<Integer> list2 = new ArrayList<Integer>();
+                list2.add(minVal);
+                list2.add(maxVal);
+                res.add(list2);
+            }
+            return res;
+        }
+
+        public void dfs(TreeNode root, List<Integer> arr) {
+            if (root == null) {
+                return;
+            }
+            dfs(root.left, arr);
+            arr.add(root.val);
+            dfs(root.right, arr);
+        }
+
+        public int binarySearch(List<Integer> arr, int target) {
+            int low = 0, high = arr.size();
+            while (low < high) {
+                int mid = low + (high - low) / 2;
+                if (arr.get(mid) >= target) {
+                    high = mid;
+                } else {
+                    low = mid + 1;
+                }
+            }
+            return low;
+        }
+
+
     }
 
 }
