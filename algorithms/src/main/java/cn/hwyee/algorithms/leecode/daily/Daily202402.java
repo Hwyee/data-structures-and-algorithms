@@ -221,11 +221,12 @@ public class Daily202402 {
      * 返回树中第 k 大的层和（不一定不同）。如果树少于 k 层，则返回 -1 。
      * 注意，如果两个节点与根节点的距离相同，则认为它们在同一层。
      * 我这个比官方快6倍，内存占用少了5倍
-     *
+     * <p>
      * 21ms击败55.87%
      * 使用 Java 的用户
      * 消耗内存分布63.09MB击败65.36%
      * 使用 Java 的用户
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -273,6 +274,7 @@ public class Daily202402 {
          * 45ms击败14.52%使用 Java 的用户
          * 消耗内存分布
          * 68.68MB击败10.61%使用 Java 的用户
+         *
          * @param root
          * @param k
          * @return long
@@ -316,8 +318,9 @@ public class Daily202402 {
      * maxi 是树中大于等于 queries[i] 的 最小值 。如果不存在这样的值，则使用 -1 代替。
      * 返回数组 answer 。
      * 也就是找到queries数组中最接近数组的最大最小值。
-     *
+     * <p>
      * 双5%，我这个map太离谱了。。强行增加时间和空间。
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -328,7 +331,7 @@ public class Daily202402 {
             //1.先遍历出来中序遍历出来就是有序的List（因为是二叉搜索树）。这次用迭代法
             List<Integer> list = new ArrayList<Integer>();
             //用一个map存储所有节点的下标，便于寻找queries数组中最接近数组的最大最小值
-            Map<Integer,Integer> map = new HashMap<>();
+            Map<Integer, Integer> map = new HashMap<>();
             int index = 0;
             Stack<TreeNode> stack = new Stack<>();
             TreeNode temp = root;
@@ -346,24 +349,24 @@ public class Daily202402 {
                     map.put(i, index);
                 }
                 index++;
-                lastVal=pop.val+1;
+                lastVal = pop.val + 1;
                 map.put(pop.val, -1);
             }
             List<List<Integer>> result = new ArrayList<List<Integer>>();
             //2.遍历queries寻找答案
-            int len = list.size()-1;
+            int len = list.size() - 1;
             for (Integer query : queries) {
                 ArrayList<Integer> res = new ArrayList<>();
                 Integer integer = map.get(query);
                 if (integer != null) {
-                    if (integer==-1){
+                    if (integer == -1) {
                         result.add(Arrays.asList(query, query));
-                    }else if (integer==0){
+                    } else if (integer == 0) {
                         result.add(Arrays.asList(-1, list.get(0)));
-                    }else {
-                        result.add(Arrays.asList(list.get(integer-1), list.get(integer)));
+                    } else {
+                        result.add(Arrays.asList(list.get(integer - 1), list.get(integer)));
                     }
-                }else {
+                } else {
                     result.add(Arrays.asList(list.get(len), -1));
                 }
             }
@@ -373,11 +376,12 @@ public class Daily202402 {
         /**
          * closestNodes:
          * 官方二分查找
-         * @author hui
-         * @version 1.0
+         *
          * @param root
          * @param queries
-         * @return java.util.List<java.util.List<java.lang.Integer>>
+         * @return java.util.List<java.util.List < java.lang.Integer>>
+         * @author hui
+         * @version 1.0
          * @date 2024/2/24 22:23
          */
         public List<List<Integer>> closestNodesBS(TreeNode root, List<Integer> queries) {
@@ -430,6 +434,102 @@ public class Daily202402 {
                 }
             }
             return low;
+        }
+
+
+    }
+
+    /**
+     * 235. 二叉搜索树的最近公共祖先:
+     * 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
+     * <p>
+     * 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+     * <p>
+     * 例如，给定如下二叉搜索树:  root = [6,2,8,0,4,7,9,null,null,3,5] p = 2, q = 8
+     * 输出: 6
+     *
+     * 6ms击败75.22%使用 Java 的用户
+     * 消耗内存分布43.72MB击败61.90%
+     * 使用 Java 的用户
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/2/25 23:12
+     */
+    class Solution_25_1 {
+        public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+            List<TreeNode> left = new ArrayList<>();
+            List<TreeNode> right = new ArrayList<>();
+            //1.查询所有的祖先,因为是二叉搜索树，所以遍历起来会比较容易
+            findAncestor(root, p, left);
+            findCommonAncestor(root, q, right,left);
+            return right.get(right.size() - 1);
+        }
+
+        public void findAncestor(TreeNode root, TreeNode p, List<TreeNode> list) {
+            int val = p.val;
+            TreeNode temp = root;
+            //temp!=null
+            while (temp.val != val) {
+                list.add(temp);
+                if (temp.val < val) {
+                    temp = temp.right;
+                } else {
+                    temp = temp.left;
+                }
+            }
+            list.add(temp);
+        }
+
+        public void findCommonAncestor(TreeNode root, TreeNode p, List<TreeNode> list, List<TreeNode> ancestor) {
+            int val = p.val;
+            TreeNode temp = root;
+            int index = 0;
+            //temp!=null
+            while (ancestor.size() > index) {
+                TreeNode treeNode = ancestor.get(index++);
+                if (temp.val != treeNode.val && temp.val == val) {
+                    list.add(temp);
+                    break;
+                }
+                if (temp.val != treeNode.val) {
+                    break;
+                }
+
+                list.add(temp);
+                if (temp.val < val) {
+                    temp = temp.right;
+                } else {
+                    temp = temp.left;
+                }
+            }
+
+        }
+
+        /**
+         * lowestCommonAncestor:
+         * 官方解法 一次遍历
+         *
+         * @author hui
+         * @version 1.0
+         * @param root
+         * @param p
+         * @param q
+         * @return cn.hwyee.datastructures.tree.TreeNode
+         * @date 2024/2/26 0:00
+         */
+        public TreeNode lowestCommonAncestorGF(TreeNode root, TreeNode p, TreeNode q) {
+            TreeNode ancestor = root;
+            while (true) {
+                if (p.val < ancestor.val && q.val < ancestor.val) {
+                    ancestor = ancestor.left;
+                } else if (p.val > ancestor.val && q.val > ancestor.val) {
+                    ancestor = ancestor.right;
+                } else {
+                    break;
+                }
+            }
+            return ancestor;
         }
 
 
