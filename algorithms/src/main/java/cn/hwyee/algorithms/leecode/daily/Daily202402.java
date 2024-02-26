@@ -2,6 +2,7 @@ package cn.hwyee.algorithms.leecode.daily;
 
 import cn.hwyee.datastructures.tree.Node;
 import cn.hwyee.datastructures.tree.TreeNode;
+import lombok.val;
 
 import java.security.cert.TrustAnchor;
 import java.util.ArrayDeque;
@@ -447,10 +448,11 @@ public class Daily202402 {
      * <p>
      * 例如，给定如下二叉搜索树:  root = [6,2,8,0,4,7,9,null,null,3,5] p = 2, q = 8
      * 输出: 6
-     *
+     * <p>
      * 6ms击败75.22%使用 Java 的用户
      * 消耗内存分布43.72MB击败61.90%
      * 使用 Java 的用户
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -462,7 +464,7 @@ public class Daily202402 {
             List<TreeNode> right = new ArrayList<>();
             //1.查询所有的祖先,因为是二叉搜索树，所以遍历起来会比较容易
             findAncestor(root, p, left);
-            findCommonAncestor(root, q, right,left);
+            findCommonAncestor(root, q, right, left);
             return right.get(right.size() - 1);
         }
 
@@ -510,12 +512,12 @@ public class Daily202402 {
          * lowestCommonAncestor:
          * 官方解法 一次遍历
          *
-         * @author hui
-         * @version 1.0
          * @param root
          * @param p
          * @param q
          * @return cn.hwyee.datastructures.tree.TreeNode
+         * @author hui
+         * @version 1.0
          * @date 2024/2/26 0:00
          */
         public TreeNode lowestCommonAncestorGF(TreeNode root, TreeNode p, TreeNode q) {
@@ -531,8 +533,59 @@ public class Daily202402 {
             }
             return ancestor;
         }
+    }
+
+    /**
+     * 938. 二叉搜索树的范围和:
+     * 给定二叉搜索树的根结点 root，返回值位于范围 [low, high] 之间的所有结点的值的和。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/2/26 23:29
+     */
+    class Solution_26_1 {
+
+        public int rangeSumBST(TreeNode root, int low, int high) {
+            //1.二叉树中序遍历
+            if (root == null) {
+                return -1;
+            }
+            Stack<TreeNode> stack = new Stack<>();
+            TreeNode temp = root;
+            int res = 0;
+            while (temp != null || !stack.isEmpty()) {
+                while (temp != null) {
+                    stack.push(temp);
+                    temp = temp.left;
+                }
+                TreeNode pop = stack.pop();
+                if (pop.val >= low) {
+                    res += pop.val;
+                }
+                if (pop.val >= high) {
+                    break;
+                }
+                temp = pop.right;
+            }
+            return res;
+        }
+
+        public int rangeSumBSTGF(TreeNode root, int low, int high) {
+            if (root == null) {
+                return 0;
+            }
+            if (root.val > high) {
+                return rangeSumBST(root.left, low, high);
+            }
+            if (root.val < low) {
+                return rangeSumBST(root.right, low, high);
+            }
+            return root.val + rangeSumBST(root.left, low, high) + rangeSumBST(root.right, low, high);
+        }
 
 
     }
+
 
 }
