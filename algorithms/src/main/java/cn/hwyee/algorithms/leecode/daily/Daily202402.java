@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -733,5 +735,75 @@ public class Daily202402 {
         }
     }
 
+    /**
+     * 2581. 统计可能的树根数目:
+     * Alice 有一棵 n 个节点的树，节点编号为 0 到 n - 1 。树用一个长度为 n - 1 的二维整数数组 edges 表示，其中 edges[i] = [ai, bi] ，表示树中节点 ai 和 bi 之间有一条边。
+     * Alice 想要 Bob 找到这棵树的根。她允许 Bob 对这棵树进行若干次 猜测 。每一次猜测，Bob 做如下事情：
+     * 选择两个 不相等 的整数 u 和 v ，且树中必须存在边 [u, v] 。
+     * Bob 猜测树中 u 是 v 的 父节点 。
+     * Bob 的猜测用二维整数数组 guesses 表示，其中 guesses[j] = [uj, vj] 表示 Bob 猜 uj 是 vj 的父节点。
+     *
+     * Alice 非常懒，她不想逐个回答 Bob 的猜测，只告诉 Bob 这些猜测里面 至少 有 k 个猜测的结果为 true 。
+     *
+     * 给你二维整数数组 edges ，Bob 的所有猜测和整数 k ，请你返回可能成为树根的 节点数目 。如果没有这样的树，则返回 0。
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/2/29 23:57
+     */
+    class Solution_29_1 {
+        int cnt = 0, res = 0;
+        int k;
+        List<Integer>[] g;
+        Set<Long> set;
+
+        public int rootCount(int[][] edges, int[][] guesses, int k) {
+            this.k = k;
+            int n = edges.length + 1;
+            g = new List[n];
+            for (int i = 0; i < n; i++) {
+                g[i] = new ArrayList<Integer>();
+            }
+            set = new HashSet<Long>();
+            for (int[] v : edges) {
+                g[v[0]].add(v[1]);
+                g[v[1]].add(v[0]);
+            }
+            for (int[] v : guesses) {
+                set.add(h(v[0], v[1]));
+            }
+
+            dfs(0, -1);
+            redfs(0, -1, cnt);
+            return res;
+        }
+
+        //相当于做个hash
+        public long h(int x, int y) {
+            return (long) x << 20 | y;
+        }
+
+        public void dfs(int x, int fat) {
+            for (int y : g[x]) {
+                if (y == fat) {
+                    continue;
+                }
+                cnt += set.contains(h(x, y)) ? 1 : 0;
+                dfs(y, x);
+            }
+        }
+
+        public void redfs(int x, int fat, int cnt) {
+            if (cnt >= k) {
+                res++;
+            }
+            for (int y : g[x]) {
+                if (y == fat) {
+                    continue;
+                }
+                redfs(y, x, cnt - (set.contains(h(x, y)) ? 1 : 0) + (set.contains(h(y, x)) ? 1 : 0));
+            }
+        }
+    }
 
 }
