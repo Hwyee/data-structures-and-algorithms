@@ -2,6 +2,9 @@ package cn.hwyee.algorithms.leecode.daily;
 
 import org.springframework.cglib.proxy.Factory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author hwyee@foxmail.com
  * @version 1.0
@@ -27,7 +30,6 @@ public class Daily202403 {
      * 子数组 恰 由 3 个连续递增元素组成，并且相邻元素之间的差值为 1 。例如，子数组 [3,4,5] ，但是子数组 [1,3,5] 不符合要求。
      * 如果数组 至少 存在一种有效划分，返回 true ，否则，返回 false 。
      *
-     * @param null
      * @author hui
      * @version 1.0
      * @return
@@ -59,4 +61,50 @@ public class Daily202403 {
             return (i == j && i == k) || (j == i + 1 && k == j + 1);
         }
     }
+
+    /**
+     * 2368. 受限条件下可到达节点的数目:
+     * 现有一棵由 n 个节点组成的无向树，节点编号从 0 到 n - 1 ，共有 n - 1 条边。
+     * 给你一个二维整数数组 edges ，长度为 n - 1 ，其中 edges[i] = [ai, bi] 表示树中节点 ai 和 bi 之间存在一条边。另给你一个整数数组 restricted 表示 受限 节点。
+     * 在不访问受限节点的前提下，返回你可以从节点 0 到达的 最多 节点数目。
+     * 注意，节点 0 不 会标记为受限节点。也就是至少有一个。
+     *
+     * edges 表示一棵有效的树
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/2 20:36
+     */
+    class Solution {
+        int res = 0;
+        boolean[] isRestricted ;
+        public int reachableNodes(int n, int[][] edges, int[] restricted) {
+            isRestricted = new boolean[n];
+            for (int i : restricted) {
+                isRestricted[i] = true;
+            }
+            ArrayList<Integer>[] list = new ArrayList[n];
+            for (int i = 0; i < n; i++) {
+                list[i] = new ArrayList<>();
+            }
+            for (int[] edge : edges) {
+                list[edge[0]].add(edge[1]);
+                list[edge[1]].add(edge[0]);
+            }
+            dfs(0, -1, list);
+            return res;
+        }
+
+        public void dfs(int i, int j, ArrayList<Integer>[] edges){
+            res++;
+            for (Integer o : edges[i]) {
+                if (o!=j && !isRestricted[o]){
+                    dfs(o, i, edges);
+                }
+            }
+        }
+
+
+    }
+
 }
