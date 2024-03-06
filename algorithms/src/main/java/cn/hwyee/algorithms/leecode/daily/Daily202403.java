@@ -1,10 +1,11 @@
 package cn.hwyee.algorithms.leecode.daily;
 
-import org.springframework.cglib.proxy.Factory;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author hwyee@foxmail.com
@@ -17,10 +18,14 @@ import java.util.Stack;
 public class Daily202403 {
 
     public static void main(String[] args) {
-        MyQueue myQueue = new MyQueue();
-        myQueue.push(1);
-        myQueue.pop();
-        System.out.println(myQueue.empty());
+//        MyQueue myQueue = new MyQueue();
+//        myQueue.push(1);
+//        myQueue.pop();
+//        System.out.println(myQueue.empty());
+        //findKOr test
+        int[] find = new int[]{8};
+        Solution_6_1 solution61 = new Solution_6_1();
+        int kOr = solution61.findKOr(find, 1);
     }
 
     /**
@@ -228,12 +233,15 @@ public class Daily202403 {
         }
 
         public int pop() {
+
             int x = 0;
             if (stack2.isEmpty()) {
                 x = stack1.pop();
             } else {
                 x = stack2.pop();
             }
+            //second solution
+            //if (!stack2.isEmpty()) {stack1.forEach(stack2.push(stack1.pop()));} return stack2.pop();
             return x;
         }
 
@@ -249,6 +257,66 @@ public class Daily202403 {
 
         public boolean empty() {
             return (stack1.isEmpty() && stack2.isEmpty());
+        }
+    }
+
+    /**
+     * 方法一：优先队列实现的 Dijkstra 算法:
+     * //TODO 图论
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/7 0:44
+     */
+    class Solution_5_1 {
+        public int countPaths(int n, int[][] roads) {
+            return 1;
+        }
+    }
+    
+    
+
+    /**
+     * 2917. 找出数组中的 K-or 值:
+     * 给你一个下标从 0 开始的整数数组 nums 和一个整数 k 。
+     * nums 中的 K-or 是一个满足以下条件的非负整数：
+     * 只有在 nums 中，至少存在 k 个元素的第 i 位值为 1 ，那么 K-or 中的第 i 位的值才是 1 。
+     * 返回 nums 的 K-or 值。
+     * 注意 ：对于整数 x ，如果 (2i AND x) == 2i (这个公式里的2i是2的i次方) ，则 x 中的第 i 位值为 1 ，其中 AND 为按位与运算符。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/6 23:07
+     */
+    static class Solution_6_1 {
+        public int findKOr(int[] nums, int k) {
+            //int 最大值 2的32次方
+            int len = 0;
+            for (int num : nums) {
+                if (num >=len){
+                    len = num;
+                }
+            }
+
+            len = (int) Math.sqrt(len) + 1;
+            int res = 0;
+            for (int i = 0; i <= len; i++) {
+                int count = 0;
+                for (int num : nums) {
+                    if ((num >> i & 1) == 1) {
+                        count ++;
+                    }
+                    if (count == k) {
+                        break;
+                    }
+                }
+                if (count == k) {
+                    res |= 1<<i;
+                }
+            }
+
+            return res;
         }
     }
 
