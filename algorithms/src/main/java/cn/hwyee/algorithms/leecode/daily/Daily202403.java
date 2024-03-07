@@ -1,5 +1,6 @@
 package cn.hwyee.algorithms.leecode.daily;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,9 +24,12 @@ public class Daily202403 {
 //        myQueue.pop();
 //        System.out.println(myQueue.empty());
         //findKOr test
-        int[] find = new int[]{8};
-        Solution_6_1 solution61 = new Solution_6_1();
-        int kOr = solution61.findKOr(find, 1);
+//        int[] find = new int[]{8};
+//        Solution_6_1 solution61 = new Solution_6_1();
+//        int kOr = solution61.findKOr(find, 1);
+        //divisibilityArray
+        Solution_7_1 solution71 = new Solution_7_1();
+        solution71.divisibilityArray("5292821435",4);
     }
 
     /**
@@ -263,6 +267,7 @@ public class Daily202403 {
     /**
      * 方法一：优先队列实现的 Dijkstra 算法:
      * //TODO 图论
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -273,8 +278,7 @@ public class Daily202403 {
             return 1;
         }
     }
-    
-    
+
 
     /**
      * 2917. 找出数组中的 K-or 值:
@@ -294,7 +298,7 @@ public class Daily202403 {
             //int 最大值 2的32次方
             int len = 0;
             for (int num : nums) {
-                if (num >=len){
+                if (num >= len) {
                     len = num;
                 }
             }
@@ -305,20 +309,51 @@ public class Daily202403 {
                 int count = 0;
                 for (int num : nums) {
                     if ((num >> i & 1) == 1) {
-                        count ++;
+                        count++;
                     }
                     if (count == k) {
                         break;
                     }
                 }
                 if (count == k) {
-                    res |= 1<<i;
+                    res |= 1 << i;
                 }
             }
 
             return res;
         }
     }
+
+    /**
+     * 2575. 找出字符串的可整除数组:
+     * 给你一个下标从 0 开始的字符串 word ，长度为 n ，由从 0 到 9 的数字组成。另给你一个正整数 m 。
+     * word 的 可整除数组 div  是一个长度为 n 的整数数组，并满足：
+     * 如果 word[0,...,i] 所表示的 数值 能被 m 整除，div[i] = 1
+     * 否则，div[i] = 0
+     * 返回 word 的可整除数组。
+     * (a×10+b)modm=(amodm×10+b)modm
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/7 21:30
+     */
+    static class Solution_7_1 {
+        public int[] divisibilityArray(String word, int m) {
+            int[] res = new int[word.length()];
+            //m的值最大10亿，int最大20亿，如果被除数为30亿就炸了所以用long
+            long cur = 0;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                //为什么 * 10，这样可以手动加法找到比除数大的
+                cur = (cur * 10 + (c - '0')) % m;
+                res[i] = (cur == 0) ? 1 : 0;
+            }
+            return res;
+        }
+
+    }
+
+
 
 
 }
