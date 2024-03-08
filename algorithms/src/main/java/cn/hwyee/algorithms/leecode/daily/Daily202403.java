@@ -1,6 +1,8 @@
 package cn.hwyee.algorithms.leecode.daily;
 
 import java.math.BigInteger;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +30,11 @@ public class Daily202403 {
 //        Solution_6_1 solution61 = new Solution_6_1();
 //        int kOr = solution61.findKOr(find, 1);
         //divisibilityArray
-        Solution_7_1 solution71 = new Solution_7_1();
-        solution71.divisibilityArray("5292821435",4);
+//        Solution_7_1 solution71 = new Solution_7_1();
+//        solution71.divisibilityArray("5292821435",4);
+        //minimumPossibleSum
+        Solution_8_1 solution81 = new Solution_8_1();
+        solution81.minimumPossibleSum(63623, 82276);
     }
 
     /**
@@ -332,6 +337,7 @@ public class Daily202403 {
      * 否则，div[i] = 0
      * 返回 word 的可整除数组。
      * (a×10+b)modm=(amodm×10+b)modm
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -353,7 +359,56 @@ public class Daily202403 {
 
     }
 
+    /**
+     * 2834. 找出美丽数组的最小和:
+     * 给你两个正整数：n 和 target 。
+     * 如果数组 nums 满足下述条件，则称其为 美丽数组 。
+     * nums.length == n.
+     * nums 由两两互不相同的正整数组成。
+     * 在范围 [0, n-1] 内，不存在 两个 不同 下标 i 和 j ，使得 nums[i] + nums[j] == target 。
+     * 返回符合条件的美丽数组所可能具备的 最小 和，并对结果进行取模 109 + 7。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/8 23:04
+     */
+    static class Solution_8_1 {
 
+        //超出时间限制 574 / 575 个通过的测试用例
+        public int minimumPossibleSum(int n, int target) {
+            int index = 1;
+            int res = 0;
+            int a = target / 2;
+            for (int i = 0; i < n; i++) {
+                if (index == a) {
+                    res += index;
+                    index += (target - a - 1);
+                } else {
+                    res += index;
+                }
+                index++;
+                if (res >= 1000000007) {
+                    res %= 1000000007;
+                }
+            }
+            return  (res % (1000000007));
+
+        }
+
+        //数字是连续的，可以使用等差数列求解
+        public int minimumPossibleSumGF(int n, int target) {
+            final int MOD = (int) 1e9 + 7;
+            int m = target / 2;
+            if (n <= m) {
+                return (int) ((long) (1 + n) * n / 2 % MOD);
+            }
+            //第二阶段是计算 target 到 (target +  (n - m - 1))的总数，总共有(n - m) 个数
+            return (int) (((long) (1 + m) * m / 2 +
+                    ((long) target + target + (n - m) - 1) * (n - m) / 2) % MOD);
+
+        }
+    }
 
 
 }
