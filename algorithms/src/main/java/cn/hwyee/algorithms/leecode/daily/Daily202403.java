@@ -1,14 +1,12 @@
 package cn.hwyee.algorithms.leecode.daily;
 
-import java.math.BigInteger;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Stack;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author hwyee@foxmail.com
@@ -18,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2024/3/1
  * @since JDK 1.8
  */
+@Slf4j
 public class Daily202403 {
 
     public static void main(String[] args) {
@@ -33,8 +32,12 @@ public class Daily202403 {
 //        Solution_7_1 solution71 = new Solution_7_1();
 //        solution71.divisibilityArray("5292821435",4);
         //minimumPossibleSum
-        Solution_8_1 solution81 = new Solution_8_1();
-        solution81.minimumPossibleSum(63623, 82276);
+//        Solution_8_1 solution81 = new Solution_8_1();
+//        solution81.minimumPossibleSum(63623, 82276);
+        //kSum
+        Solution_9_1 solution91 = new Solution_9_1();
+        long kSumF = solution91.kSumEF(new int[]{8, 1, 2,3}, 5);
+        log.info("kSum: " + kSumF);
     }
 
     /**
@@ -409,6 +412,130 @@ public class Daily202403 {
 
         }
     }
+
+
+    /**
+     * 2386. 找出数组的第 K 大和:
+     * 给你一个整数数组 nums 和一个 正 整数 k 。你可以选择数组的任一 子序列 并且对其全部元素求和。
+     * 数组的 第 k 大和 定义为：可以获得的第 k 个 最大 子序列和（子序列和允许出现重复）
+     * 返回数组的 第 k 大和 。
+     * 子序列是一个可以由其他数组删除某些或不删除元素排生而来的数组，且派生过程不改变剩余元素的顺序。
+     * 注意：空子序列的和视作 0 。
+     *
+     * 求所有子序列，然后倒序。
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/9 16:23
+     */
+    static class Solution_9_1 {
+        public long kSum(int[] nums, int k) {
+            List<Integer> list = new ArrayList<Integer>();
+            list.add(0);
+            for (int i = 1; i < nums.length; i++) {
+
+            }
+            return 1L;
+        }
+
+        public long kSumF(int[] nums, int k) {
+            int n = nums.length;
+            long total = 0;
+            for (int i = 0; i < n; i++) {
+                if (nums[i] >= 0) {
+                    total += nums[i];
+                } else {
+                    nums[i] = -nums[i];
+                }
+            }
+            Arrays.sort(nums);
+
+            long ret = 0;
+            PriorityQueue<long[]> pq = new PriorityQueue<long[]>((a, b) -> Long.compare(a[0], b[0]));
+            pq.offer(new long[]{nums[0], 0});
+            //如果k=1，那total即为所求，所有正数加起来就是第一大
+            for (int j = 2; j <= k; j++) {
+                long[] arr = pq.poll();
+                long t = arr[0];
+                int i = (int) arr[1];
+                ret = t;
+                if (i == n - 1) {
+                    continue;
+                }
+                //这个相当于迭代，每个元素都有两种情况，在子序列中（相加），不在子序列中（减去）。
+                //相当于是一颗树，一分为二，二分为四，但是少了空数组的情况
+                //题目中子序列的空数组和为0，但是在这个算法中，空数组的和为total。可以好好体会下。
+                pq.offer(new long[]{t + nums[i + 1], i + 1});
+                pq.offer(new long[]{t - nums[i] + nums[i + 1], i + 1});
+            }
+            return total - ret;
+        }
+
+        int cnt;
+
+        /**
+         * 官方二分:
+         *
+         * @author hui
+         * @version 1.0
+         * @return
+         * @date 2024/3/9 21:28
+         */
+        public long kSumEF(int[] nums, int k) {
+            int n = nums.length;
+            long total = 0, total2 = 0;
+            for (int i = 0; i < n; i++) {
+                if (nums[i] >= 0) {
+                    total += nums[i];
+                } else {
+                    nums[i] = -nums[i];
+                }
+                total2 += Math.abs(nums[i]);
+            }
+            Arrays.sort(nums);
+            //和优先队列差不多，也是把问题转化成递增的正整数序列第k个子序列的和
+            //使用二分法不断逼近结果
+            long left = 0, right = total2;
+            while (left <= right) {
+                long mid = (left + right) / 2;
+                cnt = 0;
+                //这个深度优先搜索相当于是二分法所要寻找的值
+                dfs(nums, k, n, 0, 0, mid);
+                if (cnt >= k - 1) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            }
+
+            return total - left;
+        }
+
+        /**
+         * dfs:
+         *
+         * @author hui
+         * @version 1.0
+         * @param nums
+         * @param k 第k个最小子序列
+         * @param n 长度
+         * @param i 当前搜索的元素
+         * @param t 前i个序列的和
+         * @param limit
+         * @return void
+         * @date 2024/3/9 23:37
+         */
+        public void dfs(int[] nums, int k, int n, int i, long t, long limit) {
+            //一般来讲，t+nums[i] > limit会先符合条件，除非k值很小，这时cnt会大于k，
+            if (i == n || cnt >= k - 1 || t + nums[i] > limit) {
+                return;
+            }
+            cnt++;
+            dfs(nums, k, n, i + 1, t + nums[i], limit);
+            dfs(nums, k, n, i + 1, t, limit);
+        }
+    }
+
 
 
 }
