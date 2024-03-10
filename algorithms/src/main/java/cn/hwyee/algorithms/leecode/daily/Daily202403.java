@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
@@ -36,7 +38,7 @@ public class Daily202403 {
 //        solution81.minimumPossibleSum(63623, 82276);
         //kSum
         Solution_9_1 solution91 = new Solution_9_1();
-        long kSumF = solution91.kSumEF(new int[]{8, 1, 2,3}, 5);
+        long kSumF = solution91.kSumEF(new int[]{8, 1, 2, 3}, 5);
         log.info("kSum: " + kSumF);
     }
 
@@ -395,7 +397,7 @@ public class Daily202403 {
                     res %= 1000000007;
                 }
             }
-            return  (res % (1000000007));
+            return (res % (1000000007));
 
         }
 
@@ -421,8 +423,9 @@ public class Daily202403 {
      * 返回数组的 第 k 大和 。
      * 子序列是一个可以由其他数组删除某些或不删除元素排生而来的数组，且派生过程不改变剩余元素的顺序。
      * 注意：空子序列的和视作 0 。
-     *
+     * <p>
      * 求所有子序列，然后倒序。
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -476,9 +479,9 @@ public class Daily202403 {
         /**
          * 官方二分:
          *
+         * @return
          * @author hui
          * @version 1.0
-         * @return
          * @date 2024/3/9 21:28
          */
         public long kSumEF(int[] nums, int k) {
@@ -514,15 +517,15 @@ public class Daily202403 {
         /**
          * dfs:
          *
-         * @author hui
-         * @version 1.0
          * @param nums
-         * @param k 第k个最小子序列
-         * @param n 长度
-         * @param i 当前搜索的元素
-         * @param t 前i个序列的和
+         * @param k     第k个最小子序列
+         * @param n     长度
+         * @param i     当前搜索的元素
+         * @param t     前i个序列的和
          * @param limit
          * @return void
+         * @author hui
+         * @version 1.0
          * @date 2024/3/9 23:37
          */
         public void dfs(int[] nums, int k, int n, int i, long t, long limit) {
@@ -536,6 +539,48 @@ public class Daily202403 {
         }
     }
 
+
+    /**
+     * 299. 猜数字游戏:
+     * 你在和朋友一起玩 猜数字（Bulls and Cows）游戏，该游戏规则如下：
+     * 写出一个秘密数字，并请朋友猜这个数字是多少。朋友每猜测一次，你就会给他一个包含下述信息的提示：
+     * 猜测数字中有多少位属于数字和确切位置都猜对了（称为 "Bulls"，公牛），
+     * 有多少位属于数字猜对了但是位置不对（称为 "Cows"，奶牛）。也就是说，这次猜测中有多少位非公牛数字可以通过重新排列转换成公牛数字。
+     * 给你一个秘密数字 secret 和朋友猜测的数字 guess ，请你返回对朋友这次猜测的提示。
+     * 提示的格式为 "xAyB" ，x 是公牛个数， y 是奶牛个数，A 表示公牛，B 表示奶牛。
+     * 请注意秘密数字和朋友猜测的数字都可能含有重复数字。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/10 23:39
+     */
+    class Solution_10_1 {
+        public String getHint(String secret, String guess) {
+            return "1";
+        }
+
+        public String getHintGF(String secret, String guess) {
+            int bulls = 0;
+            int[] cntS = new int[10];
+            int[] cntG = new int[10];
+            for (int i = 0; i < secret.length(); ++i) {
+                if (secret.charAt(i) == guess.charAt(i)) {
+                    ++bulls;
+                } else {
+                    ++cntS[secret.charAt(i) - '0'];
+                    ++cntG[guess.charAt(i) - '0'];
+                }
+            }
+            int cows = 0;
+            for (int i = 0; i < 10; ++i) {
+                cows += Math.min(cntS[i], cntG[i]);
+            }
+            return Integer.toString(bulls) + "A" + Integer.toString(cows) + "B";
+        }
+
+
+    }
 
 
 }
