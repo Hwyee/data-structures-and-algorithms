@@ -20,6 +20,9 @@ public class TreeNode {
         this.val = val;
     }
 
-    public TreeNode(int i, TreeNode dfs, TreeNode dfs1) {
+    public TreeNode(int i, TreeNode left, TreeNode right) {
+        this.val = i;
+        this.left = left;
+        this.right = right;
     }
 }

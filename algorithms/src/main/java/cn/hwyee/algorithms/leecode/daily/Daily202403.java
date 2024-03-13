@@ -1,13 +1,19 @@
 package cn.hwyee.algorithms.leecode.daily;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
+import cn.hwyee.datastructures.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -37,9 +43,17 @@ public class Daily202403 {
 //        Solution_8_1 solution81 = new Solution_8_1();
 //        solution81.minimumPossibleSum(63623, 82276);
         //kSum
-        Solution_9_1 solution91 = new Solution_9_1();
-        long kSumF = solution91.kSumEF(new int[]{8, 1, 2, 3}, 5);
-        log.info("kSum: " + kSumF);
+//        Solution_9_1 solution91 = new Solution_9_1();
+//        long kSumF = solution91.kSumEF(new int[]{8, 1, 2, 3}, 5);
+//        log.info("kSum: " + kSumF);
+        //FindElements
+//        TreeNode treeNode = new TreeNode(-1, null, new TreeNode(-1));
+//        FindElements findElements = new FindElements(treeNode);
+//        findElements.find(1);
+//        findElements.find(2);
+        //maximumOddBinaryNumber
+        Solution_13_1 solution131 = new Solution_13_1();
+        solution131.maximumOddBinaryNumber("010");
     }
 
     /**
@@ -611,5 +625,148 @@ public class Daily202403 {
             return sb.toString();
         }
     }
+
+    /**
+     * 1261. 在受污染的二叉树中查找元素:
+     * 给出一个满足下述规则的二叉树：
+     *
+     * root.val == 0
+     * 如果 treeNode.val == x 且 treeNode.left != null，那么 treeNode.left.val == 2 * x + 1
+     * 如果 treeNode.val == x 且 treeNode.right != null，那么 treeNode.right.val == 2 * x + 2
+     * 现在这个二叉树受到「污染」，所有的 treeNode.val 都变成了 -1。
+     * 请你先还原二叉树，然后实现 FindElements 类：
+     * FindElements(TreeNode* root) 用受污染的二叉树初始化对象，你需要先把它还原。
+     * bool find(int target) 判断目标值 target 是否存在于还原后的二叉树中并返回结果。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/12 22:52
+     */
+    static class FindElements {
+        TreeNode treeNode = null;
+        public FindElements(TreeNode root) {
+            root.val = 0;
+            bfs(root);
+            treeNode = root;
+        }
+
+        public void bfs(TreeNode root) {
+            if (root == null) {
+                return;
+            }
+            if (root.left != null){
+                root.left.val = root.val*2 + 1;
+                bfs(root.left);
+            }
+            if (root.right != null){
+                root.right.val = root.val*2 + 2;
+                bfs(root.right);
+            }
+        }
+
+
+        public boolean find(int target) {
+            //层序遍历
+            Deque<TreeNode> deque = new ArrayDeque<TreeNode>();
+            deque.offer(treeNode);
+            boolean res = false;
+            while (!deque.isEmpty()){
+                int size = deque.size();
+                for (int i = 0; i < size; i++) {
+                    TreeNode pop = deque.pop();
+                    if (pop.val == target){
+                        res = true;
+                        deque = new ArrayDeque<>();
+                        break;
+                    }
+                    if (pop.val > target){
+                        deque = new ArrayDeque<>();
+                        break;
+                    }
+                    if (pop.left != null){
+                        deque.offer(pop.left);
+                    }
+                    if (pop.right != null){
+                        deque.offer(pop.right);
+                    }
+                }
+            }
+            return res;
+        }
+
+        public boolean findGF(int target) {
+            target++;
+            int k = 30 - Integer.numberOfLeadingZeros(target);
+            TreeNode node = treeNode;
+            while (k >= 0 && node != null) {
+                if ((target & (1 << k)) == 0) {
+                    node = node.left;
+                } else {
+                    node = node.right;
+                }
+                k--;
+            }
+            return node != null;
+        }
+
+
+    }
+
+    class FindElementsGF {
+        private Set<Integer> valSet;
+
+        public FindElementsGF(TreeNode root) {
+            this.valSet = new HashSet<>();
+            dfs(root, 0);
+        }
+
+        public boolean find(int target) {
+            return valSet.contains(target);
+        }
+
+
+
+        private void dfs(TreeNode node, int val) {
+            if (node == null) {
+                return;
+            }
+            node.val = val;
+            valSet.add(val);
+            dfs(node.left, val * 2 + 1);
+            dfs(node.right, val * 2 + 2);
+        }
+    }
+
+
+    /**
+     * 2864. 最大二进制奇数:
+     * 给你一个 二进制 字符串 s ，其中至少包含一个 '1' 。
+     * 你必须按某种方式 重新排列 字符串中的位，使得到的二进制数字是可以由该组合生成的 最大二进制奇数 。
+     * 以字符串形式，表示并返回可以由给定组合生成的最大二进制奇数。
+     * 注意 返回的结果字符串 可以 含前导零。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/13 23:26
+     */
+    static class Solution_13_1 {
+        public String maximumOddBinaryNumber(String s) {
+            StringBuilder s0 = new StringBuilder();
+            StringBuilder s1 = new StringBuilder();
+            char[] charArray = s.toCharArray();
+            for (char c : charArray) {
+                if (c == '1') {
+                    s1.append(1);
+                } else {
+                    s0.append(0);
+                }
+            }
+            return s1.deleteCharAt(s1.length()-1).append(s0).append(1).toString();
+        }
+    }
+
+
 
 }
