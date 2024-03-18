@@ -789,4 +789,180 @@ public class Daily202403 {
         }
     }
 
+    /**
+     * 2312. 卖木头块:
+     * 给你两个整数 m 和 n ，分别表示一块矩形木块的高和宽。同时给你一个二维整数数组 prices ，其中 prices[i] = [hi, wi, pricei]
+     * 表示你可以以 pricei 元的价格卖一块高为 hi 宽为 wi 的矩形木块。
+     * 每一次操作中，你必须按下述方式之一执行切割操作，以得到两块更小的矩形木块：
+     * 沿垂直方向按高度 完全 切割木块，或
+     * 沿水平方向按宽度 完全 切割木块
+     * 在将一块木块切成若干小木块后，你可以根据 prices 卖木块。你可以卖多块同样尺寸的木块。你不需要将所有小木块都卖出去。你 不能 旋转切好后木块的高和宽。
+     * 请你返回切割一块大小为 m x n 的木块后，能得到的 最多 钱数。
+     * 注意你可以切割木块任意次。
+     * 状态方程：f(m,n) = f(hi,wi) + f(m-hi,n-wi)
+     * TODO
+     * @author hui
+     * @version 1.0
+     * @return 
+     * @date 2024/3/15 19:49
+     */
+    class Solution_15_1 {
+        public long sellingWood(int m, int n, int[][] prices) {
+            int length = prices.length;
+            int priceArr[][] = new int[m][n];
+            for (int[] price : prices) {
+                priceArr[price[0]][price[1]] = price[2];
+            }
+            int surplusH = m;
+            int surplusW = n;
+            for (int i = 0; i < length; i++) {
+
+            }
+            return 1L;
+        }
+    }
+
+    /**
+     * 2684. 矩阵中移动的最大次数:
+     * 给你一个下标从 0 开始、大小为 m x n 的矩阵 grid ，矩阵由若干 正 整数组成。
+     * 你可以从矩阵第一列中的 任一 单元格出发，按以下方式遍历 grid ：
+     * 从单元格 (row, col) 可以移动到 (row - 1, col + 1)、(row, col + 1) 和 (row + 1, col + 1)
+     * 三个单元格中任一满足值 严格 大于当前单元格的单元格。
+     * 返回你在矩阵中能够 移动 的 最大 次数。
+     * TODO
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/16 22:19
+     */
+    class Solution_16_1 {
+        int res;
+        PriorityQueue<Integer> s = new PriorityQueue<Integer>();
+
+        public int maxMoves(int[][] grid) {
+            res=0;
+            return 0;
+        }
+
+    }
+
+    /**
+     * 310. 最小高度树:
+     * 树是一个无向图，其中任何两个顶点只通过一条路径连接。 换句话说，一个任何没有简单环路的连通图都是一棵树。
+     * 给你一棵包含 n 个节点的树，标记为 0 到 n - 1 。给定数字 n 和一个有 n - 1 条无向边的 edges 列表（每一个边都是一对标签），
+     * 其中 edges[i] = [ai, bi] 表示树中节点 ai 和 bi 之间存在一条无向边。
+     * 可选择树中任何一个节点作为根。当选择节点 x 作为根节点时，设结果树的高度为 h 。
+     * 在所有可能的树中，具有最小高度的树（即，min(h)）被称为 最小高度树 。
+     * 请你找到所有的 最小高度树 并按 任意顺序 返回它们的根节点标签列表。
+     * 树的 高度 是指根节点和叶子节点之间最长向下路径上边的数量。
+     * //TODO
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/17 15:45
+     */
+    class Solution_17_1 {
+        public List<Integer> findMinHeightTrees(int n, int[][] edges) {
+            ArrayList<Integer>[] minHeightTrees = new ArrayList[n];
+            ArrayList<Integer>[] nodeEdge = new ArrayList[n];
+            Arrays.fill(nodeEdge,new ArrayList<Integer>());
+            for (int[] edge : edges) {
+                nodeEdge[edge[0]].add(edge[1]);
+                nodeEdge[edge[1]].add(edge[0]);
+            }
+            int[] cache = new int[n];
+            Arrays.fill(cache,-1);
+            int min = Integer.MAX_VALUE;
+            for (int i = 0; i < n; i++) {
+                int hi = 0;
+                hi = dfs(nodeEdge, cache, new ArrayList<>(),hi, i);
+                min = Math.min(hi, min);
+                minHeightTrees[hi] = minHeightTrees[hi]==null ?new ArrayList<Integer>(): minHeightTrees[hi];
+                minHeightTrees[hi].add(i);
+            }
+            return minHeightTrees[min];
+        }
+
+        public int dfs(ArrayList<Integer>[] nodeEdge, int[] cache,List<Integer> already,int hi,int i) {
+            if (nodeEdge[i].isEmpty() || already.contains(i)){
+                return 0;
+            }
+            already.add(i);
+            hi++;
+            int max = 0;
+            if (cache[i]!=-1){
+                return cache[i];
+            }
+            for (Integer integer : nodeEdge[i]) {
+                if (already.contains(integer)){
+                    continue;
+                }
+                max = Math.max(max,dfs(nodeEdge,cache,already,0,integer));
+            }
+            max+=hi;
+            cache[i] = max;
+            return max;
+        }
+    }
+
+
+    /**
+     * 303. 区域和检索 - 数组不可变:
+     * 给定一个整数数组  nums，处理以下类型的多个查询:
+     * 计算索引 left 和 right （包含 left 和 right）之间的 nums 元素的 和 ，其中 left <= right
+     * 实现 NumArray 类：
+     * NumArray(int[] nums) 使用数组 nums 初始化对象
+     * int sumRange(int i, int j) 返回数组 nums 中索引 left 和 right 之间的元素的 总和 ，
+     * 包含 left 和 right 两点（也就是 nums[left] + nums[left + 1] + ... + nums[right] )
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/18 23:25
+     */
+    class NumArray {
+        int[] nums;
+        public NumArray(int[] nums) {
+            this.nums = nums;
+        }
+
+        public int sumRange(int left, int right) {
+            int res = 0;
+            while (left <= right) {
+                if (left == right){
+                    res+=nums[left++];
+                }else {
+                    res +=nums[left++];
+                    res +=nums[right--];
+                }
+            }
+            return res;
+        }
+
+        /**
+         * 官方：前缀和:
+         *
+         * @author hui
+         * @version 1.0
+         * @return
+         * @date 2024/3/18 23:33
+         */
+        class NumArrayGF {
+            int[] sums;
+
+            public NumArrayGF(int[] nums) {
+                int n = nums.length;
+                sums = new int[n + 1];
+                for (int i = 0; i < n; i++) {
+                    sums[i + 1] = sums[i] + nums[i];
+                }
+            }
+
+            public int sumRange(int i, int j) {
+                return sums[j + 1] - sums[i];
+            }
+        }
+
+    }
+
 }
