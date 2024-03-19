@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -799,8 +800,9 @@ public class Daily202403 {
      * 在将一块木块切成若干小木块后，你可以根据 prices 卖木块。你可以卖多块同样尺寸的木块。你不需要将所有小木块都卖出去。你 不能 旋转切好后木块的高和宽。
      * 请你返回切割一块大小为 m x n 的木块后，能得到的 最多 钱数。
      * 注意你可以切割木块任意次。
+     * 输入：m = 3, n = 5, prices = [[1,4,2],[2,2,7],[2,1,3]]
+     *
      * 状态方程：f(m,n) = f(hi,wi) + f(m-hi,n-wi)
-     * TODO
      *
      * @author hui
      * @version 1.0
@@ -810,16 +812,24 @@ public class Daily202403 {
     class Solution_15_1 {
         public long sellingWood(int m, int n, int[][] prices) {
             int length = prices.length;
-            int priceArr[][] = new int[m][n];
+            int priceArr[][] = new int[m+1][n+1];
             for (int[] price : prices) {
                 priceArr[price[0]][price[1]] = price[2];
             }
-            int surplusH = m;
-            int surplusW = n;
-            for (int i = 0; i < length; i++) {
+            for (int i = 1; i <= m; i++) {
+                for (int j = 1; j <= n; j++) {
+                    //因为对于一块木头，从第三分之一处切割和三分之二处切割是一样的。
+                    for (int k = 1; k <= j / 2; k++) {
+                        priceArr[i][j] = Math.max(priceArr[i][j], priceArr[i][k] + priceArr[i][j - k]); // 垂直切割
+                    }
 
+                    for (int k = 1; k <= i / 2; k++){
+                        priceArr[i][j] = Math.max(priceArr[i][j], priceArr[k][j] + priceArr[i - k][j]); // 水平切割
+                    }
+
+                }
             }
-            return 1L;
+            return priceArr[m][n];
         }
     }
 
@@ -830,7 +840,6 @@ public class Daily202403 {
      * 从单元格 (row, col) 可以移动到 (row - 1, col + 1)、(row, col + 1) 和 (row + 1, col + 1)
      * 三个单元格中任一满足值 严格 大于当前单元格的单元格。
      * 返回你在矩阵中能够 移动 的 最大 次数。
-     * TODO
      *
      * @author hui
      * @version 1.0
@@ -842,8 +851,32 @@ public class Daily202403 {
         PriorityQueue<Integer> s = new PriorityQueue<Integer>();
 
         public int maxMoves(int[][] grid) {
-            res = 0;
-            return 0;
+            //row
+            int m = grid.length;
+            //col
+            int n = grid[0].length;
+            //取反标记已经走过的格子，这样就不用额外空间存储已经走过的格子了
+            for (int[] row : grid) {
+                row[0] *= -1; // 入队标记
+            }
+            for (int j = 0; j < n - 1; j++) {
+                boolean ok = false;
+                for (int i = 0; i < m; i++) {
+                    if (grid[i][j] > 0) { // 不在队列中
+                        continue;
+                    }
+                    for (int k = Math.max(i - 1, 0); k < Math.min(i + 2, m); k++) {
+                        if (grid[k][j + 1] > -grid[i][j]) {
+                            grid[k][j + 1] *= -1; // 入队标记
+                            ok = true;
+                        }
+                    }
+                }
+                if (!ok) { // 无法再往右走了
+                    return j;
+                }
+            }
+            return n - 1;
         }
 
     }
@@ -905,6 +938,54 @@ public class Daily202403 {
             max += hi;
             cache[i] = max;
             return max;
+        }
+
+        public List<Integer> findMinHeightTreesGF(int n, int[][] edges) {
+            List<Integer> ans = new ArrayList<Integer>();
+            if (n == 1) {
+                ans.add(0);
+                return ans;
+            }
+            int[] degree = new int[n];
+            List<Integer>[] adj = new List[n];
+            for (int i = 0; i < n; i++) {
+                adj[i] = new ArrayList<Integer>();
+            }
+            //统计每个节点的度
+            for (int[] edge : edges) {
+                adj[edge[0]].add(edge[1]);
+                adj[edge[1]].add(edge[0]);
+                degree[edge[0]]++;
+                degree[edge[1]]++;
+            }
+            Queue<Integer> queue = new ArrayDeque<Integer>();
+            //找出度为1的节点，度为1的节点说明是树的根节点或叶子节点，这样可以顺藤摸瓜理出一根树。
+            for (int i = 0; i < n; i++) {
+                if (degree[i] == 1) {
+                    queue.offer(i);
+                }
+            }
+            int remainNodes = n;
+            //节点=2时说明只有一条边，最小高度。
+            while (remainNodes > 2) {
+                int sz = queue.size();
+                remainNodes -= sz;
+                for (int i = 0; i < sz; i++) {
+                    int curr = queue.poll();
+                    //这个节点相连的所有节点
+                    for (int v : adj[curr]) {
+                        degree[v]--;
+                        //相连节点度为2时，则继续加入队列遍历，叶子节点都去除，剩余节点就是最小高度树的节点？
+                        if (degree[v] == 1) {
+                            queue.offer(v);
+                        }
+                    }
+                }
+            }
+            while (!queue.isEmpty()) {
+                ans.add(queue.poll());
+            }
+            return ans;
         }
     }
 
