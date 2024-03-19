@@ -615,13 +615,13 @@ public class Daily202403 {
             for (String s : split) {
                 if (s.length() == 1 || s.length() == 2) {
                     sb.append(s.toLowerCase()).append(" ");
-                }else {
-                    sb.append(s.charAt(0)>96?(char) (s.charAt(0) - up):
+                } else {
+                    sb.append(s.charAt(0) > 96 ? (char) (s.charAt(0) - up) :
                             s.charAt(0)).append(s.substring(1)
                             .toLowerCase()).append(" ");
                 }
             }
-            sb.deleteCharAt(sb.length()-1);
+            sb.deleteCharAt(sb.length() - 1);
             return sb.toString();
         }
     }
@@ -629,7 +629,7 @@ public class Daily202403 {
     /**
      * 1261. 在受污染的二叉树中查找元素:
      * 给出一个满足下述规则的二叉树：
-     *
+     * <p>
      * root.val == 0
      * 如果 treeNode.val == x 且 treeNode.left != null，那么 treeNode.left.val == 2 * x + 1
      * 如果 treeNode.val == x 且 treeNode.right != null，那么 treeNode.right.val == 2 * x + 2
@@ -645,6 +645,7 @@ public class Daily202403 {
      */
     static class FindElements {
         TreeNode treeNode = null;
+
         public FindElements(TreeNode root) {
             root.val = 0;
             bfs(root);
@@ -655,12 +656,12 @@ public class Daily202403 {
             if (root == null) {
                 return;
             }
-            if (root.left != null){
-                root.left.val = root.val*2 + 1;
+            if (root.left != null) {
+                root.left.val = root.val * 2 + 1;
                 bfs(root.left);
             }
-            if (root.right != null){
-                root.right.val = root.val*2 + 2;
+            if (root.right != null) {
+                root.right.val = root.val * 2 + 2;
                 bfs(root.right);
             }
         }
@@ -671,23 +672,23 @@ public class Daily202403 {
             Deque<TreeNode> deque = new ArrayDeque<TreeNode>();
             deque.offer(treeNode);
             boolean res = false;
-            while (!deque.isEmpty()){
+            while (!deque.isEmpty()) {
                 int size = deque.size();
                 for (int i = 0; i < size; i++) {
                     TreeNode pop = deque.pop();
-                    if (pop.val == target){
+                    if (pop.val == target) {
                         res = true;
                         deque = new ArrayDeque<>();
                         break;
                     }
-                    if (pop.val > target){
+                    if (pop.val > target) {
                         deque = new ArrayDeque<>();
                         break;
                     }
-                    if (pop.left != null){
+                    if (pop.left != null) {
                         deque.offer(pop.left);
                     }
-                    if (pop.right != null){
+                    if (pop.right != null) {
                         deque.offer(pop.right);
                     }
                 }
@@ -726,7 +727,6 @@ public class Daily202403 {
         }
 
 
-
         private void dfs(TreeNode node, int val) {
             if (node == null) {
                 return;
@@ -763,12 +763,12 @@ public class Daily202403 {
                     s0.append(0);
                 }
             }
-            return s1.deleteCharAt(s1.length()-1).append(s0).append(1).toString();
+            return s1.deleteCharAt(s1.length() - 1).append(s0).append(1).toString();
         }
     }
 
     /**
-     * 2789. 合并后数组中的最大元素: 
+     * 2789. 合并后数组中的最大元素:
      * 给你一个下标从 0 开始、由正整数组成的数组 nums 。
      * 你可以在数组上执行下述操作 任意 次：
      * 选中一个同时满足 0 <= i < nums.length - 1 和 nums[i] <= nums[i + 1] 的整数 i 。将元素 nums[i + 1] 替换为 nums[i] + nums[i + 1] ，并从数组中删除元素 nums[i] 。
@@ -801,9 +801,10 @@ public class Daily202403 {
      * 注意你可以切割木块任意次。
      * 状态方程：f(m,n) = f(hi,wi) + f(m-hi,n-wi)
      * TODO
+     *
      * @author hui
      * @version 1.0
-     * @return 
+     * @return
      * @date 2024/3/15 19:49
      */
     class Solution_15_1 {
@@ -830,6 +831,7 @@ public class Daily202403 {
      * 三个单元格中任一满足值 严格 大于当前单元格的单元格。
      * 返回你在矩阵中能够 移动 的 最大 次数。
      * TODO
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -840,7 +842,7 @@ public class Daily202403 {
         PriorityQueue<Integer> s = new PriorityQueue<Integer>();
 
         public int maxMoves(int[][] grid) {
-            res=0;
+            res = 0;
             return 0;
         }
 
@@ -856,6 +858,7 @@ public class Daily202403 {
      * 请你找到所有的 最小高度树 并按 任意顺序 返回它们的根节点标签列表。
      * 树的 高度 是指根节点和叶子节点之间最长向下路径上边的数量。
      * //TODO
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -865,41 +868,41 @@ public class Daily202403 {
         public List<Integer> findMinHeightTrees(int n, int[][] edges) {
             ArrayList<Integer>[] minHeightTrees = new ArrayList[n];
             ArrayList<Integer>[] nodeEdge = new ArrayList[n];
-            Arrays.fill(nodeEdge,new ArrayList<Integer>());
+            Arrays.fill(nodeEdge, new ArrayList<Integer>());
             for (int[] edge : edges) {
                 nodeEdge[edge[0]].add(edge[1]);
                 nodeEdge[edge[1]].add(edge[0]);
             }
             int[] cache = new int[n];
-            Arrays.fill(cache,-1);
+            Arrays.fill(cache, -1);
             int min = Integer.MAX_VALUE;
             for (int i = 0; i < n; i++) {
                 int hi = 0;
-                hi = dfs(nodeEdge, cache, new ArrayList<>(),hi, i);
+                hi = dfs(nodeEdge, cache, new ArrayList<>(), hi, i);
                 min = Math.min(hi, min);
-                minHeightTrees[hi] = minHeightTrees[hi]==null ?new ArrayList<Integer>(): minHeightTrees[hi];
+                minHeightTrees[hi] = minHeightTrees[hi] == null ? new ArrayList<Integer>() : minHeightTrees[hi];
                 minHeightTrees[hi].add(i);
             }
             return minHeightTrees[min];
         }
 
-        public int dfs(ArrayList<Integer>[] nodeEdge, int[] cache,List<Integer> already,int hi,int i) {
-            if (nodeEdge[i].isEmpty() || already.contains(i)){
+        public int dfs(ArrayList<Integer>[] nodeEdge, int[] cache, List<Integer> already, int hi, int i) {
+            if (nodeEdge[i].isEmpty() || already.contains(i)) {
                 return 0;
             }
             already.add(i);
             hi++;
             int max = 0;
-            if (cache[i]!=-1){
+            if (cache[i] != -1) {
                 return cache[i];
             }
             for (Integer integer : nodeEdge[i]) {
-                if (already.contains(integer)){
+                if (already.contains(integer)) {
                     continue;
                 }
-                max = Math.max(max,dfs(nodeEdge,cache,already,0,integer));
+                max = Math.max(max, dfs(nodeEdge, cache, already, 0, integer));
             }
-            max+=hi;
+            max += hi;
             cache[i] = max;
             return max;
         }
@@ -922,6 +925,7 @@ public class Daily202403 {
      */
     class NumArray {
         int[] nums;
+
         public NumArray(int[] nums) {
             this.nums = nums;
         }
@@ -929,11 +933,11 @@ public class Daily202403 {
         public int sumRange(int left, int right) {
             int res = 0;
             while (left <= right) {
-                if (left == right){
-                    res+=nums[left++];
-                }else {
-                    res +=nums[left++];
-                    res +=nums[right--];
+                if (left == right) {
+                    res += nums[left++];
+                } else {
+                    res += nums[left++];
+                    res += nums[right--];
                 }
             }
             return res;
@@ -962,6 +966,40 @@ public class Daily202403 {
                 return sums[j + 1] - sums[i];
             }
         }
+
+    }
+
+    /**
+     * 1793. 好子数组的最大分数:
+     * 给你一个整数数组 nums （下标从 0 开始）和一个整数 k 。
+     * 一个子数组 (i, j) 的 分数 定义为 min(nums[i], nums[i+1], ..., nums[j]) * (j - i + 1) 。
+     * 一个 好 子数组的两个端点下标需要满足 i <= k <= j 。
+     * 请你返回 好 子数组的最大可能 分数 。
+     * k是最小值，i和j的范围越大越好
+     * k不是最小值
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/19 21:45
+     */
+    class Solution_19_1 {
+        public int maximumScore(int[] nums, int k) {
+            int n = nums.length;
+            int ans = nums[k], minH = nums[k];
+            int i = k, j = k;
+            for (int t = 0; t < n - 1; t++) { // 循环 n-1 次
+                //那边大移动哪边
+                if (j == n - 1 || i > 0 && nums[i - 1] > nums[j + 1]) {
+                    minH = Math.min(minH, nums[--i]);
+                } else {
+                    minH = Math.min(minH, nums[++j]);
+                }
+                ans = Math.max(ans, minH * (j - i + 1));
+            }
+            return ans;
+        }
+
 
     }
 
