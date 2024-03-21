@@ -801,7 +801,7 @@ public class Daily202403 {
      * 请你返回切割一块大小为 m x n 的木块后，能得到的 最多 钱数。
      * 注意你可以切割木块任意次。
      * 输入：m = 3, n = 5, prices = [[1,4,2],[2,2,7],[2,1,3]]
-     *
+     * <p>
      * 状态方程：f(m,n) = f(hi,wi) + f(m-hi,n-wi)
      *
      * @author hui
@@ -812,7 +812,7 @@ public class Daily202403 {
     class Solution_15_1 {
         public long sellingWood(int m, int n, int[][] prices) {
             int length = prices.length;
-            int priceArr[][] = new int[m+1][n+1];
+            int priceArr[][] = new int[m + 1][n + 1];
             for (int[] price : prices) {
                 priceArr[price[0]][price[1]] = price[2];
             }
@@ -823,7 +823,7 @@ public class Daily202403 {
                         priceArr[i][j] = Math.max(priceArr[i][j], priceArr[i][k] + priceArr[i][j - k]); // 垂直切割
                     }
 
-                    for (int k = 1; k <= i / 2; k++){
+                    for (int k = 1; k <= i / 2; k++) {
                         priceArr[i][j] = Math.max(priceArr[i][j], priceArr[k][j] + priceArr[i - k][j]); // 水平切割
                     }
 
@@ -1085,7 +1085,7 @@ public class Daily202403 {
     }
 
     /**
-     * 1969. 数组元素的最小非零乘积: 
+     * 1969. 数组元素的最小非零乘积:
      * 给你一个正整数 p 。你有一个下标从 1 开始的数组 nums ，这个数组包含范围 [1, 2的p次方 - 1] 内所有整数的二进制形式（两端都 包含）。你可以进行以下操作 任意 次：
      * 从 nums 中选择两个元素 x 和 y  。
      * 选择 x 中的一位与 y 对应位置的位交换。对应位置指的是两个整数 相同位置 的二进制位。
@@ -1120,10 +1120,11 @@ public class Daily202403 {
          * 两数之和不变，两数越接近，则乘积越大，需要将两数的距离尽可能拉远。
          * 公式
          * (2的p次方−1)⋅(2的p次方−2)的(2的p−1次方−1)次方
-         * @author 灵神
-         * @version 1.0
+         *
          * @param p
          * @return int
+         * @author 灵神
+         * @version 1.0
          * @date 2024/3/20 23:42
          */
         public int minNonZeroProductLS(int p) {
@@ -1132,5 +1133,120 @@ public class Daily202403 {
         }
     }
 
+    /**
+     * 2671. 频率跟踪器:
+     * 请你设计并实现一个能够对其中的值进行跟踪的数据结构，并支持对频率相关查询进行应答。
+     * 实现 FrequencyTracker 类：
+     * FrequencyTracker()：使用一个空数组初始化 FrequencyTracker 对象。
+     * void add(int number)：添加一个 number 到数据结构中。
+     * void deleteOne(int number)：从数据结构中删除一个 number 。数据结构 可能不包含 number ，在这种情况下不删除任何内容。
+     * bool hasFrequency(int frequency): 如果数据结构中存在出现 frequency 次的数字，则返回 true，否则返回 false。
+     * 应该是超时了
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/21 23:30
+     */
+    class FrequencyTracker {
+        private int[] nums;
+        private HashMap<Integer, Integer> map;
+        int size;
+
+        public FrequencyTracker() {
+            this.nums = new int[16];
+            size = 0;
+            map = new HashMap<Integer, Integer>();
+        }
+
+        public void add(int number) {
+            if (size >= nums.length) {
+                int[] temp = new int[nums.length << 1];
+                for (int i = 0; i < size; i++) {
+                    temp[i] = nums[i];
+                }
+                nums = temp;
+                nums[size] = number;
+            } else {
+                nums[size++] = number;
+            }
+            int i = map.get(number) == null ? 1 : map.get(number) + 1;
+            map.put(number, i);
+        }
+
+        public void deleteOne(int number) {
+            int left = 0;
+            int right = size - 1;
+            while (left <= right) {
+                if (nums[left] == number) {
+                    arrayDelete(nums, left, size);
+                    size--;
+                    map.put(number, map.get(number) - 1);
+                    return;
+                } else if (nums[right] == number) {
+                    arrayDelete(nums, right, size);
+                    size--;
+                    map.put(number, map.get(number) - 1);
+                    return;
+                }
+                left++;
+                right--;
+            }
+        }
+
+        public boolean hasFrequency(int frequency) {
+            for (Integer value : map.values()) {
+                if (frequency == value) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        public void arrayDelete(int[] arr, int index, int size) {
+            if (size == 1) {
+                arr[0] = 0;
+            } else {
+                int len = size - index;
+                while (len > 1) {
+                    arr[index] = arr[++index];
+                    len--;
+                }
+                arr[size - 1] = 0;
+            }
+        }
+    }
+
+    class FrequencyTrackerLS {
+        private final Map<Integer, Integer> cnt = new HashMap<>(); // number 的出现次数
+        private final Map<Integer, Integer> freq = new HashMap<>(); // number 的出现次数的出现次数
+
+        public FrequencyTrackerLS() {}
+
+        public void update(int number, int delta) {
+            //c = number的频率(个数)
+            int c = cnt.merge(number, delta, Integer::sum);
+            //如果是原来的频率新增，则老的频率需要-1，新的频率+1，反之亦然。
+            freq.merge(c - delta, -1, Integer::sum); // 去掉一个旧的 cnt[number]
+            freq.merge(c, 1, Integer::sum); // 添加一个新的 cnt[number]
+        }
+
+        public void add(int number) {
+            update(number, 1);
+        }
+
+        public void deleteOne(int number) {
+            if (cnt.getOrDefault(number, 0) > 0) {
+                update(number, -1);
+            }
+        }
+
+        public boolean hasFrequency(int frequency) {
+            return freq.getOrDefault(frequency, 0) > 0; // 至少有一个 number 的出现次数恰好为 frequency
+        }
+    }
+
+
 
 }
+
