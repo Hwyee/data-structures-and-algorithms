@@ -327,7 +327,6 @@ public class Daily202403 {
                     len = num;
                 }
             }
-
             len = (int) Math.sqrt(len) + 1;
             int res = 0;
             for (int i = 0; i <= len; i++) {
@@ -1142,6 +1141,7 @@ public class Daily202403 {
      * void deleteOne(int number)：从数据结构中删除一个 number 。数据结构 可能不包含 number ，在这种情况下不删除任何内容。
      * bool hasFrequency(int frequency): 如果数据结构中存在出现 frequency 次的数字，则返回 true，否则返回 false。
      * 应该是超时了
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -1221,7 +1221,8 @@ public class Daily202403 {
         private final Map<Integer, Integer> cnt = new HashMap<>(); // number 的出现次数
         private final Map<Integer, Integer> freq = new HashMap<>(); // number 的出现次数的出现次数
 
-        public FrequencyTrackerLS() {}
+        public FrequencyTrackerLS() {
+        }
 
         public void update(int number, int delta) {
             //c = number的频率(个数)
@@ -1246,6 +1247,140 @@ public class Daily202403 {
         }
     }
 
+    /**
+     * 2617. 网格图中最少访问的格子数:
+     * 给你一个下标从 0 开始的 m x n 整数矩阵 grid 。你一开始的位置在 左上角 格子 (0, 0).
+     * 当你在格子 (i, j) 的时候，你可以移动到以下格子之一：
+     * 满足 j < k <= grid[i][j] + j 的格子 (i, k) （向右移动），或者
+     * 满足 i < k <= grid[i][j] + i 的格子 (k, j) （向下移动）。
+     * 请你返回到达 右下角 格子 (m - 1, n - 1) 需要经过的最少移动格子数，如果无法到达右下角格子，请你返回 -1 。
+     * //TODO
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/22 23:08
+     */
+    class Solution_22_1 {
+        public int minimumVisitedCells(int[][] grid) {
+            int m = grid.length;
+            int n = grid[0].length;
+            int kx = 0;
+            int ky = 0;
+            for (int i = 0; i < n; i++) {
+                if (i > kx && (i < grid[kx][ky] + kx)) {
+
+                }
+            }
+            return 1;
+        }
+
+        /**
+         * minimumVisitedCellsLS1:
+         * ；灵神单调栈
+         *
+         * @param grid
+         * @return int
+         * @author hui
+         * @version 1.0
+         * @date 2024/3/22 23:28
+         */
+        public int minimumVisitedCellsLS1(int[][] grid) {
+            int m = grid.length;
+            int n = grid[0].length;
+            int mn = 0;
+            List<int[]>[] colStacks = new ArrayList[n]; // 每列的单调栈，为了能二分用 ArrayList
+            Arrays.setAll(colStacks, i -> new ArrayList<int[]>());
+            List<int[]> rowSt = new ArrayList<>(); // 行单调栈
+            for (int i = m - 1; i >= 0; i--) {
+                rowSt.clear();
+                for (int j = n - 1; j >= 0; j--) {
+                    int g = grid[i][j];
+                    List<int[]> colSt = colStacks[j];
+                    mn = i < m - 1 || j < n - 1 ? Integer.MAX_VALUE : 1;
+                    if (g > 0) { // 可以向右/向下跳
+                        // 在单调栈上二分查找最优转移来源
+                        int k = search(rowSt, j + g);
+                        if (k < rowSt.size()) {
+                            mn = rowSt.get(k)[0] + 1;
+                        }
+                        k = search(colSt, i + g);
+                        if (k < colSt.size()) {
+                            mn = Math.min(mn, colSt.get(k)[0] + 1);
+                        }
+                    }
+                    if (mn < Integer.MAX_VALUE) {
+                        // 插入单调栈
+                        while (!rowSt.isEmpty() && mn <= rowSt.get(rowSt.size() - 1)[0]) {
+                            rowSt.remove(rowSt.size() - 1);
+                        }
+                        rowSt.add(new int[]{mn, j});
+                        while (!colSt.isEmpty() && mn <= colSt.get(colSt.size() - 1)[0]) {
+                            colSt.remove(colSt.size() - 1);
+                        }
+                        colSt.add(new int[]{mn, i});
+                    }
+                }
+            }
+            return mn < Integer.MAX_VALUE ? mn : -1; // 最后一个算出的 mn 就是 f[0][0]
+        }
+
+        // 开区间二分，见 https://www.bilibili.com/video/BV1AP41137w7/
+        private int search(List<int[]> st, int target) {
+            int left = -1, right = st.size(); // 开区间 (left, right)
+            while (left + 1 < right) { // 区间不为空
+                int mid = left + (right - left) / 2;
+                if (st.get(mid)[1] <= target) {
+                    right = mid; // 范围缩小到 (left, mid)
+                } else {
+                    left = mid; // 范围缩小到 (mid, right)
+                }
+            }
+            return right;
+        }
+    }
+
+    /**
+     * 2549. 统计桌面上的不同数字:
+     * 给你一个正整数 n ，开始时，它放在桌面上。在 10的9次方 天内，每天都要执行下述步骤：
+     * 对于出现在桌面上的每个数字 x ，找出符合 1 <= i <= n 且满足 x % i == 1 的所有数字 i 。
+     * 然后，将这些数字放在桌面上。
+     * 返回在 109 天之后，出现在桌面上的 不同 整数的数目。
+     * 一旦数字放在桌面上，则会一直保留直到结束。
+     * % 表示取余运算。例如，14 % 3 等于 2 。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/23 23:24
+     */
+    class Solution_23_1 {
+        public int distinctIntegers(int n) {
+            if (n == 1) {
+                return 1;
+            }
+            Queue<Integer> queue = new ArrayDeque<>();
+            Set<Integer> res = new HashSet<>();
+            res.add(n);
+            queue.add(n);
+            while (!queue.isEmpty()) {
+                Integer poll = queue.poll();
+                for (int i = 1; i <= poll; i++) {
+                    if (poll % i == 1) {
+                        if (!res.contains(i)) {
+                            res.add(i);
+                            queue.add(i);
+
+                        }
+                    }
+                }
+            }
+            return res.size();
+        }
+
+        public int distinctIntegers_0(int n) {
+            return Math.max(n-1,1);
+        }
+    }
 
 
 }
