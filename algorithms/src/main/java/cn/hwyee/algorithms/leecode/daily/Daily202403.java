@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author hwyee@foxmail.com
@@ -1437,6 +1440,121 @@ public class Daily202403 {
             return f[amount];
         }
     }
+
+
+    /**
+     * 2642. 设计可以求最短路径的图类
+     * Your Graph object will be instantiated and called as such:
+     * Graph obj = new Graph(n, edges);
+     * obj.addEdge(edge);
+     * int param_2 = obj.shortestPath(node1,node2);
+     * 给你一个有 n 个节点的 有向带权 图，节点编号为 0 到 n - 1 。图中的初始边用数组 edges 表示，
+     * 其中 edges[i] = [fromi, toi, edgeCosti] 表示从 fromi 到 toi 有一条代价为 edgeCosti 的边。
+     *
+     * 请你实现一个 Graph 类：
+     *
+     * Graph(int n, int[][] edges) 初始化图有 n 个节点，并输入初始边。
+     * addEdge(int[] edge) 向边集中添加一条边，其中 edge = [from, to, edgeCost] 。
+     * 数据保证添加这条边之前对应的两个节点之间没有有向边。
+     * int shortestPath(int node1, int node2) 返回从节点 node1 到 node2 的路径 最小 代价。如果路径不存在，返回 -1 。
+     * 一条路径的代价是路径中所有边代价之和。
+     *
+     * TODO
+     */
+    static class Graph {
+        int n ;
+        int[][] edges;
+        public Graph(int n, int[][] edges) {
+            this.n = n;
+            this.edges = edges;
+        }
+
+        public void addEdge(int[] edge) {
+
+        }
+
+        public int shortestPath(int node1, int node2) {
+            return 1;
+        }
+    }
+
+    /**
+     * <h1>2580. 统计将重叠区间合并成组的方案数:</h1>
+     * 给你一个二维整数数组 ranges ，其中 ranges[i] = [starti, endi] 表示 starti 到 endi 之间（包括二者）的所有整数都包含在第 i 个区间中。
+     * 你需要将 ranges 分成 两个 组（可以为空），满足：
+     * 每个区间只属于一个组。
+     * 两个有 交集 的区间必须在 同一个 组内。
+     * 如果两个区间有至少 一个 公共整数，那么这两个区间是 有交集 的。
+     * 比方说，区间 [1, 3] 和 [2, 5] 有交集，因为 2 和 3 在两个区间中都被包含。
+     * 请你返回将 ranges 划分成两个组的 总方案数 。由于答案可能很大，将它对 109 + 7 取余 后返回。
+     *
+     * 左端点排序就行了，我做的是狗屎啊，通过率50%
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/27 22:28
+     */
+    class Solution_27_1 {
+        int mod = 100_000_000_7;
+        public int countWays(int[][] ranges) {
+            int length = ranges.length;
+            List<List<Integer>> list = new ArrayList<List<Integer>>();
+            int[][] group = new int[length][2];
+            for (int[] range : ranges) {
+                boolean flag = true;
+                int start = range[0];
+                int end = range[range.length - 1];
+                int remove = -1;
+                for (int i = 0;i < list.size();i++) {
+                    List<Integer> integers = list.get(i);
+                    int fstart = integers.get(0);
+                    int fend = integers.get(1);
+                    if ((fstart <= start && start <= fend) || (fstart <= end && end <= fend) || (start<fstart && end>fend)) {
+                        flag = false;
+                        start = Math.min(start, fstart);
+                        end = Math.max(end, fend);
+                        integers.set(0, start);
+                        integers.set(1, end);
+                        if(remove!=-1){
+                            remove = -1;
+                            list.remove(remove);
+                        }
+                        remove = i;
+                    }
+                }
+                if (flag){
+                    list.add(Stream.of(start, end).collect(Collectors.toList()));
+                }
+            }
+            //快速幂
+            int pow = list.size();
+            int ans = 1;
+            int a = 2;
+            while (pow>0){
+                if ((pow&1)==1){
+                    ans*=a;
+                }
+                a*=a;
+                pow = pow>>1;
+            }
+            return ans;
+        }
+
+        public int countWaysLS(int[][] ranges) {
+            Arrays.sort(ranges, (a, b) -> a[0] - b[0]);
+            int ans = 1;
+            int maxR = -1;
+            for (int[] p : ranges) {
+                if (p[0] > maxR) { // 无法合并
+                    ans = ans * 2 % 1_000_000_007; // 新区间
+                }
+                maxR = Math.max(maxR, p[1]); // 合并
+            }
+            return ans;
+        }
+
+    }
+
 
 }
 
