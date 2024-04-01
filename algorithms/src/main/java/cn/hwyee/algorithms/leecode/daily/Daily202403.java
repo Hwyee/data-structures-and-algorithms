@@ -814,7 +814,7 @@ public class Daily202403 {
     class Solution_15_1 {
         public long sellingWood(int m, int n, int[][] prices) {
             int length = prices.length;
-            int priceArr[][] = new int[m + 1][n + 1];
+            int[][] priceArr = new int[m + 1][n + 1];
             for (int[] price : prices) {
                 priceArr[price[0]][price[1]] = price[2];
             }
@@ -1258,6 +1258,7 @@ public class Daily202403 {
      * 满足 i < k <= grid[i][j] + i 的格子 (k, j) （向下移动）。
      * 请你返回到达 右下角 格子 (m - 1, n - 1) 需要经过的最少移动格子数，如果无法到达右下角格子，请你返回 -1 。
      * //TODO
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -1381,12 +1382,12 @@ public class Daily202403 {
         }
 
         public int distinctIntegers_0(int n) {
-            return Math.max(n-1,1);
+            return Math.max(n - 1, 1);
         }
     }
 
     /**
-     * 322. 零钱兑换: 
+     * 322. 零钱兑换:
      * 给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
      * 计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
      * 你可以认为每种硬币的数量是无限的。
@@ -1402,7 +1403,7 @@ public class Daily202403 {
         public int coinChange(int[] coins, int amount) {
             int[] dp = new int[amount + 1];
             //dp初始化
-            Arrays.fill(dp,amount+1);
+            Arrays.fill(dp, amount + 1);
             dp[0] = 0;
             for (int i = 1; i <= amount; i++) {
                 for (int coin : coins) {
@@ -1423,6 +1424,7 @@ public class Daily202403 {
      * 假设每一种面额的硬币有无限个。
      * 题目数据保证结果符合 32 位带符号整数。
      * TODO
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -1450,20 +1452,21 @@ public class Daily202403 {
      * int param_2 = obj.shortestPath(node1,node2);
      * 给你一个有 n 个节点的 有向带权 图，节点编号为 0 到 n - 1 。图中的初始边用数组 edges 表示，
      * 其中 edges[i] = [fromi, toi, edgeCosti] 表示从 fromi 到 toi 有一条代价为 edgeCosti 的边。
-     *
+     * <p>
      * 请你实现一个 Graph 类：
-     *
+     * <p>
      * Graph(int n, int[][] edges) 初始化图有 n 个节点，并输入初始边。
      * addEdge(int[] edge) 向边集中添加一条边，其中 edge = [from, to, edgeCost] 。
      * 数据保证添加这条边之前对应的两个节点之间没有有向边。
      * int shortestPath(int node1, int node2) 返回从节点 node1 到 node2 的路径 最小 代价。如果路径不存在，返回 -1 。
      * 一条路径的代价是路径中所有边代价之和。
-     *
+     * <p>
      * TODO
      */
     static class Graph {
-        int n ;
+        int n;
         int[][] edges;
+
         public Graph(int n, int[][] edges) {
             this.n = n;
             this.edges = edges;
@@ -1487,8 +1490,9 @@ public class Daily202403 {
      * 如果两个区间有至少 一个 公共整数，那么这两个区间是 有交集 的。
      * 比方说，区间 [1, 3] 和 [2, 5] 有交集，因为 2 和 3 在两个区间中都被包含。
      * 请你返回将 ranges 划分成两个组的 总方案数 。由于答案可能很大，将它对 109 + 7 取余 后返回。
-     *
+     * <p>
      * 左端点排序就行了，我做的是狗屎啊，通过率50%
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -1496,6 +1500,7 @@ public class Daily202403 {
      */
     class Solution_27_1 {
         int mod = 100_000_000_7;
+
         public int countWays(int[][] ranges) {
             int length = ranges.length;
             List<List<Integer>> list = new ArrayList<List<Integer>>();
@@ -1505,24 +1510,24 @@ public class Daily202403 {
                 int start = range[0];
                 int end = range[range.length - 1];
                 int remove = -1;
-                for (int i = 0;i < list.size();i++) {
+                for (int i = 0; i < list.size(); i++) {
                     List<Integer> integers = list.get(i);
                     int fstart = integers.get(0);
                     int fend = integers.get(1);
-                    if ((fstart <= start && start <= fend) || (fstart <= end && end <= fend) || (start<fstart && end>fend)) {
+                    if ((fstart <= start && start <= fend) || (fstart <= end && end <= fend) || (start < fstart && end > fend)) {
                         flag = false;
                         start = Math.min(start, fstart);
                         end = Math.max(end, fend);
                         integers.set(0, start);
                         integers.set(1, end);
-                        if(remove!=-1){
+                        if (remove != -1) {
                             remove = -1;
                             list.remove(remove);
                         }
                         remove = i;
                     }
                 }
-                if (flag){
+                if (flag) {
                     list.add(Stream.of(start, end).collect(Collectors.toList()));
                 }
             }
@@ -1530,12 +1535,12 @@ public class Daily202403 {
             int pow = list.size();
             int ans = 1;
             int a = 2;
-            while (pow>0){
-                if ((pow&1)==1){
-                    ans*=a;
+            while (pow > 0) {
+                if ((pow & 1) == 1) {
+                    ans *= a;
                 }
-                a*=a;
-                pow = pow>>1;
+                a *= a;
+                pow = pow >> 1;
             }
             return ans;
         }
@@ -1555,6 +1560,180 @@ public class Daily202403 {
 
     }
 
+    /**
+     * 1997. 访问完所有房间的第一天:
+     * 你需要访问 n 个房间，房间从 0 到 n - 1 编号。同时，每一天都有一个日期编号，从 0 开始，依天数递增。你每天都会访问一个房间。
+     * 最开始的第 0 天，你访问 0 号房间。给你一个长度为 n 且 下标从 0 开始 的数组 nextVisit 。
+     * 在接下来的几天中，你访问房间的 次序 将根据下面的 规则 决定：
+     * 假设某一天，你访问 i 号房间。
+     * 如果算上本次访问，访问 i 号房间的次数为 奇数 ，那么 第二天 需要访问 nextVisit[i] 所指定的房间，其中 0 <= nextVisit[i] <= i 。
+     * 如果算上本次访问，访问 i 号房间的次数为 偶数 ，那么 第二天 需要访问 (i + 1) mod n 号房间。
+     * 请返回你访问完所有房间的第一天的日期编号。题目数据保证总是存在这样的一天。由于答案可能很大，返回对 109 + 7 取余后的结果。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/28 22:39
+     */
+    class Solution_28_1 {
+        int mod = 1_000_000_007;
+        int ans = 0;
+        int cur = 0;
+
+        /**
+         * firstDayBeenInAllRooms:
+         * 超时，通过率10%
+         *
+         * @param nextVisit
+         * @return int
+         * @author hui
+         * @version 1.0
+         * @date 2024/3/28 23:18
+         */
+        public int firstDayBeenInAllRooms(int[] nextVisit) {
+            int length = nextVisit.length;
+            int n = nextVisit.length - 1;
+            int[][] arr = new int[length][1];
+            arr[0][0] = 1;
+            while (n > 0) {
+                ans++;
+                if (arr[cur][0] % 2 == 0) {
+                    cur = (cur + 1) % length;
+                } else {
+                    cur = nextVisit[cur];
+                }
+                if (arr[cur][0] == 0) {
+                    n--;
+                    arr[cur][0] = 1;
+                } else {
+                    arr[cur][0] += 1;
+                }
+            }
+            return ans % mod;
+        }
+
+        public int firstDayBeenInAllRoomsLS(int[] nextVisit) {
+            final long MOD = 1_000_000_007;
+            int n = nextVisit.length;
+            long[] s = new long[n];
+            for (int i = 0; i < n - 1; i++) {
+                int j = nextVisit[i];
+                // s[i+1] = s[i] + （s[j] 到 s[i]) 的天数再+2 = s[i] * 2 - s[j] + 2
+                s[i + 1] = (s[i] * 2 - s[j] + 2 + MOD) % MOD; // + MOD 避免算出负数
+            }
+            return (int) s[n - 1];
+        }
+
+    }
+
+    /**
+     * 2908. 元素和最小的山形三元组 I:
+     * 给你一个下标从 0 开始的整数数组 nums 。
+     * 如果下标三元组 (i, j, k) 满足下述全部条件，则认为它是一个 山形三元组 ：
+     * i < j < k
+     * nums[i] < nums[j] 且 nums[k] < nums[j]
+     * 请你找出 nums 中 元素和最小 的山形三元组，并返回其 元素和 。如果不存在满足条件的三元组，返回 -1 。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/29 23:46
+     */
+    class Solution_29_1 {
+        public int minimumSum(int[] nums) {
+            int n = nums.length;
+            int[] suf = new int[n]; // 后缀最小值
+            suf[n - 1] = nums[n - 1];
+            for (int i = n - 2; i > 1; i--) {
+                suf[i] = Math.min(suf[i + 1], nums[i]);
+            }
+
+            int ans = Integer.MAX_VALUE;
+            int pre = nums[0]; // 前缀最小值
+            for (int j = 1; j < n - 1; j++) {
+                if (pre < nums[j] && nums[j] > suf[j + 1]) { // 山形
+                    ans = Math.min(ans, pre + nums[j] + suf[j + 1]); // 更新答案
+                }
+                pre = Math.min(pre, nums[j]);
+            }
+            return ans == Integer.MAX_VALUE ? -1 : ans;
+        }
+    }
+
+    /**
+     * 2952. 需要添加的硬币的最小数量:
+     * 给你一个下标从 0 开始的整数数组 coins，表示可用的硬币的面值，以及一个整数 target 。
+     * 如果存在某个 coins 的子序列总和为 x，那么整数 x 就是一个 可取得的金额 。
+     * 返回需要添加到数组中的 任意面值 硬币的 最小数量 ，使范围 [1, target] 内的每个整数都属于 可取得的金额 。
+     * 数组的 子序列 是通过删除原始数组的一些（可能不删除）元素而形成的新的 非空 数组，删除过程不会改变剩余元素的相对位置。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/30 23:28
+     */
+    class Solution_30_1 {
+        public int minimumAddedCoins(int[] coins, int target) {
+            Arrays.sort(coins);
+            int ans = 0, s = 1, i = 0;
+            while (s <= target) {
+                if (i < coins.length && coins[i] <= s) {
+                    s += coins[i++];
+                } else {
+                    //走到这里，说明凑不到s金额，如果想添加最少得硬币数量，直接添加s即可
+                    //添加完s后，由于可以认为0 - (s-1)的金额是可以取得的金额，那么加上s后可得 s - 2s - 1的金额也可以取得
+                    //就可以将s变为2s判断能不能取2s的金额就行了
+                    s *= 2;
+                    ans++;
+                }
+            }
+            return ans;
+        }
+    }
+
+    /**
+     * 331. 验证二叉树的前序序列化:
+     * 序列化二叉树的一种方法是使用 前序遍历 。当我们遇到一个非空节点时，
+     * 我们可以记录下这个节点的值。如果它是一个空节点，我们可以使用一个标记值记录，例如 #。
+     * <p>
+     * 例如，上面的二叉树可以被序列化为字符串 "9,3,4,#,#,1,#,#,2,#,6,#,#"，其中 # 代表一个空节点。
+     * 给定一串以逗号分隔的序列，验证它是否是正确的二叉树的前序序列化。编写一个在不重构树的条件下的可行算法。
+     * 保证 每个以逗号分隔的字符或为一个整数或为一个表示 null 指针的 '#' 。
+     * 你可以认为输入格式总是有效的
+     * 例如它永远不会包含两个连续的逗号，比如 "1,,3" 。
+     * 注意：不允许重建树。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/3/31 12:33
+     */
+    class Solution_31_1 {
+        public boolean isValidSerialization(String preorder) {
+            int n = preorder.length();
+            int i = 0;
+            int slots = 1;
+            while (i < n) {
+                if (slots == 0) {
+                    return false;
+                }
+                if (preorder.charAt(i) == ',') {
+                    i++;
+                } else if (preorder.charAt(i) == '#') {
+                    slots--;
+                    i++;
+                } else {
+                    // 读一个数字
+                    while (i < n && preorder.charAt(i) != ',') {
+                        i++;
+                    }
+                    slots++; // slots = slots - 1 + 2
+                }
+            }
+            return slots == 0;
+
+        }
+    }
 
 }
 
