@@ -7,7 +7,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author hwyee@foxmail.com
@@ -41,8 +46,8 @@ public class Daily202404 {
             char[] charArray = s.toCharArray();
             int j = -1;
             for (int i = 0; i < charArray.length; i++) {
-                if (charArray[i] =='i'){
-                    s = reverse(s,i+j);
+                if (charArray[i] == 'i') {
+                    s = reverse(s, i + j);
                     j--;
                 }
             }
@@ -52,13 +57,13 @@ public class Daily202404 {
         public String reverse(String s, int end) {
             char[] charArray = s.toCharArray();
             String substring = s.substring(end + 2);
-            for (int i = end; i > end/2; i--) {
+            for (int i = end; i > end / 2; i--) {
                 char temp = charArray[i];
-                charArray[i] = charArray[end-i];
-                charArray[end-i] = temp;
+                charArray[i] = charArray[end - i];
+                charArray[end - i] = temp;
             }
             String s1 = new String(charArray, 0, end + 1);
-            return s1+substring;
+            return s1 + substring;
         }
     }
 
@@ -97,6 +102,7 @@ public class Daily202404 {
      * 答案的每个元素都是一棵真二叉树的根节点。你可以按 任意顺序 返回最终的真二叉树列表。
      * 真二叉树 是一类二叉树，树中每个节点恰好有 0 或 2 个子节点。
      * TODO
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -104,9 +110,9 @@ public class Daily202404 {
      */
     class Solution2_1 {
 
-        private  final List<TreeNode>[] f = new ArrayList[11];
+        private final List<TreeNode>[] f = new ArrayList[11];
 
-         {
+        {
             Arrays.setAll(f, i -> new ArrayList<>());
             f[1].add(new TreeNode());
             for (int i = 2; i < f.length; i++) { // 计算 f[i]
@@ -131,7 +137,7 @@ public class Daily202404 {
      * 给你两棵二叉树，原始树 original 和克隆树 cloned，以及一个位于原始树 original 中的目标节点 target。
      * 其中，克隆树 cloned 是原始树 original 的一个 副本 。
      * 请找出在树 cloned 中，与 target 相同 的节点，并返回对该节点的引用（在 C/C++ 等有指针的语言中返回 节点指针，其他语言返回节点本身）。
-     *
+     * <p>
      * 注意：你 不能 对两棵二叉树，以及 target 节点进行更改。只能 返回对克隆树 cloned 中已有的节点的引用。
      *
      * @author hui
@@ -162,6 +168,7 @@ public class Daily202404 {
      * 请你返回一个数组 answer，其中 answer[i]是第 i 个节点的所有 祖先 ，这些祖先节点 升序 排序。
      * 如果 u 通过一系列边，能够到达 v ，那么我们称节点 u 是节点 v 的 祖先 节点。
      * TODO
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -207,6 +214,7 @@ public class Daily202404 {
      * 给定二叉树的根节点 root，找出存在于 不同 节点 A 和 B 之间的最大值 V，其中 V = |A.val - B.val|，且 A 是 B 的祖先。
      * （如果 A 的任何子节点之一为 B，或者 A 的任何子节点是 B 的祖先，那么我们认为 A 是 B 的祖先）
      * TODO
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -236,11 +244,11 @@ public class Daily202404 {
     /**
      * 1483. 树节点的第 K 个祖先:
      * 给你一棵树，树上有 n 个节点，按从 0 到 n-1 编号。树以父节点数组的形式给出，其中 parent[i] 是节点 i 的父节点。树的根节点是编号为 0 的节点。
-     *
+     * <p>
      * 树节点的第 k 个祖先节点是从该节点到根节点路径上的第 k 个节点。
-     *
+     * <p>
      * 实现 TreeAncestor 类：
-     *
+     * <p>
      * TreeAncestor（int n， int[] parent） 对树和父数组中的节点数初始化对象。
      * getKthAncestor(int node, int k) 返回节点 node 的第 k 个祖先节点。如果不存在这样的祖先节点，返回 -1 。
      * TODO
@@ -286,6 +294,115 @@ public class Daily202404 {
             return node;
         }
     }
+
+    /**
+     * 1600. 王位继承顺序:
+     * 一个王国里住着国王、他的孩子们、他的孙子们等等。每一个时间点，这个家庭里有人出生也有人死亡。
+     * <p>
+     * 这个王国有一个明确规定的王位继承顺序，第一继承人总是国王自己。我们定义递归函数 Successor(x, curOrder) ，给定一个人 x 和当前的继承顺序，该函数返回 x 的下一继承人。
+     * <p>
+     * Successor(x, curOrder):
+     * 如果 x 没有孩子或者所有 x 的孩子都在 curOrder 中：
+     * 如果 x 是国王，那么返回 null
+     * 否则，返回 Successor(x 的父亲, curOrder)
+     * 否则，返回 x 不在 curOrder 中最年长的孩子
+     * 比方说，假设王国由国王，他的孩子 Alice 和 Bob （Alice 比 Bob 年长）和 Alice 的孩子 Jack 组成。
+     * <p>
+     * 一开始， curOrder 为 ["king"].
+     * 调用 Successor(king, curOrder) ，返回 Alice ，所以我们将 Alice 放入 curOrder 中，得到 ["king", "Alice"] 。
+     * 调用 Successor(Alice, curOrder) ，返回 Jack ，所以我们将 Jack 放入 curOrder 中，得到 ["king", "Alice", "Jack"] 。
+     * 调用 Successor(Jack, curOrder) ，返回 Bob ，所以我们将 Bob 放入 curOrder 中，得到 ["king", "Alice", "Jack", "Bob"] 。
+     * 调用 Successor(Bob, curOrder) ，返回 null 。最终得到继承顺序为 ["king", "Alice", "Jack", "Bob"] 。
+     * 通过以上的函数，我们总是能得到一个唯一的继承顺序。
+     * <p>
+     * 请你实现 ThroneInheritance 类：
+     * <p>
+     * ThroneInheritance(string kingName) 初始化一个 ThroneInheritance 类的对象。国王的名字作为构造函数的参数传入。
+     * void birth(string parentName, string childName) 表示 parentName 新拥有了一个名为 childName 的孩子。
+     * void death(string name) 表示名为 name 的人死亡。一个人的死亡不会影响 Successor 函数，也不会影响当前的继承顺序。你可以只将这个人标记为死亡状态。
+     * string[] getInheritanceOrder() 返回 除去 死亡人员的当前继承顺序列表。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/4/7 21:05
+     */
+    class ThroneInheritance {
+        LinkedList<String> inheritance = new LinkedList<>();
+        Map<String, Integer> map = new HashMap<>();
+        Map<String, String> relation = new HashMap<>();
+
+        public ThroneInheritance(String kingName) {
+            inheritance.add(kingName);
+        }
+
+        public void birth(String parentName, String childName) {
+            int i = 0;
+            while (true) {
+                String s = inheritance.get(i++);
+                if (s.equals(parentName)) {
+                    int sons = map.get(parentName) == null ? 0 : map.get(parentName);
+                    i += sons;
+                    inheritance.add(i, childName);
+                    map.put(parentName, sons + 1);
+                    relation.put(childName, parentName);
+                    break;
+                }
+            }
+        }
+
+        public void death(String name) {
+            String parent = relation.get(name);
+            if (parent != null) {
+                int sons = map.get(name) == null ? 1 : map.get(name);
+                map.put(parent, sons - 1);
+            }
+            inheritance.remove(name);
+        }
+
+        public List<String> getInheritanceOrder() {
+            return inheritance;
+        }
+    }
+
+    class ThroneInheritanceGF {
+        Map<String, List<String>> edges;
+        Set<String> dead;
+        String king;
+
+        public ThroneInheritance(String kingName) {
+            edges = new HashMap<String, List<String>>();
+            dead = new HashSet<String>();
+            king = kingName;
+        }
+
+        public void birth(String parentName, String childName) {
+            List<String> children = edges.getOrDefault(parentName, new ArrayList<String>());
+            children.add(childName);
+            edges.put(parentName, children);
+        }
+
+        public void death(String name) {
+            dead.add(name);
+        }
+
+        public List<String> getInheritanceOrder() {
+            List<String> ans = new ArrayList<String>();
+            preorder(ans, king);
+            return ans;
+        }
+
+        private void preorder(List<String> ans, String name) {
+            if (!dead.contains(name)) {
+                ans.add(name);
+            }
+            List<String> children = edges.getOrDefault(name, new ArrayList<String>());
+            for (String childName : children) {
+                preorder(ans, childName);
+            }
+        }
+    }
+
 
 
 }
