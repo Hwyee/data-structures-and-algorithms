@@ -28,6 +28,10 @@ public class Daily202404 {
         Solution_1_1 solution11 = new Solution_1_1();
         solution11.finalString("poiinter");
         System.out.println("中文");
+        Daily202404.Solution_8_1 solution81 = new Daily202404.Solution_8_1();
+        int i81 = solution81.minOperations(new int[]{4, 2, 5, 3});
+        System.out.println(i81);
+
     }
 
     /**
@@ -370,7 +374,7 @@ public class Daily202404 {
         Set<String> dead;
         String king;
 
-        public ThroneInheritance(String kingName) {
+        public ThroneInheritanceGF(String kingName) {
             edges = new HashMap<String, List<String>>();
             dead = new HashSet<String>();
             king = kingName;
@@ -403,6 +407,108 @@ public class Daily202404 {
         }
     }
 
+    /**
+     * 2009. 使数组连续的最少操作数: 
+     * 给你一个整数数组 nums 。每一次操作中，你可以将 nums 中 任意 一个元素替换成 任意 整数。
+     *
+     * 如果 nums 满足以下条件，那么它是 连续的 ：
+     *
+     * nums 中所有元素都是 互不相同 的。
+     * nums 中 最大 元素与 最小 元素的差等于 nums.length - 1 。
+     * 比方说，nums = [4, 2, 5, 3] 是 连续的 ，但是 nums = [1, 2, 3, 5, 6] 不是连续的 。
+     *
+     * 请你返回使 nums 连续 的 最少 操作次数。
+     *
+     * 这个相当于是灵神的反向操作，但是尽然超出了时间限制，显然题目里面符合规则和是很多的，但是不符合规则的是少数
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/4/8 23:35
+     */
+    static class Solution_8_1 {
+        public int minOperationsLS(int[] nums) {
+            Arrays.sort(nums);
+            int n = nums.length;
+            int m = 1;
+            for (int i = 1; i < n; i++) {
+                if (nums[i] != nums[i - 1]) {
+                    nums[m++] = nums[i]; // 原地去重
+                }
+            }
 
+            int ans = 0;
+            int left = 0;
+            for (int i = 0; i < m; i++) {
+                while (nums[left] < nums[i] - n + 1) { // nums[left] 不在窗口内
+                    left++;
+                }
+                ans = Math.max(ans, i - left + 1);
+            }
+            return n - ans;
+        }
+        public int minOperations(int[] nums) {
+            Arrays.sort(nums);
+            int n = nums.length;
+            int m = 1;
+            for (int i = 1; i < n; i++) {
+                if (nums[i] != nums[i - 1]) {
+                    nums[m++] = nums[i]; // 原地去重
+                }
+            }
+
+            int ans = 1;
+            for (int i = 0; i < m-1; i++) {
+                int right = 1;
+                int left = i+1;
+                while (left<m && nums[left] <= nums[i] + n - 1 ) { // nums[left]
+                    right++;
+                    left++;
+                }
+                ans = Math.max(ans, right);
+            }
+            return n - ans ;
+        }
+
+    }
+
+    /**
+     * 2529. 正整数和负整数的最大计数:
+     * 给你一个按 非递减顺序 排列的数组 nums ，返回正整数数目和负整数数目中的最大值。
+     *
+     * 换句话讲，如果 nums 中正整数的数目是 pos ，而负整数的数目是 neg ，返回 pos 和 neg二者中的最大值。
+     * 注意：0 既不是正整数也不是负整数。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/4/9 23:15
+     */
+    class Solution_9_1 {
+
+        public int maximumCount(int[] nums) {
+            int l = 0;
+            int r = nums.length-1;
+            int pos = 0;
+            int neg = 0;
+            while (l<=r){
+                if (nums[l]>0 ){
+                    pos++;
+                } else if (nums[l]<0){
+                    neg++;
+                }
+                if (l!=r){
+                    if (nums[r]>0 ){
+                        pos++;
+                    } else if (nums[r]<0){
+                        neg++;
+                    }
+                }
+                l++;
+                r--;
+            }
+            return Math.max(pos, neg);
+        }
+    }
 
 }
