@@ -511,4 +511,77 @@ public class Daily202404 {
         }
     }
 
+
+    /**
+     * 1702. 修改后的最大二进制字符串: 
+     * 给你一个二进制字符串 binary ，它仅有 0 或者 1 组成。你可以使用下面的操作任意次对它进行修改：
+     *
+     * 操作 1 ：如果二进制串包含子字符串 "00" ，你可以用 "10" 将其替换。
+     * 比方说， "00010" -> "10010"
+     * 操作 2 ：如果二进制串包含子字符串 "10" ，你可以用 "01" 将其替换。
+     * 比方说， "00010" -> "00001"
+     * 请你返回执行上述操作任意次以后能得到的 最大二进制字符串 。
+     * 如果二进制字符串 x 对应的十进制数字大于二进制字符串 y 对应的十进制数字，那么我们称二进制字符串 x 大于二进制字符串 y 。
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/10 21:20
+     */
+    class Solution_10_1 {
+        public String maximumBinaryString(String binary) {
+            char[] charArray = binary.toCharArray();
+            StringBuilder tail = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
+            StringBuilder mid = new StringBuilder();
+            boolean flag = true;
+            for (char c : charArray) {
+                if (flag){
+                    if (c == '1'){
+                        sb.append(1);
+                    }else {
+                        mid.append(1);
+                        flag=false;
+                    }
+                }else {
+                    if (c == '1'){
+                        tail.append(1);
+                    }else {
+                        mid.append(1);
+                    }
+                }
+            }
+            if (mid.length()>=1){
+                mid.deleteCharAt(mid.length()-1);
+                mid.append(0);
+            }
+            return sb.append(mid).append(tail).toString();
+        }
+
+        /**
+         * maximumBinaryStringLS:
+         * 灵神，其实思路是一样的，有三个优化点：
+         * 1.把我找前面有多少个连续的1,用binary.indexOf('0')优化了。
+         * 2.用cnt1 += s[i] - '0';进行统计剩余1的个数，这样就不用进行if判断了
+         * 3.String.repeat()方法拷贝1,很快,用的是Stream.arraycopy
+         * @author hui
+         * @version 1.0
+         * @param binary
+         * @return java.lang.String
+         * @date 2024/4/10 21:47
+         */
+        public String maximumBinaryStringLS(String binary) {
+            int i = binary.indexOf('0');
+            if (i < 0) { // binary 全是 '1'
+                return binary;
+            }
+            char[] s = binary.toCharArray();
+            int cnt1 = 0;
+            for (i++; i < s.length; i++) {
+                cnt1 += s[i] - '0'; // 统计 [i, n-1] 中 '1' 的个数
+            }
+            return "1".repeat(s.length - 1 - cnt1) + '0' + "1".repeat(cnt1);
+        }
+    }
+
 }
