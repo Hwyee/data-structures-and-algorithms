@@ -269,8 +269,9 @@ public class Daily202404 {
         public TreeAncestor(int n, int[] parent) {
             int m = 32 - Integer.numberOfLeadingZeros(n); // n 的二进制长度
             pa = new int[n][m];
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++) {
                 pa[i][0] = parent[i];
+            }
             for (int i = 0; i < m - 1; i++) {
                 for (int x = 0; x < n; x++) {
                     int p = pa[x][i];
@@ -284,7 +285,9 @@ public class Daily202404 {
             for (int i = 0; i < m; i++) {
                 if (((k >> i) & 1) > 0) { // k 的二进制从低到高第 i 位是 1
                     node = pa[node][i];
-                    if (node < 0) break;
+                    if (node < 0) {
+                        break;
+                    }
                 }
             }
             return node;
@@ -584,4 +587,197 @@ public class Daily202404 {
         }
     }
 
+
+    /**
+     * 1766. 互质树:
+     * 给你一个 n 个节点的树（也就是一个无环连通无向图），节点编号从 0 到 n - 1 ，且恰好有 n - 1 条边，每个节点有一个值。树的 根节点 为 0 号点。
+     *
+     * 给你一个整数数组 nums 和一个二维数组 edges 来表示这棵树。nums[i] 表示第 i 个点的值，edges[j] = [uj, vj] 表示节点 uj 和节点 vj 在树中有一条边。
+     *
+     * 当 gcd(x, y) == 1 ，我们称两个数 x 和 y 是 互质的 ，其中 gcd(x, y) 是 x 和 y 的 最大公约数 。
+     *
+     * 从节点 i 到 根 最短路径上的点都是节点 i 的祖先节点。一个节点 不是 它自己的祖先节点。
+     *
+     * 请你返回一个大小为 n 的数组 ans ，其中 ans[i]是离节点 i 最近的祖先节点且满足 nums[i] 和 nums[ans[i]] 是 互质的 ，如果不存在这样的祖先节点，ans[i] 为 -1 。
+     * TODO
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/11 23:30
+     */
+    class Solution_11_1 {
+        public int[] getCoprimes(int[] nums, int[][] edges) {
+            return null;
+        }
+
+        private final int MX = 51;
+        private final int[][] coprime = new int[MX][MX];
+
+        {
+            // 预处理
+            // coprime[i] 保存 [1, MX) 中与 i 互质的所有元素
+            for (int i = 1; i < MX; i++) {
+                int k = 0;
+                for (int j = 1; j < MX; j++) {
+                    if (gcd(i, j) == 1) {
+                        coprime[i][k++] = j;
+                    }
+                }
+            }
+        }
+
+        public int[] getCoprimesLS(int[] nums, int[][] edges) {
+            int n = nums.length;
+            List<Integer>[] g = new ArrayList[n];
+            Arrays.setAll(g, i -> new ArrayList<>());
+            for (int[] e : edges) {
+                int x = e[0];
+                int y = e[1];
+                g[x].add(y);
+                g[y].add(x);
+            }
+
+            int[] ans = new int[n];
+            Arrays.fill(ans, -1);
+            int[] valDepth = new int[MX];
+            int[] valNodeId = new int[MX];
+            dfs(0, -1, 1, g, nums, ans, valDepth, valNodeId);
+            return ans;
+        }
+
+        private void dfs(int x, int fa, int depth, List<Integer>[] g, int[] nums, int[] ans, int[] valDepth, int[] valNodeId) {
+            // x 的节点值
+            int val = nums[x];
+
+            // 计算与 val 互质的祖先节点值中，节点深度最大的节点编号
+            int maxDepth = 0;
+            for (int j : coprime[val]) {
+                if (j == 0) {
+                    break;
+                }
+                if (valDepth[j] > maxDepth) {
+                    maxDepth = valDepth[j];
+                    ans[x] = valNodeId[j];
+                }
+            }
+
+            // tmpDepth 和 tmpNodeId 用于恢复现场
+            int tmpDepth = valDepth[val];
+            int tmpNodeId = valNodeId[val];
+
+            // 保存 val 对应的节点深度和节点编号
+            valDepth[val] = depth;
+            valNodeId[val] = x;
+
+            // 向下递归
+            for (int y : g[x]) {
+                if (y != fa) {
+                    dfs(y, x, depth + 1, g, nums, ans, valDepth, valNodeId);
+                }
+            }
+
+            // 恢复现场
+            valDepth[val] = tmpDepth;
+            valNodeId[val] = tmpNodeId;
+        }
+
+        private  int gcd(int a, int b) {
+            return b == 0 ? a : gcd(b, a % b);
+        }
+    }
+
+
+
+    /**
+     * 2923. 找到冠军 I: 
+     * 一场比赛中共有 n 支队伍，按从 0 到  n - 1 编号。
+     *
+     * 给你一个下标从 0 开始、大小为 n * n 的二维布尔矩阵 grid 。对于满足 0 <= i, j <= n - 1 且 i != j 的所有 i, j ：
+     * 如果 grid[i][j] == 1，那么 i 队比 j 队 强 ；否则，j 队比 i 队 强 。
+     *
+     * 在这场比赛中，如果不存在某支强于 a 队的队伍，则认为 a 队将会是 冠军 。
+     *
+     * 返回这场比赛中将会成为冠军的队伍。
+     * only one champion.
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/13 23:30
+     */
+    class Solution_12_1 {
+        public int findChampion(int[][] grid) {
+            int length = grid.length;
+            for (int i = 0; i < length; i++) {
+                boolean champion = true;
+                for (int j = 0; j < length; j++) {
+                    if (i == j){
+                        continue;
+                    }
+                    if (grid[i][j] != 1){
+                        champion = false;
+                        break;
+                    }
+                }
+                if (champion){
+                    return i;
+                }
+            }
+            return -1;
+        }
+        public int findChampionLS(int[][] grid) {
+            next:
+            for (int i = 0; ; i++) {
+                for (int j = 0; j < grid.length; j++) {
+                    if (j != i && grid[i][j] == 0) {
+                        continue next;//继续next循环(最外层)循环
+                    }
+                }
+                return i;
+            }
+        }
+    }
+
+
+    /**
+     * 2924. 找到冠军 II:
+     * 一场比赛中共有 n 支队伍，按从 0 到  n - 1 编号。每支队伍也是 有向无环图（DAG） 上的一个节点。
+     *
+     * 给你一个整数 n 和一个下标从 0 开始、长度为 m 的二维整数数组 edges 表示这个有向无环图，
+     * 其中 edges[i] = [ui, vi] 表示图中存在一条从 ui 队到 vi 队的有向边。
+     *
+     * 从 a 队到 b 队的有向边意味着 a 队比 b 队 强 ，也就是 b 队比 a 队 弱 。
+     *
+     * 在这场比赛中，如果不存在某支强于 a 队的队伍，则认为 a 队将会是 冠军 。
+     *
+     * 如果这场比赛存在 唯一 一个冠军，则返回将会成为冠军的队伍。否则，返回 -1 。
+     *
+     * 注意
+     *
+     * 环 是形如 a1, a2, ..., an, an+1 的一个序列，且满足：节点 a1 与节点 an+1 是同一个节点；节点 a1, a2, ..., an 互不相同；
+     * 对于范围 [1, n] 中的每个 i ，均存在一条从节点 ai 到节点 ai+1 的有向边。
+     * 有向无环图 是不存在任何环的有向图。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/14 0:16
+     */
+    class Solution_13_1 {
+        public int findChampion(int n, int[][] edges) {
+            int[] ans = new int[n];
+            for (int[] edge : edges) {
+                ans[edge[1]] = 1;
+            }
+            int c = 0;
+            int champion = -1;
+            for (int i = 0; i < ans.length; i++) {
+                if (ans[i] != 1) {
+                    c++;
+                    champion = i;
+                }
+            }
+            return c==1?champion:-1;
+        }
+    }
 }
