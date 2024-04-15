@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,11 @@ public class Daily202404 {
         Daily202404.Solution_8_1 solution81 = new Daily202404.Solution_8_1();
         int i81 = solution81.minOperations(new int[]{4, 2, 5, 3});
         System.out.println(i81);
+        System.out.println(Integer.toBinaryString(solution81.hashCode()));
+        System.out.println(Integer.toBinaryString(solution81.hashCode()));
+        int h = 0;
+        System.out.println(Integer.toBinaryString((h = solution81.hashCode()) ^ (h >>> 16)));
+
 
     }
 
@@ -780,4 +786,171 @@ public class Daily202404 {
             return c==1?champion:-1;
         }
     }
+
+    /**
+     * 705. 设计哈希集合:
+     * 简单
+     * 相关标签
+     * 相关企业
+     * 不使用任何内建的哈希表库设计一个哈希集合（HashSet）。
+     *
+     * 实现 MyHashSet 类：
+     *
+     * void add(key) 向哈希集合中插入值 key 。
+     * bool contains(key) 返回哈希集合中是否存在这个值 key 。
+     * void remove(key) 将给定值 key 从哈希集合中删除。如果哈希集合中没有这个值，什么也不做。
+     *
+     * 因为这个只有key，没有value，而且key是int类型，int类型的hashcode就是本身。
+     * 官方题解用了个盐值取模，和List[]实现的。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/14 18:06
+     */
+    class MyHashSet {
+        int[] table;
+        int size = 1000001;
+        public MyHashSet() {
+            table = new int[size];
+        }
+
+        public void add(int key) {
+            table[key] =1;
+        }
+
+        public void remove(int key) {
+            table[key] =0 ;
+        }
+
+        public boolean contains(int key) {
+            return table[key]==1;
+        }
+
+        public int hash(int key){
+            return key;
+        }
+
+        public int hashCode(int key) {
+            return key;
+        }
+    }
+
+    /**
+     * 706. 设计哈希映射: 
+     * 不使用任何内建的哈希表库设计一个哈希映射（HashMap）。
+     *
+     * 实现 MyHashMap 类：
+     *
+     * MyHashMap() 用空映射初始化对象
+     * void put(int key, int value) 向 HashMap 插入一个键值对 (key, value) 。如果 key 已经存在于映射中，则更新其对应的值 value 。
+     * int get(int key) 返回特定的 key 所映射的 value ；如果映射中不包含 key 的映射，返回 -1 。
+     * void remove(key) 如果映射中存在 key 的映射，则移除 key 和它所对应的 value 。
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/15 23:25
+     */
+    class MyHashMap {
+        int[] table;
+        int size = 1000001;
+        public MyHashMap() {
+            table = new int[size];
+            Arrays.fill(table,-1);
+        }
+
+        public void put(int key, int value) {
+            table[key] = value;
+        }
+
+        public int get(int key) {
+            return table[key];
+        }
+
+        public void remove(int key) {
+            table[key] = -1;
+        }
+    }
+
+    class MyHashMapGF {
+        private class Pair {
+            private int key;
+            private int value;
+
+            public Pair(int key, int value) {
+                this.key = key;
+                this.value = value;
+            }
+
+            public int getKey() {
+                return key;
+            }
+
+            public int getValue() {
+                return value;
+            }
+
+            public void setValue(int value) {
+                this.value = value;
+            }
+        }
+
+        private static final int BASE = 769;//质数，避免过多的冲突。
+        private LinkedList[] data;
+
+        /** Initialize your data structure here. */
+        public MyHashMapGF() {
+            data = new LinkedList[BASE];
+            for (int i = 0; i < BASE; ++i) {
+                data[i] = new LinkedList<Pair>();
+            }
+        }
+
+        /** value will always be non-negative. */
+        public void put(int key, int value) {
+            int h = hash(key);
+            Iterator<Pair> iterator = data[h].iterator();
+            while (iterator.hasNext()) {
+                Pair pair = iterator.next();
+                if (pair.getKey() == key) {
+                    pair.setValue(value);
+                    return;
+                }
+            }
+            data[h].offerLast(new Pair(key, value));
+        }
+
+        /** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
+        public int get(int key) {
+            int h = hash(key);
+            Iterator<Pair> iterator = data[h].iterator();
+            while (iterator.hasNext()) {
+                Pair pair = iterator.next();
+                if (pair.getKey() == key) {
+                    return pair.value;
+                }
+            }
+            return -1;
+        }
+
+        /** Removes the mapping of the specified value key if this map contains a mapping for the key */
+        public void remove(int key) {
+            int h = hash(key);
+            Iterator<Pair> iterator = data[h].iterator();
+            while (iterator.hasNext()) {
+                Pair pair = iterator.next();
+                if (pair.key == key) {
+                    data[h].remove(pair);
+                    return;
+                }
+            }
+        }
+
+        private  int hash(int key) {
+            return key % BASE;
+        }
+    }
+
+
+
 }
