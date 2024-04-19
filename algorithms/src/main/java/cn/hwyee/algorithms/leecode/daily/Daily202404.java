@@ -3,9 +3,11 @@ package cn.hwyee.algorithms.leecode.daily;
 import cn.hwyee.datastructures.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.temporal.Temporal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +38,9 @@ public class Daily202404 {
         System.out.println(Integer.toBinaryString(solution81.hashCode()));
         int h = 0;
         System.out.println(Integer.toBinaryString((h = solution81.hashCode()) ^ (h >>> 16)));
+        Solution_18_1 solution181 = new Solution_18_1();
+        int[] ints = {1, 3, 4, 2, 6, 8};
+        solution181.findOriginalArray(ints);
 
 
     }
@@ -417,17 +422,17 @@ public class Daily202404 {
     }
 
     /**
-     * 2009. 使数组连续的最少操作数: 
+     * 2009. 使数组连续的最少操作数:
      * 给你一个整数数组 nums 。每一次操作中，你可以将 nums 中 任意 一个元素替换成 任意 整数。
-     *
+     * <p>
      * 如果 nums 满足以下条件，那么它是 连续的 ：
-     *
+     * <p>
      * nums 中所有元素都是 互不相同 的。
      * nums 中 最大 元素与 最小 元素的差等于 nums.length - 1 。
      * 比方说，nums = [4, 2, 5, 3] 是 连续的 ，但是 nums = [1, 2, 3, 5, 6] 不是连续的 。
-     *
+     * <p>
      * 请你返回使 nums 连续 的 最少 操作次数。
-     *
+     * <p>
      * 这个相当于是灵神的反向操作，但是尽然超出了时间限制，显然题目里面符合规则和是很多的，但是不符合规则的是少数
      *
      * @author hui
@@ -456,6 +461,7 @@ public class Daily202404 {
             }
             return n - ans;
         }
+
         public int minOperations(int[] nums) {
             Arrays.sort(nums);
             int n = nums.length;
@@ -467,16 +473,16 @@ public class Daily202404 {
             }
 
             int ans = 1;
-            for (int i = 0; i < m-1; i++) {
+            for (int i = 0; i < m - 1; i++) {
                 int right = 1;
-                int left = i+1;
-                while (left<m && nums[left] <= nums[i] + n - 1 ) { // nums[left]
+                int left = i + 1;
+                while (left < m && nums[left] <= nums[i] + n - 1) { // nums[left]
                     right++;
                     left++;
                 }
                 ans = Math.max(ans, right);
             }
-            return n - ans ;
+            return n - ans;
         }
 
     }
@@ -484,7 +490,7 @@ public class Daily202404 {
     /**
      * 2529. 正整数和负整数的最大计数:
      * 给你一个按 非递减顺序 排列的数组 nums ，返回正整数数目和负整数数目中的最大值。
-     *
+     * <p>
      * 换句话讲，如果 nums 中正整数的数目是 pos ，而负整数的数目是 neg ，返回 pos 和 neg二者中的最大值。
      * 注意：0 既不是正整数也不是负整数。
      *
@@ -497,19 +503,19 @@ public class Daily202404 {
 
         public int maximumCount(int[] nums) {
             int l = 0;
-            int r = nums.length-1;
+            int r = nums.length - 1;
             int pos = 0;
             int neg = 0;
-            while (l<=r){
-                if (nums[l]>0 ){
+            while (l <= r) {
+                if (nums[l] > 0) {
                     pos++;
-                } else if (nums[l]<0){
+                } else if (nums[l] < 0) {
                     neg++;
                 }
-                if (l!=r){
-                    if (nums[r]>0 ){
+                if (l != r) {
+                    if (nums[r] > 0) {
                         pos++;
-                    } else if (nums[r]<0){
+                    } else if (nums[r] < 0) {
                         neg++;
                     }
                 }
@@ -522,9 +528,9 @@ public class Daily202404 {
 
 
     /**
-     * 1702. 修改后的最大二进制字符串: 
+     * 1702. 修改后的最大二进制字符串:
      * 给你一个二进制字符串 binary ，它仅有 0 或者 1 组成。你可以使用下面的操作任意次对它进行修改：
-     *
+     * <p>
      * 操作 1 ：如果二进制串包含子字符串 "00" ，你可以用 "10" 将其替换。
      * 比方说， "00010" -> "10010"
      * 操作 2 ：如果二进制串包含子字符串 "10" ，你可以用 "01" 将其替换。
@@ -533,8 +539,8 @@ public class Daily202404 {
      * 如果二进制字符串 x 对应的十进制数字大于二进制字符串 y 对应的十进制数字，那么我们称二进制字符串 x 大于二进制字符串 y 。
      *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/10 21:20
      */
     class Solution_10_1 {
@@ -545,23 +551,23 @@ public class Daily202404 {
             StringBuilder mid = new StringBuilder();
             boolean flag = true;
             for (char c : charArray) {
-                if (flag){
-                    if (c == '1'){
+                if (flag) {
+                    if (c == '1') {
                         sb.append(1);
-                    }else {
+                    } else {
                         mid.append(1);
-                        flag=false;
+                        flag = false;
                     }
-                }else {
-                    if (c == '1'){
+                } else {
+                    if (c == '1') {
                         tail.append(1);
-                    }else {
+                    } else {
                         mid.append(1);
                     }
                 }
             }
-            if (mid.length()>=1){
-                mid.deleteCharAt(mid.length()-1);
+            if (mid.length() >= 1) {
+                mid.deleteCharAt(mid.length() - 1);
                 mid.append(0);
             }
             return sb.append(mid).append(tail).toString();
@@ -573,10 +579,11 @@ public class Daily202404 {
          * 1.把我找前面有多少个连续的1,用binary.indexOf('0')优化了。
          * 2.用cnt1 += s[i] - '0';进行统计剩余1的个数，这样就不用进行if判断了
          * 3.String.repeat()方法拷贝1,很快,用的是Stream.arraycopy
-         * @author hui
-         * @version 1.0
+         *
          * @param binary
          * @return java.lang.String
+         * @author hui
+         * @version 1.0
          * @date 2024/4/10 21:47
          */
         public String maximumBinaryStringLS(String binary) {
@@ -597,19 +604,19 @@ public class Daily202404 {
     /**
      * 1766. 互质树:
      * 给你一个 n 个节点的树（也就是一个无环连通无向图），节点编号从 0 到 n - 1 ，且恰好有 n - 1 条边，每个节点有一个值。树的 根节点 为 0 号点。
-     *
+     * <p>
      * 给你一个整数数组 nums 和一个二维数组 edges 来表示这棵树。nums[i] 表示第 i 个点的值，edges[j] = [uj, vj] 表示节点 uj 和节点 vj 在树中有一条边。
-     *
+     * <p>
      * 当 gcd(x, y) == 1 ，我们称两个数 x 和 y 是 互质的 ，其中 gcd(x, y) 是 x 和 y 的 最大公约数 。
-     *
+     * <p>
      * 从节点 i 到 根 最短路径上的点都是节点 i 的祖先节点。一个节点 不是 它自己的祖先节点。
-     *
+     * <p>
      * 请你返回一个大小为 n 的数组 ans ，其中 ans[i]是离节点 i 最近的祖先节点且满足 nums[i] 和 nums[ans[i]] 是 互质的 ，如果不存在这样的祖先节点，ans[i] 为 -1 。
      * TODO
      *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/11 23:30
      */
     class Solution_11_1 {
@@ -688,28 +695,27 @@ public class Daily202404 {
             valNodeId[val] = tmpNodeId;
         }
 
-        private  int gcd(int a, int b) {
+        private int gcd(int a, int b) {
             return b == 0 ? a : gcd(b, a % b);
         }
     }
 
 
-
     /**
-     * 2923. 找到冠军 I: 
+     * 2923. 找到冠军 I:
      * 一场比赛中共有 n 支队伍，按从 0 到  n - 1 编号。
-     *
+     * <p>
      * 给你一个下标从 0 开始、大小为 n * n 的二维布尔矩阵 grid 。对于满足 0 <= i, j <= n - 1 且 i != j 的所有 i, j ：
      * 如果 grid[i][j] == 1，那么 i 队比 j 队 强 ；否则，j 队比 i 队 强 。
-     *
+     * <p>
      * 在这场比赛中，如果不存在某支强于 a 队的队伍，则认为 a 队将会是 冠军 。
-     *
+     * <p>
      * 返回这场比赛中将会成为冠军的队伍。
      * only one champion.
      *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/13 23:30
      */
     class Solution_12_1 {
@@ -718,20 +724,21 @@ public class Daily202404 {
             for (int i = 0; i < length; i++) {
                 boolean champion = true;
                 for (int j = 0; j < length; j++) {
-                    if (i == j){
+                    if (i == j) {
                         continue;
                     }
-                    if (grid[i][j] != 1){
+                    if (grid[i][j] != 1) {
                         champion = false;
                         break;
                     }
                 }
-                if (champion){
+                if (champion) {
                     return i;
                 }
             }
             return -1;
         }
+
         public int findChampionLS(int[][] grid) {
             next:
             for (int i = 0; ; i++) {
@@ -749,24 +756,25 @@ public class Daily202404 {
     /**
      * 2924. 找到冠军 II:
      * 一场比赛中共有 n 支队伍，按从 0 到  n - 1 编号。每支队伍也是 有向无环图（DAG） 上的一个节点。
-     *
+     * <p>
      * 给你一个整数 n 和一个下标从 0 开始、长度为 m 的二维整数数组 edges 表示这个有向无环图，
      * 其中 edges[i] = [ui, vi] 表示图中存在一条从 ui 队到 vi 队的有向边。
-     *
+     * <p>
      * 从 a 队到 b 队的有向边意味着 a 队比 b 队 强 ，也就是 b 队比 a 队 弱 。
-     *
+     * <p>
      * 在这场比赛中，如果不存在某支强于 a 队的队伍，则认为 a 队将会是 冠军 。
-     *
+     * <p>
      * 如果这场比赛存在 唯一 一个冠军，则返回将会成为冠军的队伍。否则，返回 -1 。
-     *
+     * <p>
      * 注意
-     *
+     * <p>
      * 环 是形如 a1, a2, ..., an, an+1 的一个序列，且满足：节点 a1 与节点 an+1 是同一个节点；节点 a1, a2, ..., an 互不相同；
      * 对于范围 [1, n] 中的每个 i ，均存在一条从节点 ai 到节点 ai+1 的有向边。
      * 有向无环图 是不存在任何环的有向图。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/14 0:16
      */
     class Solution_13_1 {
@@ -783,7 +791,7 @@ public class Daily202404 {
                     champion = i;
                 }
             }
-            return c==1?champion:-1;
+            return c == 1 ? champion : -1;
         }
     }
 
@@ -793,40 +801,42 @@ public class Daily202404 {
      * 相关标签
      * 相关企业
      * 不使用任何内建的哈希表库设计一个哈希集合（HashSet）。
-     *
+     * <p>
      * 实现 MyHashSet 类：
-     *
+     * <p>
      * void add(key) 向哈希集合中插入值 key 。
      * bool contains(key) 返回哈希集合中是否存在这个值 key 。
      * void remove(key) 将给定值 key 从哈希集合中删除。如果哈希集合中没有这个值，什么也不做。
-     *
+     * <p>
      * 因为这个只有key，没有value，而且key是int类型，int类型的hashcode就是本身。
      * 官方题解用了个盐值取模，和List[]实现的。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/14 18:06
      */
     class MyHashSet {
         int[] table;
         int size = 1000001;
+
         public MyHashSet() {
             table = new int[size];
         }
 
         public void add(int key) {
-            table[key] =1;
+            table[key] = 1;
         }
 
         public void remove(int key) {
-            table[key] =0 ;
+            table[key] = 0;
         }
 
         public boolean contains(int key) {
-            return table[key]==1;
+            return table[key] == 1;
         }
 
-        public int hash(int key){
+        public int hash(int key) {
             return key;
         }
 
@@ -836,27 +846,28 @@ public class Daily202404 {
     }
 
     /**
-     * 706. 设计哈希映射: 
+     * 706. 设计哈希映射:
      * 不使用任何内建的哈希表库设计一个哈希映射（HashMap）。
-     *
+     * <p>
      * 实现 MyHashMap 类：
-     *
+     * <p>
      * MyHashMap() 用空映射初始化对象
      * void put(int key, int value) 向 HashMap 插入一个键值对 (key, value) 。如果 key 已经存在于映射中，则更新其对应的值 value 。
      * int get(int key) 返回特定的 key 所映射的 value ；如果映射中不包含 key 的映射，返回 -1 。
      * void remove(key) 如果映射中存在 key 的映射，则移除 key 和它所对应的 value 。
      *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/15 23:25
      */
     class MyHashMap {
         int[] table;
         int size = 1000001;
+
         public MyHashMap() {
             table = new int[size];
-            Arrays.fill(table,-1);
+            Arrays.fill(table, -1);
         }
 
         public void put(int key, int value) {
@@ -898,7 +909,9 @@ public class Daily202404 {
         private static final int BASE = 769;//质数，避免过多的冲突。
         private LinkedList[] data;
 
-        /** Initialize your data structure here. */
+        /**
+         * Initialize your data structure here.
+         */
         public MyHashMapGF() {
             data = new LinkedList[BASE];
             for (int i = 0; i < BASE; ++i) {
@@ -906,7 +919,9 @@ public class Daily202404 {
             }
         }
 
-        /** value will always be non-negative. */
+        /**
+         * value will always be non-negative.
+         */
         public void put(int key, int value) {
             int h = hash(key);
             Iterator<Pair> iterator = data[h].iterator();
@@ -920,7 +935,9 @@ public class Daily202404 {
             data[h].offerLast(new Pair(key, value));
         }
 
-        /** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
+        /**
+         * Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key
+         */
         public int get(int key) {
             int h = hash(key);
             Iterator<Pair> iterator = data[h].iterator();
@@ -933,7 +950,9 @@ public class Daily202404 {
             return -1;
         }
 
-        /** Removes the mapping of the specified value key if this map contains a mapping for the key */
+        /**
+         * Removes the mapping of the specified value key if this map contains a mapping for the key
+         */
         public void remove(int key) {
             int h = hash(key);
             Iterator<Pair> iterator = data[h].iterator();
@@ -946,11 +965,232 @@ public class Daily202404 {
             }
         }
 
-        private  int hash(int key) {
+        private int hash(int key) {
             return key % BASE;
         }
     }
 
+    /**
+     * 924. 尽量减少恶意软件的传播:
+     * 给出了一个由 n 个节点组成的网络，用 n × n 个邻接矩阵图 graph 表示。
+     * 在节点网络中，当 graph[i][j] = 1 时，表示节点 i 能够直接连接到另一个节点 j。
+     * 一些节点 initial 最初被恶意软件感染。只要两个节点直接连接，且其中至少一个节点受到恶意软件的感染，那么两个节点都将被恶意软件感染。
+     * 这种恶意软件的传播将继续，直到没有更多的节点可以被这种方式感染。
+     * 假设 M(initial) 是在恶意软件停止传播之后，整个网络中感染恶意软件的最终节点数。
+     * 如果从 initial 中移除某一节点能够最小化 M(initial)， 返回该节点。如果有多个节点满足条件，就返回索引最小的节点。
+     * 请注意，如果某个节点已从受感染节点的列表 initial 中删除，它以后仍有可能因恶意软件传播而受到感染。
+     * TODO
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/4/16 22:29
+     */
+    class Solution {
+        public int minMalwareSpread(int[][] graph, int[] initial) {
+            return 0;
+        }
+
+        public int minMalwareSpreadLS(int[][] graph, int[] initial) {
+            int n = graph.length;
+            boolean[] vis = new boolean[n];
+            boolean[] isInitial = new boolean[n];
+            int mn = Integer.MAX_VALUE;
+            for (int x : initial) {
+                isInitial[x] = true;
+                mn = Math.min(mn, x);
+            }
+
+            int ans = -1;
+            int maxSize = 0;
+            for (int x : initial) {
+                if (vis[x]) {
+                    continue;
+                }
+                nodeId = -1;
+                size = 0;
+                dfs(x, graph, vis, isInitial);
+                if (nodeId >= 0 && (size > maxSize || size == maxSize && nodeId < ans)) {
+                    ans = nodeId;
+                    maxSize = size;
+                }
+            }
+            return ans < 0 ? mn : ans;
+        }
+
+        private int nodeId, size;
+
+        private void dfs(int x, int[][] graph, boolean[] vis, boolean[] isInitial) {
+            vis[x] = true;
+            size++;
+            // 按照状态机更新 nodeId
+            if (nodeId != -2 && isInitial[x]) {
+                nodeId = nodeId == -1 ? x : -2;
+            }
+            for (int y = 0; y < graph[x].length; y++) {
+                if (graph[x][y] == 1 && !vis[y]) {
+                    dfs(y, graph, vis, isInitial);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 928. 尽量减少恶意软件的传播 II:
+     * 给定一个由 n 个节点组成的网络，用 n x n 个邻接矩阵 graph 表示。在节点网络中，只有当 graph[i][j] = 1 时，节点 i 能够直接连接到另一个节点 j。
+     * <p>
+     * 一些节点 initial 最初被恶意软件感染。只要两个节点直接连接，且其中至少一个节点受到恶意软件的感染，那么两个节点都将被恶意软件感染。这种恶意软件的传播将继续，直到没有更多的节点可以被这种方式感染。
+     * <p>
+     * 假设 M(initial) 是在恶意软件停止传播之后，整个网络中感染恶意软件的最终节点数。
+     * <p>
+     * 我们可以从 initial 中删除一个节点，并完全移除该节点以及从该节点到任何其他节点的任何连接。
+     * <p>
+     * 请返回移除后能够使 M(initial) 最小化的节点。如果有多个节点满足条件，返回索引 最小的节点 。
+     * <p>
+     * TODO
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/4/17 19:13
+     */
+    class Solution_17_1 {
+        private int nodeId, size;
+
+        public int minMalwareSpreadLS(int[][] graph, int[] initial) {
+            int n = graph.length;
+            boolean[] vis = new boolean[n];
+            boolean[] isInitial = new boolean[n];
+            int mn = Integer.MAX_VALUE;
+            for (int x : initial) {
+                isInitial[x] = true;
+                mn = Math.min(mn, x);
+            }
+
+            int[] cnt = new int[n];
+            for (int i = 0; i < n; i++) {
+                if (vis[i] || isInitial[i]) {
+                    continue;
+                }
+                nodeId = -1;
+                size = 0;
+                dfs(i, graph, vis, isInitial);
+                if (nodeId >= 0) { // 只找到一个在 initial 中的节点
+                    // 删除节点 nodeId 可以让 size 个点不被感染
+                    cnt[nodeId] += size;
+                }
+            }
+
+            int maxCnt = 0;
+            int minNodeId = -1;
+            for (int i = 0; i < n; i++) {
+                if (cnt[i] > maxCnt) {
+                    maxCnt = cnt[i];
+                    minNodeId = i;
+                }
+            }
+            return minNodeId < 0 ? mn : minNodeId;
+        }
+
+        private void dfs(int x, int[][] graph, boolean[] vis, boolean[] isInitial) {
+            vis[x] = true;
+            size++;
+            for (int y = 0; y < graph.length; y++) {
+                if (graph[x][y] == 0) {
+                    continue;
+                }
+                if (isInitial[y]) {
+                    // 按照 924 题的状态机更新 nodeId
+                    // 注意避免重复统计，例如上图中的 0 有两条不同路径可以遇到 1
+                    if (nodeId != -2 && nodeId != y) {
+                        nodeId = nodeId == -1 ? y : -2;
+                    }
+                } else if (!vis[y]) {
+                    dfs(y, graph, vis, isInitial);
+                }
+            }
+        }
+    }
+
+    /**
+     * 2007. 从双倍数组中还原原数组:
+     * 一个整数数组 original 可以转变成一个 双倍 数组 changed ，转变方式为将 original 中每个元素 值乘以 2 加入数组中，然后将所有元素 随机打乱 。
+     * <p>
+     * 给你一个数组 changed ，如果 change 是 双倍 数组，那么请你返回 original数组，否则请返回空数组。original 的元素可以以 任意 顺序返回。
+     * 超时
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/4/18 23:14
+     */
+    static class Solution_18_1 {
+
+        /**
+         * findOriginalArray:
+         * 超时
+         * @author hui
+         * @version 1.0
+         * @param changed
+         * @return int[]
+         * @date 2024/4/18 23:49
+         */
+        public int[] findOriginalArray(int[] changed) {
+            int length = changed.length;
+            if (length % 2 == 1) {
+                return new int[0];
+            }
+            Arrays.sort(changed);
+            int[] flagArr = new int[length];
+            List<Integer> ans = new ArrayList<Integer>();
+            for (int i = 0; i < length; i++) {
+                int temp = changed[i];
+                if (flagArr[i] == 0) {
+                    flagArr[i] = 1;
+                    ans.add(temp);
+                    for (int j = i + 1; j < length; j++) {
+                        int d = changed[j];
+                        if (d == temp * 2 && flagArr[j] == 0) {
+                            flagArr[j] = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (ans.size() == length / 2) {
+                int[] res = new int[length / 2];
+                for (int i = 0; i < ans.size(); i++) {
+                    res[i] = ans.get(i);
+                }
+                return res;
+            } else {
+                return new int[0];
+            }
+        }
+
+        public int[] findOriginalArrayLS(int[] changed) {
+            Arrays.sort(changed);
+            int[] ans = new int[changed.length / 2];
+            int ansIdx = 0;
+            Map<Integer, Integer> cnt = new HashMap<>();
+            for (int x : changed) {
+                if (!cnt.containsKey(x)) { // x 不是双倍后的元素
+                    if (ansIdx == ans.length) {
+                        return new int[0];
+                    }
+                    ans[ansIdx++] = x;
+                    cnt.merge(x * 2, 1, Integer::sum); // 标记一个双倍元素
+                } else { // x 是双倍后的元素
+                    int c = cnt.merge(x, -1, Integer::sum); // 清除一个标记 -1 + 1 = 0
+                    if (c == 0) {
+                        cnt.remove(x);// 0 就是插入成功的值，说明执行成功了，直接删除。
+                    }
+                }
+            }
+            return ans;
+        }
+
+    }
 
 
 }
