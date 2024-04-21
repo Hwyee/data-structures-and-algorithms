@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
@@ -1192,5 +1193,165 @@ public class Daily202404 {
 
     }
 
+
+    /**
+     * 1883. 准时抵达会议现场的最小跳过休息次数:
+     * 给你一个整数 hoursBefore ，表示你要前往会议所剩下的可用小时数。要想成功抵达会议现场，你必须途经 n 条道路。
+     * 道路的长度用一个长度为 n 的整数数组 dist 表示，其中 dist[i] 表示第 i 条道路的长度（单位：千米）。
+     * 另给你一个整数 speed ，表示你在道路上前进的速度（单位：千米每小时）。
+     * 当你通过第 i 条路之后，就必须休息并等待，直到 下一个整数小时 才能开始继续通过下一条道路。
+     * 注意：你不需要在通过最后一条道路后休息，因为那时你已经抵达会议现场。
+     * 例如，如果你通过一条道路用去 1.4 小时，那你必须停下来等待，到 2 小时才可以继续通过下一条道路。
+     * 如果通过一条道路恰好用去 2 小时，就无需等待，可以直接继续。
+     * 然而，为了能准时到达，你可以选择 跳过 一些路的休息时间，这意味着你不必等待下一个整数小时。
+     * 注意，这意味着与不跳过任何休息时间相比，你可能在不同时刻到达接下来的道路。
+     * 例如，假设通过第 1 条道路用去 1.4 小时，且通过第 2 条道路用去 0.6 小时。
+     * 跳过第 1 条道路的休息时间意味着你将会在恰好 2 小时完成通过第 2 条道路，且你能够立即开始通过第 3 条道路。
+     * 返回准时抵达会议现场所需要的 最小跳过次数 ，如果 无法准时参会 ，返回 -1 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/19 22:11
+     */
+    class Solution_19_1 {
+        public int minSkips(int[] dist, int speed, int hoursBefore) {
+            PriorityQueue<Double> queue = new PriorityQueue<Double>();
+            double sum = 0;
+            for (int i = 0; i < dist.length; i++) {
+                int temp = dist[i];
+                double time = temp+0.0/speed;
+                sum += time;
+                if (i != dist.length - 1){
+                    queue.add(time);
+                }
+            }
+            if (sum > hoursBefore){
+                return -1;
+            }
+            int ans = 0;
+            while (!queue.isEmpty()){
+                if ((sum += (1-queue.poll()))>hoursBefore){
+                    break;
+                }
+                ans++;
+            }
+            return dist.length-1-ans;
+        }
+    }
+
+    public int minSkipsLS(int[] dist, int speed, int hoursBefore) {
+        int sumDist = 0;
+        for (int d : dist) {
+            sumDist += d;
+        }
+        if (sumDist > (long) speed * hoursBefore) {
+            return -1;
+        }
+
+        int n = dist.length;
+        int[][] memo = new int[n][n];
+        for (int[] row : memo) {
+            Arrays.fill(row, -1); // -1 表示没有计算过
+        }
+        for (int i = 0; ; i++) {
+            if (dfs(i, n - 2, memo, dist, speed) + dist[n - 1] <= (long) speed * hoursBefore) {
+                return i;
+            }
+        }
+    }
+
+    private int dfs(int i, int j, int[][] memo, int[] dist, int speed) {
+        if (j < 0) { // 递归边界
+            return 0;
+        }
+        if (memo[i][j] != -1) { // 之前计算过
+            return memo[i][j];
+        }
+        int res = (dfs(i, j - 1, memo, dist, speed) + dist[j] + speed - 1) / speed * speed;
+        if (i > 0) {
+            res = Math.min(res, dfs(i - 1, j - 1, memo, dist, speed) + dist[j]);
+        }
+        return memo[i][j] = res; // 记忆化
+    }
+
+    /**
+     * 39. 组合总和:
+     * 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，
+     * 找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。
+     *
+     * candidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。
+     *
+     * 对于给定的输入，保证和为 target 的不同组合数少于 150 个。
+     *
+     * 选或不选
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/20 23:27
+     */
+    class Solution_20_1 {
+        List<List<Integer>> ans = new ArrayList<List<Integer>>(150);
+        public List<List<Integer>> combinationSum(int[] candidates, int target) {
+
+            dfs(0,target,candidates,new LinkedList<>());
+            return ans;
+        }
+
+        public void dfs(int i,int target,int[] candidates,List<Integer> list){
+            if (target == 0){
+                ans.add(new LinkedList<>(list));
+                return;
+            }
+            if (i >= candidates.length || target <0){
+                return;
+            }
+            //选
+            list.add(candidates[i]);
+            dfs(i,target-candidates[i],candidates,list);
+            //不选
+            list.remove(list.size() - 1);
+            dfs(i+1,target,candidates,list);
+        }
+    }
+
+
+    /**
+     * 216. 组合总和 III:
+     * 找出所有相加之和为 n 的 k 个数的组合，且满足下列条件：
+     *
+     * 只使用数字1到9
+     * 每个数字 最多使用一次
+     * 返回 所有可能的有效组合的列表 。该列表不能包含相同的组合两次，组合可以以任何顺序返回。
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/21 15:01
+     */
+    class Solution_21_1 {
+        List<List<Integer>> ans = new ArrayList<List<Integer>>();
+
+        public List<List<Integer>> combinationSum3(int k, int n) {
+            int[] candidates = {1,2,3,4,5,6,7,8,9};
+            dfs(0,n,k,candidates,new LinkedList<>());
+            return ans;
+        }
+
+        public void dfs(int i,int target,int k,int[] candidates,List<Integer> list){
+            if (target == 0 && k == 0){
+                ans.add(new LinkedList<>(list));
+                return;
+            }
+            if (i >= candidates.length || target <0 || k<0){
+                return;
+            }
+            //选
+            list.add(candidates[i]);
+            dfs(i+1,target-candidates[i],k-1,candidates,list);
+            //不选
+            list.remove(list.size() - 1);
+            dfs(i+1,target,k,candidates,list);
+        }
+    }
 
 }
