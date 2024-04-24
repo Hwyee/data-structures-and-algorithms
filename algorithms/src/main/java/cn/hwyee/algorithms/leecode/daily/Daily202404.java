@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -1351,6 +1352,187 @@ public class Daily202404 {
             //不选
             list.remove(list.size() - 1);
             dfs(i+1,target,k,candidates,list);
+        }
+    }
+
+    /**
+     * 377. 组合总和 Ⅳ: 
+     * 给你一个由 不同 整数组成的数组 nums ，和一个目标整数 target 。请你从 nums 中找出并返回总和为 target 的元素组合的个数。
+     *
+     * 题目数据保证答案符合 32 位整数范围。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/23 0:02
+     */
+    class Solution_23_1 {
+        public int combinationSum4LS(int[] nums, int target) {
+            int[] memo = new int[target + 1];
+            Arrays.fill(memo, -1); // -1 表示没有计算过
+            return dfs(target, nums, memo);
+        }
+        private int dfs(int i, int[] nums, int[] memo) {
+            if (i == 0) { // 爬完了
+                return 1;
+            }
+            if (memo[i] != -1) { // 之前计算过
+                return memo[i];
+            }
+            int res = 0;
+            for (int x : nums) { // 枚举所有可以爬的台阶数
+                if (x <= i) {
+                    res += dfs(i - x, nums, memo);
+                }
+            }
+            return memo[i] = res; // 记忆化
+        }
+
+        public int combinationSum4LSDT(int[] nums, int target) {
+            int[] f = new int[target + 1];
+            f[0] = 1;
+            for (int i = 1; i <= target; i++) {
+                for (int x : nums) {
+                    if (x <= i) {
+                        f[i] += f[i - x];
+                    }
+                }
+            }
+            return f[target];
+        }
+    }
+
+    /**
+     * 1052. 爱生气的书店老板:
+     * 有一个书店老板，他的书店开了 n 分钟。每分钟都有一些顾客进入这家商店。
+     * 给定一个长度为 n 的整数数组 customers ，其中 customers[i] 是在第 i 分钟开始时进入商店的顾客数量，所有这些顾客在第 i 分钟结束后离开。
+     *
+     * 在某些时候，书店老板会生气。 如果书店老板在第 i 分钟生气，那么 grumpy[i] = 1，否则 grumpy[i] = 0。
+     *
+     * 当书店老板生气时，那一分钟的顾客就会不满意，若老板不生气则顾客是满意的。
+     *
+     * 书店老板知道一个秘密技巧，能抑制自己的情绪，可以让自己连续 minutes 分钟不生气，但却只能使用一次。
+     *
+     * 请你返回 这一天营业下来，最多有多少客户能够感到满意 。
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/23 23:31
+     */
+    class Solution_23_1 {
+        public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
+            int ans = 0;
+            int length = grumpy.length;
+            int start = -1;
+            int max = 0;
+            Queue<List<Integer>> list = new ArrayDeque<>();
+            for (int i = 0; i < length; i++) {
+                if (grumpy[i] == 0){
+                    ans += customers[i];
+                }
+
+            }
+
+            return ans;
+        }
+        public int maxSatisfiedLS(int[] customers, int[] grumpy, int minutes) {
+            int[] s = new int[2];
+            int maxS1 = 0;
+            for (int i = 0; i < customers.length; i++) {
+                s[grumpy[i]] += customers[i];
+                if (i < minutes - 1) { // 窗口长度不足 minutes
+                    continue;
+                }
+                maxS1 = Math.max(maxS1, s[1]);
+                // 窗口最左边元素离开窗口
+                s[1] -= grumpy[i - minutes + 1] > 0 ? customers[i - minutes + 1] : 0;
+            }
+            return s[0] + maxS1;
+        }
+
+    }
+
+    /**
+     * 2385. 感染二叉树需要的总时间:
+     * 给你一棵二叉树的根节点 root ，二叉树中节点的值 互不相同 。另给你一个整数 start 。在第 0 分钟，感染 将会从值为 start 的节点开始爆发。
+     *
+     * 每分钟，如果节点满足以下全部条件，就会被感染：
+     *
+     * 节点此前还没有感染。
+     * 节点与一个已感染节点相邻。
+     * 返回感染整棵树需要的分钟数。
+     * 求最长距离。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/24 0:14
+     */
+    class Solution_24_1{
+        public int amountOfTime(TreeNode root, int start) {
+            return 1;
+        }
+
+        public int amountOfTimeGF(TreeNode root, int start) {
+            Map<Integer, List<Integer>> graph = new HashMap<Integer, List<Integer>>();
+            dfs(graph, root);
+            Queue<int[]> queue = new ArrayDeque<int[]>();
+            queue.offer(new int[]{start, 0});
+            Set<Integer> visited = new HashSet<Integer>();
+            visited.add(start);
+            int time = 0;
+            while (!queue.isEmpty()) {
+                int[] arr = queue.poll();
+                int nodeVal = arr[0];
+                time = arr[1];
+                for (int childVal : graph.get(nodeVal)) {
+                    if (visited.add(childVal)) {
+                        queue.offer(new int[]{childVal, time + 1});
+                    }
+                }
+            }
+            return time;
+        }
+
+        public void dfs(Map<Integer, List<Integer>> graph, TreeNode node) {
+            graph.putIfAbsent(node.val, new ArrayList<Integer>());
+            for (TreeNode child : Arrays.asList(node.left, node.right)) {
+                if (child != null) {
+                    graph.get(node.val).add(child.val);
+                    graph.putIfAbsent(child.val, new ArrayList<Integer>());
+                    graph.get(child.val).add(node.val);
+                    dfs(graph, child);
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * 2739. 总行驶距离:
+     * 卡车有两个油箱。给你两个整数，mainTank 表示主油箱中的燃料（以升为单位），additionalTank 表示副油箱中的燃料（以升为单位）。
+     *
+     * 该卡车每耗费 1 升燃料都可以行驶 10 km。每当主油箱使用了 5 升燃料时，如果副油箱至少有 1 升燃料，则会将 1 升燃料从副油箱转移到主油箱。
+     *
+     * 返回卡车可以行驶的最大距离。
+     *
+     * 注意：从副油箱向主油箱注入燃料不是连续行为。这一事件会在每消耗 5 升燃料时突然且立即发生。
+     *
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/25 0:50
+     */
+    class Solution_25_1 {
+        public int distanceTraveled(int mainTank, int additionalTank) {
+            int ans = 0;
+            while (additionalTank >0 && mainTank>=5){
+                ans+=50;
+                mainTank-=4;
+                additionalTank--;
+            }
+            return ans + (mainTank * 10);
         }
     }
 
