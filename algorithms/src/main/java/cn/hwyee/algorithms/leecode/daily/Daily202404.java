@@ -1536,4 +1536,116 @@ public class Daily202404 {
         }
     }
 
+    /**
+     * 1146. 快照数组:
+     * 实现支持下列接口的「快照数组」- SnapshotArray：
+     *
+     * SnapshotArray(int length) - 初始化一个与指定长度相等的 类数组 的数据结构。初始时，每个元素都等于 0。
+     * void set(index, val) - 会将指定索引 index 处的元素设置为 val。
+     * int snap() - 获取该数组的快照，并返回快照的编号 snap_id（快照号是调用 snap() 的总次数减去 1）。
+     * int get(index, snap_id) - 根据指定的 snap_id 选择快照，并返回该快照指定索引 index 的值。
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/26 0:07
+     */
+    class SnapshotArray {
+        HashMap<Integer,ArrayList<Integer>> map = new HashMap<>();
+        ArrayList<Integer> list = null;
+        int snapId = 0;
+        public SnapshotArray(int length) {
+            list = new ArrayList<>(length);
+            for (int i = 0; i < length; i++) {
+                list.add(0);
+            }
+        }
+
+        public void set(int index, int val) {
+            list.set(index, val);
+        }
+
+        public int snap() {
+            ArrayList<Integer> temp = new ArrayList<>(list);
+            map.put(snapId++, temp);
+            return snapId-1;
+        }
+
+        public int get(int index, int snap_id) {
+            ArrayList<Integer> list1 = map.get(snap_id);
+            return list1.get(index);
+        }
+    }
+
+    class SnapshotArrayGF {
+        private int snap_cnt;
+        private List<int[]>[] data;
+
+        public SnapshotArrayGF(int length) {
+            snap_cnt = 0;
+            data = new List[length];
+            for (int i = 0; i < length; i++) {
+                data[i] = new ArrayList<int[]>();
+            }
+        }
+
+        public void set(int index, int val) {
+            data[index].add(new int[]{snap_cnt, val});
+        }
+
+        public int snap() {
+            return snap_cnt++;
+        }
+
+        public int get(int index, int snap_id) {
+            int x = binarySearch(index, snap_id);
+            return x == 0 ? 0 : data[index].get(x - 1)[1];
+        }
+
+        private int binarySearch(int index, int snap_id) {
+            int low = 0, high = data[index].size();
+            while (low < high) {
+                int mid = low + (high - low) / 2;
+                int[] pair = data[index].get(mid);
+                if (pair[0] > snap_id + 1 || (pair[0] == snap_id + 1 && pair[1] >= 0)) {
+                    high = mid;
+                } else {
+                    low = mid + 1;
+                }
+            }
+            return low;
+        }
+    }
+
+
+
+    /**
+     * 2639. 查询网格图中每一列的宽度:
+     * 给你一个下标从 0 开始的 m x n 整数矩阵 grid 。矩阵中某一列的宽度是这一列数字的最大 字符串长度 。
+     *
+     * 比方说，如果 grid = [[-10], [3], [12]] ，那么唯一一列的宽度是 3 ，因为 -10 的字符串长度为 3 。
+     * 请你返回一个大小为 n 的整数数组 ans ，其中 ans[i] 是第 i 列的宽度。
+     *
+     * 一个有 len 个数位的整数 x ，如果是非负数，那么 字符串长度 为 len ，否则为 len + 1 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/4/27 0:19
+     */
+    class Solution_27_1 {
+        public int[] findColumnWidth(int[][] grid) {
+            int[] ans = new int[grid[0].length];
+            for (int i = 0; i < grid[0].length; i++) {
+                int max = 0;
+                for (int j = 0; j < grid.length; j++) {
+                    int len = String.valueOf(grid[j][i]).length();
+                    max = Math.max(max, len);
+                }
+                ans[i] = max;
+            }
+            return ans;
+        }
+    }
+
+
 }
