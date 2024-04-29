@@ -1121,6 +1121,7 @@ public class Daily202404 {
      * <p>
      * 给你一个数组 changed ，如果 change 是 双倍 数组，那么请你返回 original数组，否则请返回空数组。original 的元素可以以 任意 顺序返回。
      * 超时
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -1131,10 +1132,11 @@ public class Daily202404 {
         /**
          * findOriginalArray:
          * 超时
-         * @author hui
-         * @version 1.0
+         *
          * @param changed
          * @return int[]
+         * @author hui
+         * @version 1.0
          * @date 2024/4/18 23:49
          */
         public int[] findOriginalArray(int[] changed) {
@@ -1209,9 +1211,10 @@ public class Daily202404 {
      * 例如，假设通过第 1 条道路用去 1.4 小时，且通过第 2 条道路用去 0.6 小时。
      * 跳过第 1 条道路的休息时间意味着你将会在恰好 2 小时完成通过第 2 条道路，且你能够立即开始通过第 3 条道路。
      * 返回准时抵达会议现场所需要的 最小跳过次数 ，如果 无法准时参会 ，返回 -1 。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/19 22:11
      */
     class Solution_19_1 {
@@ -1220,23 +1223,23 @@ public class Daily202404 {
             double sum = 0;
             for (int i = 0; i < dist.length; i++) {
                 int temp = dist[i];
-                double time = temp+0.0/speed;
+                double time = temp + 0.0 / speed;
                 sum += time;
-                if (i != dist.length - 1){
+                if (i != dist.length - 1) {
                     queue.add(time);
                 }
             }
-            if (sum > hoursBefore){
+            if (sum > hoursBefore) {
                 return -1;
             }
             int ans = 0;
-            while (!queue.isEmpty()){
-                if ((sum += (1-queue.poll()))>hoursBefore){
+            while (!queue.isEmpty()) {
+                if ((sum += (1 - queue.poll())) > hoursBefore) {
                     break;
                 }
                 ans++;
             }
-            return dist.length-1-ans;
+            return dist.length - 1 - ans;
         }
     }
 
@@ -1279,39 +1282,41 @@ public class Daily202404 {
      * 39. 组合总和:
      * 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，
      * 找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。
-     *
+     * <p>
      * candidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。
-     *
+     * <p>
      * 对于给定的输入，保证和为 target 的不同组合数少于 150 个。
-     *
+     * <p>
      * 选或不选
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/20 23:27
      */
     class Solution_20_1 {
         List<List<Integer>> ans = new ArrayList<List<Integer>>(150);
+
         public List<List<Integer>> combinationSum(int[] candidates, int target) {
 
-            dfs(0,target,candidates,new LinkedList<>());
+            dfs(0, target, candidates, new LinkedList<>());
             return ans;
         }
 
-        public void dfs(int i,int target,int[] candidates,List<Integer> list){
-            if (target == 0){
+        public void dfs(int i, int target, int[] candidates, List<Integer> list) {
+            if (target == 0) {
                 ans.add(new LinkedList<>(list));
                 return;
             }
-            if (i >= candidates.length || target <0){
+            if (i >= candidates.length || target < 0) {
                 return;
             }
             //选
             list.add(candidates[i]);
-            dfs(i,target-candidates[i],candidates,list);
+            dfs(i, target - candidates[i], candidates, list);
             //不选
             list.remove(list.size() - 1);
-            dfs(i+1,target,candidates,list);
+            dfs(i + 1, target, candidates, list);
         }
     }
 
@@ -1319,50 +1324,51 @@ public class Daily202404 {
     /**
      * 216. 组合总和 III:
      * 找出所有相加之和为 n 的 k 个数的组合，且满足下列条件：
-     *
+     * <p>
      * 只使用数字1到9
      * 每个数字 最多使用一次
      * 返回 所有可能的有效组合的列表 。该列表不能包含相同的组合两次，组合可以以任何顺序返回。
      *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/21 15:01
      */
     class Solution_21_1 {
         List<List<Integer>> ans = new ArrayList<List<Integer>>();
 
         public List<List<Integer>> combinationSum3(int k, int n) {
-            int[] candidates = {1,2,3,4,5,6,7,8,9};
-            dfs(0,n,k,candidates,new LinkedList<>());
+            int[] candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+            dfs(0, n, k, candidates, new LinkedList<>());
             return ans;
         }
 
-        public void dfs(int i,int target,int k,int[] candidates,List<Integer> list){
-            if (target == 0 && k == 0){
+        public void dfs(int i, int target, int k, int[] candidates, List<Integer> list) {
+            if (target == 0 && k == 0) {
                 ans.add(new LinkedList<>(list));
                 return;
             }
-            if (i >= candidates.length || target <0 || k<0){
+            if (i >= candidates.length || target < 0 || k < 0) {
                 return;
             }
             //选
             list.add(candidates[i]);
-            dfs(i+1,target-candidates[i],k-1,candidates,list);
+            dfs(i + 1, target - candidates[i], k - 1, candidates, list);
             //不选
             list.remove(list.size() - 1);
-            dfs(i+1,target,k,candidates,list);
+            dfs(i + 1, target, k, candidates, list);
         }
     }
 
     /**
-     * 377. 组合总和 Ⅳ: 
+     * 377. 组合总和 Ⅳ:
      * 给你一个由 不同 整数组成的数组 nums ，和一个目标整数 target 。请你从 nums 中找出并返回总和为 target 的元素组合的个数。
-     *
+     * <p>
      * 题目数据保证答案符合 32 位整数范围。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/23 0:02
      */
     class Solution_23_1 {
@@ -1371,6 +1377,7 @@ public class Daily202404 {
             Arrays.fill(memo, -1); // -1 表示没有计算过
             return dfs(target, nums, memo);
         }
+
         private int dfs(int i, int[] nums, int[] memo) {
             if (i == 0) { // 爬完了
                 return 1;
@@ -1405,18 +1412,18 @@ public class Daily202404 {
      * 1052. 爱生气的书店老板:
      * 有一个书店老板，他的书店开了 n 分钟。每分钟都有一些顾客进入这家商店。
      * 给定一个长度为 n 的整数数组 customers ，其中 customers[i] 是在第 i 分钟开始时进入商店的顾客数量，所有这些顾客在第 i 分钟结束后离开。
-     *
+     * <p>
      * 在某些时候，书店老板会生气。 如果书店老板在第 i 分钟生气，那么 grumpy[i] = 1，否则 grumpy[i] = 0。
-     *
+     * <p>
      * 当书店老板生气时，那一分钟的顾客就会不满意，若老板不生气则顾客是满意的。
-     *
+     * <p>
      * 书店老板知道一个秘密技巧，能抑制自己的情绪，可以让自己连续 minutes 分钟不生气，但却只能使用一次。
-     *
+     * <p>
      * 请你返回 这一天营业下来，最多有多少客户能够感到满意 。
      *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/23 23:31
      */
     class Solution_23_1 {
@@ -1427,7 +1434,7 @@ public class Daily202404 {
             int max = 0;
             Queue<List<Integer>> list = new ArrayDeque<>();
             for (int i = 0; i < length; i++) {
-                if (grumpy[i] == 0){
+                if (grumpy[i] == 0) {
                     ans += customers[i];
                 }
 
@@ -1435,6 +1442,7 @@ public class Daily202404 {
 
             return ans;
         }
+
         public int maxSatisfiedLS(int[] customers, int[] grumpy, int minutes) {
             int[] s = new int[2];
             int maxS1 = 0;
@@ -1455,19 +1463,20 @@ public class Daily202404 {
     /**
      * 2385. 感染二叉树需要的总时间:
      * 给你一棵二叉树的根节点 root ，二叉树中节点的值 互不相同 。另给你一个整数 start 。在第 0 分钟，感染 将会从值为 start 的节点开始爆发。
-     *
+     * <p>
      * 每分钟，如果节点满足以下全部条件，就会被感染：
-     *
+     * <p>
      * 节点此前还没有感染。
      * 节点与一个已感染节点相邻。
      * 返回感染整棵树需要的分钟数。
      * 求最长距离。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/24 0:14
      */
-    class Solution_24_1{
+    class Solution_24_1 {
         public int amountOfTime(TreeNode root, int start) {
             return 1;
         }
@@ -1511,25 +1520,24 @@ public class Daily202404 {
     /**
      * 2739. 总行驶距离:
      * 卡车有两个油箱。给你两个整数，mainTank 表示主油箱中的燃料（以升为单位），additionalTank 表示副油箱中的燃料（以升为单位）。
-     *
+     * <p>
      * 该卡车每耗费 1 升燃料都可以行驶 10 km。每当主油箱使用了 5 升燃料时，如果副油箱至少有 1 升燃料，则会将 1 升燃料从副油箱转移到主油箱。
-     *
+     * <p>
      * 返回卡车可以行驶的最大距离。
-     *
+     * <p>
      * 注意：从副油箱向主油箱注入燃料不是连续行为。这一事件会在每消耗 5 升燃料时突然且立即发生。
      *
-     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/25 0:50
      */
     class Solution_25_1 {
         public int distanceTraveled(int mainTank, int additionalTank) {
             int ans = 0;
-            while (additionalTank >0 && mainTank>=5){
-                ans+=50;
-                mainTank-=4;
+            while (additionalTank > 0 && mainTank >= 5) {
+                ans += 50;
+                mainTank -= 4;
                 additionalTank--;
             }
             return ans + (mainTank * 10);
@@ -1539,21 +1547,22 @@ public class Daily202404 {
     /**
      * 1146. 快照数组:
      * 实现支持下列接口的「快照数组」- SnapshotArray：
-     *
+     * <p>
      * SnapshotArray(int length) - 初始化一个与指定长度相等的 类数组 的数据结构。初始时，每个元素都等于 0。
      * void set(index, val) - 会将指定索引 index 处的元素设置为 val。
      * int snap() - 获取该数组的快照，并返回快照的编号 snap_id（快照号是调用 snap() 的总次数减去 1）。
      * int get(index, snap_id) - 根据指定的 snap_id 选择快照，并返回该快照指定索引 index 的值。
      *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/26 0:07
      */
     class SnapshotArray {
-        HashMap<Integer,ArrayList<Integer>> map = new HashMap<>();
+        HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
         ArrayList<Integer> list = null;
         int snapId = 0;
+
         public SnapshotArray(int length) {
             list = new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
@@ -1568,7 +1577,7 @@ public class Daily202404 {
         public int snap() {
             ArrayList<Integer> temp = new ArrayList<>(list);
             map.put(snapId++, temp);
-            return snapId-1;
+            return snapId - 1;
         }
 
         public int get(int index, int snap_id) {
@@ -1618,18 +1627,18 @@ public class Daily202404 {
     }
 
 
-
     /**
      * 2639. 查询网格图中每一列的宽度:
      * 给你一个下标从 0 开始的 m x n 整数矩阵 grid 。矩阵中某一列的宽度是这一列数字的最大 字符串长度 。
-     *
+     * <p>
      * 比方说，如果 grid = [[-10], [3], [12]] ，那么唯一一列的宽度是 3 ，因为 -10 的字符串长度为 3 。
      * 请你返回一个大小为 n 的整数数组 ans ，其中 ans[i] 是第 i 列的宽度。
-     *
+     * <p>
      * 一个有 len 个数位的整数 x ，如果是非负数，那么 字符串长度 为 len ，否则为 len + 1 。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/4/27 0:19
      */
     class Solution_27_1 {
@@ -1647,5 +1656,72 @@ public class Daily202404 {
         }
     }
 
+    /**
+     * 1017. 负二进制转换:
+     * 给你一个整数 n ，以二进制字符串的形式返回该整数的 负二进制（base -2）表示。
+     * <p>
+     * 注意，除非字符串就是 "0"，否则返回的字符串中不能含有前导零。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/4/28 0:32
+     */
+    class Solution_28_1 {
+        public String baseNeg2(int n) {
+            int val = 0x55555555 ^ (0x55555555 - n);
+            if (val == 0) {
+                return "0";
+            }
+            StringBuilder res = new StringBuilder();
+            while (val != 0) {
+                res.append(val & 1);
+                val >>= 1;
+            }
+            return res.reverse().toString();
+        }
+    }
+
+
+    /**
+     * 1329. 将矩阵按对角线排序:
+     * 矩阵对角线 是一条从矩阵最上面行或者最左侧列中的某个元素开始的对角线，沿右下方向一直到矩阵末尾的元素。
+     * 例如，矩阵 mat 有 6 行 3 列，从 mat[2][0] 开始的 矩阵对角线 将会经过 mat[2][0]、mat[3][1] 和 mat[4][2] 。
+     * <p>
+     * 给你一个 m * n 的整数矩阵 mat ，请你将同一条 矩阵对角线 上的元素按升序排序后，返回排好序的矩阵。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/4/29 21:48
+     */
+    class Solution_29_1 {
+        public int[][] diagonalSort(int[][] mat) {
+            PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+            for (int i = 0; i < mat.length - 1; i++) {
+                sort(mat, i, 0, priorityQueue);
+                int temp = i;
+                for (int j = 0; j < mat[0].length && temp < mat.length; j++) {
+                    mat[temp++][j] = priorityQueue.poll();
+                }
+            }
+            for (int i = 0; i < mat[0].length - 1; i++) {
+                sort(mat, 0, i, priorityQueue);
+                int temp = i;
+                for (int j = 0; j < mat.length && temp < mat[0].length; j++) {
+                    mat[j][temp++] = priorityQueue.poll();
+                }
+            }
+            return mat;
+        }
+
+        public void sort(int[][] mat, int i, int j, PriorityQueue<Integer> priorityQueue) {
+            if (i >= mat.length || j >= mat[0].length) {
+                return;
+            }
+            priorityQueue.add(mat[i][j]);
+            sort(mat, ++i, ++j, priorityQueue);
+        }
+    }
 
 }
