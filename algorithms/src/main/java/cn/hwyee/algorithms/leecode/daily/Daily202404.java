@@ -1426,7 +1426,7 @@ public class Daily202404 {
      * @return
      * @date 2024/4/23 23:31
      */
-    class Solution_23_1 {
+    class Solution_23_2 {
         public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
             int ans = 0;
             int length = grumpy.length;
