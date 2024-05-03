@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.PriorityQueue;
+import java.util.stream.IntStream;
 
 
 /**
@@ -132,4 +133,148 @@ public class Daily202405 {
 
 
     }
+
+    /**
+     * 857. 雇佣 K 名工人的最低成本: 
+     * 有 n 名工人。 给定两个数组 quality 和 wage ，其中，quality[i] 表示第 i 名工人的工作质量，其最低期望工资为 wage[i] 。
+     *
+     * 现在我们想雇佣 k 名工人组成一个工资组。在雇佣 一组 k 名工人时，我们必须按照下述规则向他们支付工资：
+     *
+     * 对工资组中的每名工人，应当按其工作质量与同组其他工人的工作质量的比例来支付工资。
+     * 工资组中的每名工人至少应当得到他们的最低期望工资。
+     * 给定整数 k ，返回 组成满足上述条件的付费群体所需的最小金额 。在实际答案的 10-5 以内的答案将被接受。。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/2 1:05
+     */
+    class Solution {
+        public double mincostToHireWorkersLS(int[] quality, int[] wage, int k) {
+            int n = quality.length, sumQ = 0;
+            var id = IntStream.range(0, n).boxed().toArray(Integer[]::new);
+            Arrays.sort(id, (i, j) -> wage[i] * quality[j] - wage[j] * quality[i]); // 按照 r 值排序
+            var pq = new PriorityQueue<Integer>((a, b) -> b - a); // 最大堆
+            for (var i = 0; i < k; ++i) {
+                pq.offer(quality[id[i]]);
+                sumQ += quality[id[i]];
+            }
+            var ans = sumQ * ((double) wage[id[k - 1]] / quality[id[k - 1]]); // 选 r 值最小的 k 名工人组成当前的最优解
+            for (var i = k; i < n; ++i) {
+                var q = quality[id[i]];
+                if (q < pq.peek()) { // sumQ 可以变小，从而可能得到更优的答案
+                    sumQ -= pq.poll() - q;
+                    pq.offer(q);
+                    ans = Math.min(ans, sumQ * ((double) wage[id[i]] / q));
+                }
+            }
+            return ans;
+        }
+
+        public double mincostToHireWorkersGF(int[] quality, int[] wage, int k) {
+            int n = quality.length;
+            Integer[] h = new Integer[n];
+            for (int i = 0; i < n; i++) {
+                h[i] = i;
+            }
+            Arrays.sort(h, (a, b) -> {
+                return quality[b] * wage[a] - quality[a] * wage[b];
+            });
+            double res = 1e9;
+            double totalq = 0.0;
+            PriorityQueue<Integer> pq = new PriorityQueue<Integer>((a, b) -> b - a);
+            for (int i = 0; i < k - 1; i++) {
+                totalq += quality[h[i]];
+                pq.offer(quality[h[i]]);
+            }
+            for (int i = k - 1; i < n; i++) {
+                int idx = h[i];
+                totalq += quality[idx];
+                pq.offer(quality[idx]);
+                double totalc = ((double) wage[idx] / quality[idx]) * totalq;
+                res = Math.min(res, totalc);
+                totalq -= pq.poll();
+            }
+            return res;
+        }
+
+    }
+
+    /**
+     * 1491. 去掉最低工资和最高工资后的工资平均值:
+     * 给你一个整数数组 salary ，数组里每个数都是 唯一 的，其中 salary[i] 是第 i 个员工的工资。
+     *
+     * 请你返回去掉最低工资和最高工资以后，剩下员工工资的平均值。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/4 0:05
+     */
+    class Solution_3_1 {
+        public double average(int[] salary) {
+            int min = 10000000;
+            int max = 0;
+            int sum = 0;
+            for(int a : salary){
+                min = Math.min(min,a);
+                max = Math.max(max,a);
+                sum+=a;
+            }
+            return (sum-min-max+0.0)/(salary.length-2);
+        }
+    }
+
+
+    /**
+     * 1235. 规划兼职工作:
+     * 你打算利用空闲时间来做兼职工作赚些零花钱。
+     *
+     * 这里有 n 份兼职工作，每份工作预计从 startTime[i] 开始到 endTime[i] 结束，报酬为 profit[i]。
+     *
+     * 给你一份兼职工作表，包含开始时间 startTime，结束时间 endTime 和预计报酬 profit 三个数组，请你计算并返回可以获得的最大报酬。
+     *
+     * 注意，时间上出现重叠的 2 份工作不能同时进行。
+     *
+     * 如果你选择的工作在时间 X 结束，那么你可以立刻进行在时间 X 开始的下一份工作。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/4 0:03
+     */
+    class Solution_4_1 {
+        public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
+            return 1;
+        }
+
+        public int jobSchedulingLS(int[] startTime, int[] endTime, int[] profit) {
+            int n = startTime.length;
+            int[][] jobs = new int[n][];
+            for (int i = 0; i < n; ++i)
+                jobs[i] = new int[]{startTime[i], endTime[i], profit[i]};
+            Arrays.sort(jobs, (a, b) -> a[1] - b[1]); // 按照结束时间排序
+
+            int[] f = new int[n + 1];
+            for (int i = 0; i < n; ++i) {
+                int j = search(jobs, i, jobs[i][0]);
+                f[i + 1] = Math.max(f[i], f[j + 1] + jobs[i][2]);
+            }
+            return f[n];
+        }
+
+        // 返回 endTime <= upper 的最大下标
+        private int search(int[][] jobs, int right, int upper) {
+            int left = -1;
+            while (left + 1 < right) {
+                int mid = (left + right) >>> 1;
+                if (jobs[mid][1] <= upper) left = mid;
+                else right = mid;
+            }
+            return left;
+        }
+
+
+    }
+
+    
 }
+
+
