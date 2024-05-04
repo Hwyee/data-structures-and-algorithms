@@ -273,8 +273,93 @@ public class Daily202405 {
 
 
     }
+    
+   
+    /**
+     * 1652. 拆炸弹:
+     * 你有一个炸弹需要拆除，时间紧迫！你的情报员会给你一个长度为 n 的 循环 数组 code 以及一个密钥 k 。
+     *
+     * 为了获得正确的密码，你需要替换掉每一个数字。所有数字会 同时 被替换。
+     *
+     * 如果 k > 0 ，将第 i 个数字用 接下来 k 个数字之和替换。
+     * 如果 k < 0 ，将第 i 个数字用 之前 k 个数字之和替换。
+     * 如果 k == 0 ，将第 i 个数字用 0 替换。
+     * 由于 code 是循环的， code[n-1] 下一个元素是 code[0] ，且 code[0] 前一个元素是 code[n-1] 。
+     *
+     * 给你 循环 数组 code 和整数密钥 k ，请你返回解密后的结果来拆除炸弹！
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/4 23:59
+     */
+    class Solution_5_1 {
+        public int[] decrypt(int[] code, int k) {
+            int[] ans = new int[code.length];
+            if(k>0){
+                int sum = 0;
+                for (int i = 1; i <= k; i++) {
+                    sum += code[i];
+                }
+                for (int i = 0; i < code.length; i++) {
+                    ans[i] = sum;
+                    sum -= code[(i+1)%code.length];
+                    sum += code[(i+k+1)%code.length];
+                }
+            }else if (k <0){
+                int sum = 0;
+                for (int i = code.length-1; i >= code.length+k; i--) {
+                    sum += code[i];
+                }
+                for (int i = 0; i < code.length; i++) {
+                    ans[i] = sum;
+                    sum += code[i];
+                    sum -= code[(i+k+code.length)%code.length];
+                }
+            }
+            return ans;
+        }
+
+        /**
+         * decryptGF:
+         * 滑动窗口
+         * 搞了个原数组的两倍容量，使用滑动窗口
+         * @author hui
+         * @version 1.0
+         * @param code
+         * @param k
+         * @return int[]
+         * @date 2024/5/5 0:39
+         */
+        public int[] decryptGF(int[] code, int k) {
+            int n = code.length;
+            if (k == 0) {
+                return new int[n];
+            }
+            int[] res = new int[n];
+            int[] newCode = new int[n * 2];
+            System.arraycopy(code, 0, newCode, 0, n);
+            System.arraycopy(code, 0, newCode, n, n);
+            code = newCode;
+            int l = k > 0 ? 1 : n + k;
+            int r = k > 0 ? k : n - 1;
+            int w = 0;
+            for (int i = l; i <= r; i++) {
+                w += code[i];
+            }
+            for (int i = 0; i < n; i++) {
+                res[i] = w;
+                w -= code[l];
+                w += code[r + 1];
+                l++;
+                r++;
+            }
+            return res;
+        }
+    }
+
+}
 
     
-}
+
 
 
