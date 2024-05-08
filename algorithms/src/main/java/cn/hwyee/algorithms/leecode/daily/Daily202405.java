@@ -357,6 +357,149 @@ public class Daily202405 {
         }
     }
 
+    /**
+     * 741. 摘樱桃:
+     * 给你一个 n x n 的网格 grid ，代表一块樱桃地，每个格子由以下三种数字的一种来表示：
+     *
+     * 0 表示这个格子是空的，所以你可以穿过它。
+     * 1 表示这个格子里装着一个樱桃，你可以摘到樱桃然后穿过它。
+     * -1 表示这个格子里有荆棘，挡着你的路。
+     * 请你统计并返回：在遵守下列规则的情况下，能摘到的最多樱桃数：
+     *
+     * 从位置 (0, 0) 出发，最后到达 (n - 1, n - 1) ，只能向下或向右走，并且只能穿越有效的格子（即只可以穿过值为 0 或者 1 的格子）；
+     * 当到达 (n - 1, n - 1) 后，你要继续走，直到返回到 (0, 0) ，只能向上或向左走，并且只能穿越有效的格子；
+     * 当你经过一个格子且这个格子包含一个樱桃时，你将摘到樱桃并且这个格子会变成空的（值变为 0 ）；
+     * 如果在 (0, 0) 和 (n - 1, n - 1) 之间不存在一条可经过的路径，则无法摘到任何一个樱桃。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/6 1:05
+     */
+    class Solution_6_1 {
+        public int cherryPickupGF(int[][] grid) {
+            int n = grid.length;
+            int[][] f = new int[n][n];
+            for (int i = 0; i < n; ++i) {
+                Arrays.fill(f[i], Integer.MIN_VALUE);
+            }
+            f[0][0] = grid[0][0];
+            for (int k = 1; k < n * 2 - 1; ++k) {
+                for (int x1 = Math.min(k, n - 1); x1 >= Math.max(k - n + 1, 0); --x1) {
+                    for (int x2 = Math.min(k, n - 1); x2 >= x1; --x2) {
+                        int y1 = k - x1, y2 = k - x2;
+                        if (grid[x1][y1] == -1 || grid[x2][y2] == -1) {
+                            f[x1][x2] = Integer.MIN_VALUE;
+                            continue;
+                        }
+                        int res = f[x1][x2]; // 都往右
+                        if (x1 > 0) {
+                            res = Math.max(res, f[x1 - 1][x2]); // 往下，往右
+                        }
+                        if (x2 > 0) {
+                            res = Math.max(res, f[x1][x2 - 1]); // 往右，往下
+                        }
+                        if (x1 > 0 && x2 > 0) {
+                            res = Math.max(res, f[x1 - 1][x2 - 1]); // 都往下
+                        }
+                        res += grid[x1][y1];
+                        if (x2 != x1) { // 避免重复摘同一个樱桃
+                            res += grid[x2][y2];
+                        }
+                        f[x1][x2] = res;
+                    }
+                }
+            }
+            return Math.max(f[n - 1][n - 1], 0);
+        }
+    }
+
+    /**
+     * 1463. 摘樱桃 II:
+     * 给你一个 rows x cols 的矩阵 grid 来表示一块樱桃地。 grid 中每个格子的数字表示你能获得的樱桃数目。
+     *
+     * 你有两个机器人帮你收集樱桃，机器人 1 从左上角格子 (0,0) 出发，机器人 2 从右上角格子 (0, cols-1) 出发。
+     *
+     * 请你按照如下规则，返回两个机器人能收集的最多樱桃数目：
+     *
+     * 从格子 (i,j) 出发，机器人可以移动到格子 (i+1, j-1)，(i+1, j) 或者 (i+1, j+1) 。
+     * 当一个机器人经过某个格子时，它会把该格子内所有的樱桃都摘走，然后这个位置会变成空格子，即没有樱桃的格子。
+     * 当两个机器人同时到达同一个格子时，它们中只有一个可以摘到樱桃。
+     * 两个机器人在任意时刻都不能移动到 grid 外面。
+     * 两个机器人最后都要到达 grid 最底下一行。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/7 9:36
+     */
+    class Solution_7_1 {
+        public int cherryPickupLS(int[][] grid) {
+            int m = grid.length, n = grid[0].length;
+            int[][] pre = new int[n + 2][n + 2];
+            int[][] cur = new int[n + 2][n + 2];
+            for (int i = m - 1; i >= 0; i--) {
+                //j的最大值为n-1，最后趋于0（i=0时）.
+                for (int j = 0; j < Math.min(n, i + 1); j++) {
+                    //k的最小值为j+1,因为j和k相同时，只能有一个取到樱桃，最后趋于n-1（i=0时）.
+                    for (int k = Math.max(j + 1, n - 1 - i); k < n; k++) {
+                        cur[j + 1][k + 1] = max(
+                                pre[j][k], pre[j][k + 1], pre[j][k + 2],
+                                pre[j + 1][k], pre[j + 1][k + 1], pre[j + 1][k + 2],
+                                pre[j + 2][k], pre[j + 2][k + 1], pre[j + 2][k + 2]
+                        ) + grid[i][j] + grid[i][k];
+                    }
+                }
+                int[][] tmp = pre;
+                pre = cur; // 下一个 i 的 pre 是 cur
+                cur = tmp;
+            }
+            return pre[1][n];
+        }
+
+        private int max(int x, int... y) {
+            for (int v : y) {
+                x = Math.max(x, v);
+            }
+            return x;
+        }
+
+    }
+
+    /**
+     * 2079. 给植物浇水:
+     * 你打算用一个水罐给花园里的 n 株植物浇水。植物排成一行，从左到右进行标记，编号从 0 到 n - 1 。
+     * 其中，第 i 株植物的位置是 x = i 。x = -1 处有一条河，你可以在那里重新灌满你的水罐。
+     *
+     * 每一株植物都需要浇特定量的水。你将会按下面描述的方式完成浇水：
+     *
+     * 按从左到右的顺序给植物浇水。
+     * 在给当前植物浇完水之后，如果你没有足够的水 完全 浇灌下一株植物，那么你就需要返回河边重新装满水罐。
+     * 你 不能 提前重新灌满水罐。
+     * 最初，你在河边（也就是，x = -1），在 x 轴上每移动 一个单位 都需要 一步 。
+     *
+     * 给你一个下标从 0 开始的整数数组 plants ，数组由 n 个整数组成。其中，plants[i] 为第 i 株植物需要的水量。
+     * 另有一个整数 capacity 表示水罐的容量，返回浇灌所有植物需要的 步数 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/8 11:47
+     */
+    class Solution_8_1 {
+        public int wateringPlants(int[] plants, int capacity) {
+            int ans = 0;
+            int cur = capacity;
+            for (int i = 0; i < plants.length; i++) {
+                int water = plants[i];
+                if (cur<water){
+                    cur = capacity-water;
+                    ans = ans + i*2 + 1;
+                }else {
+                    cur = cur-water;
+                    ans = ans + 1;
+                }
+            }
+            return ans;
+        }
+    }
 }
 
     
