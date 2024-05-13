@@ -3,8 +3,12 @@ package cn.hwyee.algorithms.leecode.daily;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.stream.IntStream;
 
 
@@ -21,6 +25,8 @@ public class Daily202405 {
     public static void main(String[] args) {
         Solution_1_1 solution11 = new Solution_1_1();
         solution11.totalCost(new int[]{31, 25, 72, 79, 74, 65, 84, 91, 18, 59, 27, 9, 81, 33, 17, 58}, 11, 2);
+        Solution_12_1 solution121 = new Solution_12_1();
+        System.out.println(solution121.minDays(429));
     }
 
     /**
@@ -610,7 +616,7 @@ public class Daily202405 {
             int garbageCarTime = 0;
             int garbageTime = 0;
             // M 0 P 1 G 2
-            int[] carTime = new int[]{-1,-1,-1};
+            int[] carTime = new int[]{-1, -1, -1};
             for (int i = garbage.length - 1; i >= 0; i--) {
                 String temp = garbage[i];
                 garbageTime += temp.length();
@@ -629,13 +635,222 @@ public class Daily202405 {
             }
             int ans = 0;
             for (int i : carTime) {
-                if (i!=-1){
-                    ans += (garbageCarTime-i);
+                if (i != -1) {
+                    ans += (garbageCarTime - i);
                 }
             }
-            return ans+garbageTime;
+            return ans + garbageTime;
         }
     }
+
+    /**
+     * 1553. 吃掉 N 个橘子的最少天数:
+     * 厨房里总共有 n 个橘子，你决定每一天选择如下方式之一吃这些橘子：
+     * <p>
+     * 吃掉一个橘子。
+     * 如果剩余橘子数 n 能被 2 整除，那么你可以吃掉 n/2 个橘子。
+     * 如果剩余橘子数 n 能被 3 整除，那么你可以吃掉 2*(n/3) 个橘子。
+     * 每天你只能从以上 3 种方案中选择一种方案。
+     * <p>
+     * 请你返回吃掉所有 n 个橘子的最少天数。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/5/12 11:23
+     */
+    static class Solution_12_1 {
+        public int minDays(int n) {
+            int ans = 0;
+            if ((n & n - 1) == 0) {
+                while (n > 0) {
+                    if (n > 1) {
+                        n >>= 1;
+                    } else {
+                        n--;
+                    }
+                    ans++;
+                }
+                return ans;
+            }
+            int temp = n;
+            while (n > 0) {
+                System.out.println(n);
+                if ((n > 9) && (n - 1) % 9 == 0) {
+                    n--;
+                } else {
+                    if (n % 3 == 0) {
+                        n /= 3;
+                    } else if (n % 2 == 0) {
+                        n /= 2;
+                    } else {
+                        n--;
+                    }
+                }
+                ans++;
+            }
+            int res = 0;
+            while (temp > 0) {
+                System.out.println(temp);
+                if ((temp - 2) % 3 == 0) {
+                    temp -= 2;
+                    res++;
+                } else {
+                    if (temp % 3 == 0) {
+                        temp /= 3;
+                    } else if (temp % 2 == 0) {
+                        temp /= 2;
+                    } else {
+                        temp--;
+                    }
+                }
+                res++;
+            }
+
+            return Math.min(res, ans);
+        }
+
+        private static final Map<Integer, Integer> map = new HashMap<>();
+
+        public int minDaysLC(int n) {
+            switch (n) {
+                case 1:
+                    return 1;
+                case 2:
+                    return 2;
+                case 3:
+                    return 2;
+            }
+            Integer v = map.get(n);
+            if (v != null) {
+                return v;
+            }
+            v = Math.min((n % 3 + 1) + minDays(n / 3), (n % 2 + 1) + minDays(n / 2));
+            map.put(n, v);
+            return v;
+        }
+
+    }
+
+    /**
+     * 994. 腐烂的橘子:
+     * 在给定的 m x n 网格 grid 中，每个单元格可以有以下三个值之一：
+     * <p>
+     * 值 0 代表空单元格；
+     * 值 1 代表新鲜橘子；
+     * 值 2 代表腐烂的橘子。
+     * 每分钟，腐烂的橘子 周围 4 个方向上相邻 的新鲜橘子都会腐烂。
+     * <p>
+     * 返回 直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1 。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/5/13 22:35
+     */
+    class Solution_13_1 {
+        public int orangesRotting(int[][] grid) {
+            int ans = 0;
+            int[][] temp = new int[grid.length][grid[0].length];
+
+            for (int i = 0; i < grid.length; i++) {
+                temp[i] = new int[grid[0].length];
+                System.arraycopy(grid[i], 0, temp[i], 0, grid[0].length);
+            }
+            while (true) {
+                boolean flag = false; //未感染
+                boolean haveFresh = false;
+                for (int i = 0; i < grid.length; i++) {
+                    for (int j = 0; j < grid[0].length; j++) {
+                        if (grid[i][j] == 1) {
+                            haveFresh = true;
+                            if (i > 0 && grid[i - 1][j] == 2) {
+                                temp[i][j] = 2;
+                                flag = true;
+                            }
+                            if (i < grid.length - 1 && grid[i + 1][j] == 2) {
+                                temp[i][j] = 2;
+                                flag = true;
+                            }
+                            if (j > 0 && grid[i][j - 1] == 2) {
+                                temp[i][j] = 2;
+                                flag = true;
+                            }
+                            if (j < grid[0].length - 1 && grid[i][j + 1] == 2) {
+                                temp[i][j] = 2;
+                                flag = true;
+                            }
+                        }
+                    }
+                }
+                if (flag) {
+                    ans++;
+                    for (int i = 0; i < grid.length; i++) {
+                        System.arraycopy(temp[i], 0, grid[i], 0, grid[0].length);
+                    }
+                } else if (haveFresh){
+                    return -1;
+                }else {
+                    return ans;
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 官方解法:
+     * 没我的快
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/5/13 23:11
+     */
+    class Solution_13_2 {
+        int[] dr = new int[]{-1, 0, 1, 0};
+        int[] dc = new int[]{0, -1, 0, 1};
+
+        public int orangesRotting(int[][] grid) {
+            int R = grid.length, C = grid[0].length;
+            Queue<Integer> queue = new ArrayDeque<Integer>();
+            Map<Integer, Integer> depth = new HashMap<Integer, Integer>();
+            for (int r = 0; r < R; ++r) {
+                for (int c = 0; c < C; ++c) {
+                    if (grid[r][c] == 2) {
+                        int code = r * C + c;
+                        queue.add(code);
+                        depth.put(code, 0);
+                    }
+                }
+            }
+            int ans = 0;
+            //求 腐烂橘子的上下左右是否有新鲜的，有的话腐烂，并且将这个加入到队列中进行遍历，这样最差要进行4mn次遍历
+            while (!queue.isEmpty()) {
+                int code = queue.remove();
+                int r = code / C, c = code % C;
+                for (int k = 0; k < 4; ++k) {
+                    int nr = r + dr[k];
+                    int nc = c + dc[k];
+                    if (0 <= nr && nr < R && 0 <= nc && nc < C && grid[nr][nc] == 1) {
+                        grid[nr][nc] = 2;
+                        int ncode = nr * C + nc;
+                        queue.add(ncode);
+                        depth.put(ncode, depth.get(code) + 1);
+                        ans = depth.get(ncode);
+                    }
+                }
+            }
+            for (int[] row: grid) {
+                for (int v: row) {
+                    if (v == 1) {
+                        return -1;
+                    }
+                }
+            }
+            return ans;
+        }
+    }
+
 
 }
 
