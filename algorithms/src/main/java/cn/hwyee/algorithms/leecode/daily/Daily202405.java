@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -846,6 +848,45 @@ public class Daily202405 {
                         return -1;
                     }
                 }
+            }
+            return ans;
+        }
+    }
+
+    /**
+     * 2244. 完成所有任务需要的最少轮数:
+     * 给你一个下标从 0 开始的整数数组 tasks ，其中 tasks[i] 表示任务的难度级别。在每一轮中，你可以完成 2 个或者 3 个 相同难度级别 的任务。
+     *
+     * 返回完成所有任务需要的 最少 轮数，如果无法完成所有任务，返回 -1 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/14 22:45
+     */
+    class Solution_14_1 {
+        public int minimumRounds(int[] tasks) {
+            Arrays.sort(tasks);
+            List<Integer> list = new ArrayList<Integer>();
+            int old = tasks[0];
+            int c = 0;
+            for (int task : tasks) {
+                if (task != old) {
+                    list.add(c);
+                    old = task;
+                    c=1;
+                }else {
+                    c++;
+                }
+            }
+            list.add(c);
+            int ans = 0;
+            for (int i = 0; i < list.size(); i++) {
+                c = list.get(i);
+                if (c == 1) {
+                    return -1;
+                }
+                //from 灵神.
+                ans += (c + 2) / 3;
             }
             return ans;
         }
