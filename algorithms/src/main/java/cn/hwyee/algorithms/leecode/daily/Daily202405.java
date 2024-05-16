@@ -790,9 +790,9 @@ public class Daily202405 {
                     for (int i = 0; i < grid.length; i++) {
                         System.arraycopy(temp[i], 0, grid[i], 0, grid[0].length);
                     }
-                } else if (haveFresh){
+                } else if (haveFresh) {
                     return -1;
-                }else {
+                } else {
                     return ans;
                 }
             }
@@ -803,6 +803,7 @@ public class Daily202405 {
     /**
      * 官方解法:
      * 没我的快
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -842,8 +843,8 @@ public class Daily202405 {
                     }
                 }
             }
-            for (int[] row: grid) {
-                for (int v: row) {
+            for (int[] row : grid) {
+                for (int v : row) {
                     if (v == 1) {
                         return -1;
                     }
@@ -856,11 +857,12 @@ public class Daily202405 {
     /**
      * 2244. 完成所有任务需要的最少轮数:
      * 给你一个下标从 0 开始的整数数组 tasks ，其中 tasks[i] 表示任务的难度级别。在每一轮中，你可以完成 2 个或者 3 个 相同难度级别 的任务。
-     *
+     * <p>
      * 返回完成所有任务需要的 最少 轮数，如果无法完成所有任务，返回 -1 。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/14 22:45
      */
     class Solution_14_1 {
@@ -873,8 +875,8 @@ public class Daily202405 {
                 if (task != old) {
                     list.add(c);
                     old = task;
-                    c=1;
-                }else {
+                    c = 1;
+                } else {
                     c++;
                 }
             }
@@ -889,6 +891,96 @@ public class Daily202405 {
                 ans += (c + 2) / 3;
             }
             return ans;
+        }
+    }
+
+    /**
+     * 2589. 完成所有任务的最少时间:
+     * 你有一台电脑，它可以 同时 运行无数个任务。给你一个二维整数数组 tasks ，
+     * 其中 tasks[i] = [starti, endi, durationi] 表示第 i 个任务需要在 闭区间 时间段 [starti, endi] 内运行 durationi 个整数时间点（但不需要连续）。
+     * <p>
+     * 当电脑需要运行任务时，你可以打开电脑，如果空闲时，你可以将电脑关闭。
+     * <p>
+     * 请你返回完成所有任务的情况下，电脑最少需要运行多少秒。
+     * 2 3 1
+     * 4 5 1
+     * 1 5 2
+     * <p>
+     * 1 3 2
+     * 2 5 3
+     * 5 6 2
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/5/15 11:17
+     */
+    class Solution_15_1 {
+        public int findMinimumTime(int[][] tasks) {
+            //
+            return 0;
+        }
+
+        public int findMinimumTimeGFGreed(int[][] tasks) {
+            int n = tasks.length;
+            Arrays.sort(tasks, (a, b) -> a[1] - b[1]);
+            int[] run = new int[tasks[n - 1][1] + 1];
+            int res = 0;
+            for (int i = 0; i < n; i++) {
+                int start = tasks[i][0], end = tasks[i][1], duration = tasks[i][2];
+                for (int j = start; j <= end; j++) {
+                    duration -= run[j];
+                }
+                res += Math.max(duration, 0);
+                for (int j = end; j >= 0 && duration > 0; j--) {
+                    if (run[j] == 0) {
+                        duration--;
+                        run[j] = 1;
+                    }
+                }
+            }
+            return res;
+        }
+
+    }
+
+    /**
+     * 1953. 你可以工作的最大周数:
+     * 给你 n 个项目，编号从 0 到 n - 1 。同时给你一个整数数组 milestones ，其中每个 milestones[i] 表示第 i 个项目中的阶段任务数量。
+     * <p>
+     * 你可以按下面两个规则参与项目中的工作：
+     * <p>
+     * 每周，你将会完成 某一个 项目中的 恰好一个 阶段任务。你每周都 必须 工作。
+     * 在 连续的 两周中，你 不能 参与并完成同一个项目中的两个阶段任务。
+     * 一旦所有项目中的全部阶段任务都完成，或者仅剩余一个阶段任务都会导致你违反上面的规则，那么你将 停止工作 。
+     * 注意，由于这些条件的限制，你可能无法完成所有阶段任务。
+     * <p>
+     * 返回在不违反上面规则的情况下你 最多 能工作多少周。
+     *
+     * 项目数的最大值 <= 剩余项目的最大值 + 1就可以完成所有工作
+     * longest≤rest+1.
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/5/16 20:34
+     */
+    class Solution_16_1 {
+        public long numberOfWeeks(int[] milestones) {
+
+            long sum = 0;
+            int max = 0;
+            for (int i = 0; i < milestones.length; i++) {
+
+                max = Math.max(max, milestones[i]);
+                sum += milestones[i];
+            }
+            long res = sum - max;
+            if (max <= res + 1) {
+                return sum;
+            } else {
+                return res * 2 + 1;
+            }
+
         }
     }
 
