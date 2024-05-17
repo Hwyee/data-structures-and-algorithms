@@ -984,6 +984,61 @@ public class Daily202405 {
         }
     }
 
+    /**
+     * 826. 安排工作以达到最大收益:
+     * 你有 n 个工作和 m 个工人。给定三个数组： difficulty, profit 和 worker ，其中:
+     *
+     * difficulty[i] 表示第 i 个工作的难度，profit[i] 表示第 i 个工作的收益。
+     * worker[i] 是第 i 个工人的能力，即该工人只能完成难度小于等于 worker[i] 的工作。
+     * 每个工人 最多 只能安排 一个 工作，但是一个工作可以 完成多次 。
+     *
+     * 举个例子，如果 3 个工人都尝试完成一份报酬为 $1 的同样工作，那么总收益为 $3 。如果一个工人不能完成任何工作，他的收益为 $0 。
+     * 返回 在把工人分配到工作岗位后，我们所能获得的最大利润 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/17 23:04
+     */
+    class Solution_17_1 {
+        int a = 1000_000;
+        public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+            int ans = 0;
+            for (int i = 0; i < worker.length; i++) {
+                int money = 0;
+                for (int j = 0; j < difficulty.length; j++) {
+                    if (worker[i] >= difficulty[j] && money <= profit[j]) {
+                        money = profit[j];
+                    }
+                }
+
+                ans+=money;
+            }
+            return ans;
+        }
+
+        public int maxProfitAssignmentLS(int[] difficulty, int[] profit, int[] worker) {
+            int n = difficulty.length;
+            int[][] jobs = new int[n][2];
+            for (int i = 0; i < n; i++) {
+                jobs[i][0] = difficulty[i];
+                jobs[i][1] = profit[i];
+            }
+            Arrays.sort(jobs, (a, b) -> a[0] - b[0]);
+            Arrays.sort(worker);
+            int ans = 0, j = 0, maxProfit = 0;
+            for (int w : worker) {
+                while (j < n && jobs[j][0] <= w) {
+                    maxProfit = Math.max(maxProfit, jobs[j++][1]);
+                }
+                ans += maxProfit;
+            }
+            return ans;
+        }
+
+
+
+    }
+
 
 }
 
