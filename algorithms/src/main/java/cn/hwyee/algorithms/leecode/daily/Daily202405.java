@@ -1039,6 +1039,45 @@ public class Daily202405 {
 
     }
 
+    /**
+     * 2644. 找出可整除性得分最大的整数:
+     * 给你两个下标从 0 开始的整数数组 nums 和 divisors 。
+     *
+     * divisors[i] 的 可整除性得分 等于满足 nums[j] 能被 divisors[i] 整除的下标 j 的数量。
+     *
+     * 返回 可整除性得分 最大的整数 divisors[i] 。如果有多个整数具有最大得分，则返回数值最小的一个。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/18 11:38
+     */
+    class Solution_18_1 {
+        public int maxDivScore(int[] nums, int[] divisors) {
+            int ans = 0;
+            int max = 0;
+            int min = Integer.MAX_VALUE;
+            for (int divisor : divisors) {
+                if (divisor < min){
+                    min = divisor;
+                }
+                int temp = 0;
+                for (int num : nums) {
+                    if (num % divisor == 0) {
+                        temp++;
+                    }
+                }
+                if (temp > max) {
+                    max = temp;
+                    ans = divisor;
+                }
+                if (temp == max) {
+                    ans = Math.min(ans, divisor);
+                }
+            }
+            return ans==0? min : ans;
+        }
+    }
+
 
 }
 
