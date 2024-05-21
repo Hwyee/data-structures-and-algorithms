@@ -1078,7 +1078,107 @@ public class Daily202405 {
         }
     }
 
+    /**
+     * 1535. 找出数组游戏的赢家:
+     * 给你一个由 不同 整数组成的整数数组 arr 和一个整数 k 。
+     *
+     * 每回合游戏都在数组的前两个元素（即 arr[0] 和 arr[1] ）之间进行。比较 arr[0] 与 arr[1] 的大小，
+     * 较大的整数将会取得这一回合的胜利并保留在位置 0 ，较小的整数移至数组的末尾。当一个整数赢得 k 个连续回合时，游戏结束，该整数就是比赛的 赢家 。
+     *
+     * 返回赢得比赛的整数。
+     *
+     * 题目数据 保证 游戏存在赢家。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/19 9:43
+     */
+    class Solution_19_1 {
+        public int getWinner(int[] arr, int k) {
+            int ans = 0;
+            int len = arr.length;
+            int i = 1;
+            while(true){
+                if(arr[0]>arr[i]){
+                    ans++;
+                    i++;
+//                    int temp = arr[i];
+//                    System.arraycopy(arr, 2, arr, 1, len-2);
+//                    arr[len-1] = temp;
+                }else{
+                    ans=1;
+                    int temp = arr[0];
+                    arr[0] = arr[1];
+                    arr[i] = temp;
+                    i++;
+                }
+                if (i == len){
+                    i=1;
+                }
+                if (ans==k || ans>=len-1){
+                    return arr[0];
+                }
+            }
+        }
+    }
 
+    /**
+     * 1542. 找出最长的超赞子字符串:
+     * 给你一个字符串 s 。请返回 s 中最长的 超赞子字符串 的长度。
+     *
+     * 「超赞子字符串」需满足满足下述两个条件：
+     *
+     * 该字符串是 s 的一个非空子字符串
+     * 进行任意次数的字符交换后，该字符串可以变成一个回文字符串
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/20 20:26
+     */
+    class Solution_20_1 {
+        public int longestAwesomeGF(String s) {
+            int n = s.length();
+            Map<Integer, Integer> prefix = new HashMap<Integer, Integer>();
+            prefix.put(0, -1);
+            int ans = 0;
+            int sequence = 0;
+            for (int j = 0; j < n; ++j) {
+                int digit = s.charAt(j) - '0';
+                sequence ^= (1 << digit);
+                if (prefix.containsKey(sequence)) {
+                    ans = Math.max(ans, j - prefix.get(sequence));
+                } else {
+                    prefix.put(sequence, j);
+                }
+                for (int k = 0; k < 10; ++k) {
+                    if (prefix.containsKey(sequence ^ (1 << k))) {
+                        ans = Math.max(ans, j - prefix.get(sequence ^ (1 << k)));
+                    }
+                }
+            }
+            return ans;
+        }
+    }
+
+    /**
+     * 2769. 找出最大的可达成数字:
+     * 给你两个整数 num 和 t 。
+     *
+     * 如果整数 x 可以在执行下述操作不超过 t 次的情况下变为与 num 相等，则称其为 可达成数字 ：
+     *
+     * 每次操作将 x 的值增加或减少 1 ，同时可以选择将 num 的值增加或减少 1 。
+     * 返回所有可达成数字中的最大值。可以证明至少存在一个可达成数字。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/21 9:22
+     */
+    class Solution_21_1 {
+        public int theMaximumAchievableX(int num, int t) {
+            return num+(t<<1);
+        }
+    }
+    
 }
 
     
