@@ -6,6 +6,7 @@ import lombok.val;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1177,6 +1178,94 @@ public class Daily202405 {
         public int theMaximumAchievableX(int num, int t) {
             return num+(t<<1);
         }
+    }
+
+    /**
+     * 2225. 找出输掉零场或一场比赛的玩家:
+     * 给你一个整数数组 matches 其中 matches[i] = [winneri, loseri] 表示在一场比赛中 winneri 击败了 loseri 。
+     *
+     * 返回一个长度为 2 的列表 answer ：
+     *
+     * answer[0] 是所有 没有 输掉任何比赛的玩家列表。
+     * answer[1] 是所有恰好输掉 一场 比赛的玩家列表。
+     * 两个列表中的值都应该按 递增 顺序返回。
+     *
+     * 注意：
+     *
+     * 只考虑那些参与 至少一场 比赛的玩家。
+     * 生成的测试用例保证 不存在 两场比赛结果 相同 。
+     * 超时
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/22 16:14
+     */
+    class Solution_22_1 {
+        public List<List<Integer>> findWinners(int[][] matches) {
+            List<List<Integer>> ans = new ArrayList<>();
+            ArrayList<Integer> win = new ArrayList<>();
+            ArrayList<Integer> loseone = new ArrayList<>();
+            PriorityQueue<Integer> owin = new PriorityQueue<>();
+            PriorityQueue<Integer> oloseone = new PriorityQueue<>();
+            for (int[] match : matches) {
+                owin.add(match[0]);
+                oloseone.add(match[1]);
+            }
+            while (!owin.isEmpty()){
+                int temp = owin.poll();
+                if (!oloseone.contains(temp) || !win.contains(temp)){
+                    win.add(temp);
+                }
+            }
+            int pre = oloseone.poll();
+            int time = 1;
+            while (!oloseone.isEmpty()){
+                int temp = oloseone.poll();
+                if (pre==temp){
+                    time++;
+                }else {
+                    if (time==1){
+                        loseone.add(pre);
+                    }
+                    pre=temp;
+                    time=1;
+                }
+            }
+            if (time==1){
+                loseone.add(pre);
+            }
+            ans.add(win);
+            ans.add(loseone);
+            return ans;
+        }
+
+        public List<List<Integer>> findWinnersGF(int[][] matches) {
+            Map<Integer, Integer> freq = new HashMap<Integer, Integer>();
+            for (int[] match : matches) {
+                int winner = match[0], loser = match[1];
+                freq.putIfAbsent(winner, 0);
+                freq.put(loser, freq.getOrDefault(loser, 0) + 1);
+            }
+
+            List<List<Integer>> ans = new ArrayList<List<Integer>>();
+            for (int i = 0; i < 2; ++i) {
+                ans.add(new ArrayList<Integer>());
+            }
+            for (Map.Entry<Integer, Integer> entry : freq.entrySet()) {
+                int key = entry.getKey(), value = entry.getValue();
+                if (value < 2) {
+                    ans.get(value).add(key);
+                }
+            }
+
+            Collections.sort(ans.get(0));
+            Collections.sort(ans.get(1));
+            return ans;
+        }
+
+
+
+
     }
     
 }
