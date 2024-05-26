@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.stream.IntStream;
 
 
@@ -1263,10 +1264,215 @@ public class Daily202405 {
             return ans;
         }
 
+    }
 
 
+
+    /**
+     * 2831. 找出最长等值子数组:
+     * 给你一个下标从 0 开始的整数数组 nums 和一个整数 k 。
+     *
+     * 如果子数组中所有元素都相等，则认为子数组是一个 等值子数组 。注意，空数组是 等值子数组 。
+     *
+     * 从 nums 中删除最多 k 个元素后，返回可能的最长等值子数组的长度。
+     *
+     * 子数组 是数组中一个连续且可能为空的元素序列。
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/5/23 16:08
+     */
+    class Solution_23_1 {
+        public int longestEqualSubarrayLS(List<Integer> nums, int k) {
+            int n = nums.size();
+            List<Integer>[] posLists = new ArrayList[n + 1];
+            Arrays.setAll(posLists, i -> new ArrayList<>());
+            for (int i = 0; i < n; i++) {
+                int x = nums.get(i);
+                posLists[x].add(i - posLists[x].size());
+            }
+
+            int ans = 0;
+            for (List<Integer> pos : posLists) {
+                if (pos.size() <= ans) {
+                    continue; // 无法让 ans 变得更大
+                }
+                int left = 0;
+                for (int right = 0; right < pos.size(); right++) {
+                    while (pos.get(right) - pos.get(left) > k) { // 要删除的数太多了
+                        left++;
+                    }
+                    ans = Math.max(ans, right - left + 1);
+                }
+            }
+            return ans;
+        }
+    }
+
+    /**
+     * 1673. 找出最具竞争力的子序列:
+     * 给你一个整数数组 nums 和一个正整数 k ，返回长度为 k 且最具 竞争力 的 nums 子序列。
+     *
+     * 数组的子序列是从数组中删除一些元素（可能不删除元素）得到的序列。
+     *
+     * 在子序列 a 和子序列 b 第一个不相同的位置上，如果 a 中的数字小于 b 中对应的数字，
+     * 那么我们称子序列 a 比子序列 b（相同长度下）更具 竞争力 。 例如，[1,3,4] 比 [1,3,5] 更具竞争力，
+     * 在第一个不相同的位置，也就是最后一个位置上， 4 小于 5 。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/5/24 14:13
+     */
+    class Solution_24_1 {
+        public int[] mostCompetitive(int[] nums, int k) {
+            int n = nums.length;
+            int[] st = new int[k];
+            int m = 0; // 栈的大小
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                while (m > 0 && x < st[m - 1] && m + n - i > k) {
+                    m--;
+                }
+                if (m < k) {
+                    st[m++] = x;
+                }
+            }
+            return st;
+        }
+    }
+    
+    
+    /**
+     * 2903. 找出满足差值条件的下标 I:
+     * 给你一个下标从 0 开始、长度为 n 的整数数组 nums ，以及整数 indexDifference 和整数 valueDifference 。
+     *
+     * 你的任务是从范围 [0, n - 1] 内找出  2 个满足下述所有条件的下标 i 和 j ：
+     *
+     * abs(i - j) >= indexDifference 且
+     * abs(nums[i] - nums[j]) >= valueDifference
+     * 返回整数数组 answer。如果存在满足题目要求的两个下标，则 answer = [i, j] ；否则，answer = [-1, -1] 。
+     * 如果存在多组可供选择的下标对，只需要返回其中任意一组即可。
+     *
+     * 注意：i 和 j 可能 相等 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/25 15:58
+     */
+    class Solution_25_1 {
+        public int[] findIndices(int[] nums, int indexDifference, int valueDifference) {
+            int right = indexDifference;
+            for (int i = 0; i < nums.length-indexDifference; i++) {
+                for (int j = right; j < nums.length; j++) {
+                    if (Math.abs(nums[i] - nums[j]) >= valueDifference){
+                        return new int[]{i,j};
+                    }
+                }
+                right++;
+            }
+            return new int[]{-1,-1};
+        }
+
+        /**
+         * findIndicesGF:
+         * 官方一次遍历，记录left的最大值和最小值
+         * @author hui
+         * @version 1.0
+         * @param nums
+         * @param indexDifference
+         * @param valueDifference
+         * @return int[]
+         * @date 2024/5/25 16:07
+         */
+        public int[] findIndicesGF(int[] nums, int indexDifference, int valueDifference) {
+            int minIndex = 0, maxIndex = 0;
+            for (int j = indexDifference; j < nums.length; j++) {
+                int i = j - indexDifference;
+                if (nums[i] < nums[minIndex]) {
+                    minIndex = i;
+                }
+                if (nums[j] - nums[minIndex] >= valueDifference) {
+                    return new int[]{minIndex, j};
+                }
+                if (nums[i] > nums[maxIndex]) {
+                    maxIndex = i;
+                }
+                if (nums[maxIndex] - nums[j] >= valueDifference) {
+                    return new int[]{maxIndex, j};
+                }
+            }
+            return new int[]{-1, -1};
+        }
 
     }
+
+    
+    /**
+     * 1738. 找出第 K 大的异或坐标值:
+     * 给你一个二维矩阵 matrix 和一个整数 k ，矩阵大小为 m x n 由非负整数组成。
+     *
+     * 矩阵中坐标 (a, b) 的 值 可由对所有满足 0 <= i <= a < m 且 0 <= j <= b < n 的元素 matrix[i][j]（下标从 0 开始计数）执行异或运算得到。
+     *
+     * 请你找出 matrix 的所有坐标中第 k 大的值（k 的值从 1 开始计数）。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/26 18:02
+     */
+    class Solution_26_1 {
+        public int kthLargestValue(int[][] matrix, int k) {
+            PriorityQueue<Integer> queue = new PriorityQueue<>((o1,o2) -> {return o2-o1;});
+            int pre = 0;
+            int[] prearr = new int[matrix[0].length];
+            for(int i = 0;i<matrix.length;i++){
+                for(int j = 0;j<matrix[0].length;j++){
+                    pre = matrix[i][j] ^ pre;
+                    prearr[j] = pre ^ prearr[j];
+                    queue.add(prearr[j]);
+                }
+                pre = 0;
+            }
+            for(int i = 0;i<k-1;i++){
+                queue.poll();
+            }
+            return queue.poll();
+        }
+
+        /**
+         * kthLargestValueARR:
+         * 用数组比用堆块很多。。。
+         * @author hui
+         * @version 1.0
+         * @param matrix
+         * @param k
+         * @return int
+         * @date 2024/5/26 18:10
+         */
+        public int kthLargestValueARR(int[][] matrix, int k) {
+            // PriorityQueue<Integer> queue = new PriorityQueue<>((o1,o2) -> {return o2-o1;});
+            int[] ans = new int[matrix.length*matrix[0].length];
+            int pre = 0;
+            int[] prearr = new int[matrix[0].length];
+            int ai = 0;
+            for(int i = 0;i<matrix.length;i++){
+                for(int j = 0;j<matrix[0].length;j++,ai++){
+                    pre = matrix[i][j] ^ pre;
+                    prearr[j] = pre ^ prearr[j];
+                    // queue.add(prearr[j]);
+                    ans[ai] = prearr[j];
+                }
+                pre = 0;
+            }
+            // for(int i = 0;i<k-1;i++){
+            //     queue.poll();
+            // }
+            Arrays.sort(ans);
+            // return queue.poll();
+            return ans[ans.length-k];
+        }
+    }
+    
     
 }
 
