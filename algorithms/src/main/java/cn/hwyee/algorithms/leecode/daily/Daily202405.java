@@ -14,6 +14,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
 /**
@@ -958,9 +959,10 @@ public class Daily202405 {
      * 注意，由于这些条件的限制，你可能无法完成所有阶段任务。
      * <p>
      * 返回在不违反上面规则的情况下你 最多 能工作多少周。
-     *
+     * <p>
      * 项目数的最大值 <= 剩余项目的最大值 + 1就可以完成所有工作
      * longest≤rest+1.
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -989,20 +991,22 @@ public class Daily202405 {
     /**
      * 826. 安排工作以达到最大收益:
      * 你有 n 个工作和 m 个工人。给定三个数组： difficulty, profit 和 worker ，其中:
-     *
+     * <p>
      * difficulty[i] 表示第 i 个工作的难度，profit[i] 表示第 i 个工作的收益。
      * worker[i] 是第 i 个工人的能力，即该工人只能完成难度小于等于 worker[i] 的工作。
      * 每个工人 最多 只能安排 一个 工作，但是一个工作可以 完成多次 。
-     *
+     * <p>
      * 举个例子，如果 3 个工人都尝试完成一份报酬为 $1 的同样工作，那么总收益为 $3 。如果一个工人不能完成任何工作，他的收益为 $0 。
      * 返回 在把工人分配到工作岗位后，我们所能获得的最大利润 。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/17 23:04
      */
     class Solution_17_1 {
         int a = 1000_000;
+
         public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
             int ans = 0;
             for (int i = 0; i < worker.length; i++) {
@@ -1013,7 +1017,7 @@ public class Daily202405 {
                     }
                 }
 
-                ans+=money;
+                ans += money;
             }
             return ans;
         }
@@ -1038,19 +1042,19 @@ public class Daily202405 {
         }
 
 
-
     }
 
     /**
      * 2644. 找出可整除性得分最大的整数:
      * 给你两个下标从 0 开始的整数数组 nums 和 divisors 。
-     *
+     * <p>
      * divisors[i] 的 可整除性得分 等于满足 nums[j] 能被 divisors[i] 整除的下标 j 的数量。
-     *
+     * <p>
      * 返回 可整除性得分 最大的整数 divisors[i] 。如果有多个整数具有最大得分，则返回数值最小的一个。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/18 11:38
      */
     class Solution_18_1 {
@@ -1059,7 +1063,7 @@ public class Daily202405 {
             int max = 0;
             int min = Integer.MAX_VALUE;
             for (int divisor : divisors) {
-                if (divisor < min){
+                if (divisor < min) {
                     min = divisor;
                 }
                 int temp = 0;
@@ -1076,23 +1080,24 @@ public class Daily202405 {
                     ans = Math.min(ans, divisor);
                 }
             }
-            return ans==0? min : ans;
+            return ans == 0 ? min : ans;
         }
     }
 
     /**
      * 1535. 找出数组游戏的赢家:
      * 给你一个由 不同 整数组成的整数数组 arr 和一个整数 k 。
-     *
+     * <p>
      * 每回合游戏都在数组的前两个元素（即 arr[0] 和 arr[1] ）之间进行。比较 arr[0] 与 arr[1] 的大小，
      * 较大的整数将会取得这一回合的胜利并保留在位置 0 ，较小的整数移至数组的末尾。当一个整数赢得 k 个连续回合时，游戏结束，该整数就是比赛的 赢家 。
-     *
+     * <p>
      * 返回赢得比赛的整数。
-     *
+     * <p>
      * 题目数据 保证 游戏存在赢家。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/19 9:43
      */
     class Solution_19_1 {
@@ -1100,24 +1105,24 @@ public class Daily202405 {
             int ans = 0;
             int len = arr.length;
             int i = 1;
-            while(true){
-                if(arr[0]>arr[i]){
+            while (true) {
+                if (arr[0] > arr[i]) {
                     ans++;
                     i++;
 //                    int temp = arr[i];
 //                    System.arraycopy(arr, 2, arr, 1, len-2);
 //                    arr[len-1] = temp;
-                }else{
-                    ans=1;
+                } else {
+                    ans = 1;
                     int temp = arr[0];
                     arr[0] = arr[1];
                     arr[i] = temp;
                     i++;
                 }
-                if (i == len){
-                    i=1;
+                if (i == len) {
+                    i = 1;
                 }
-                if (ans==k || ans>=len-1){
+                if (ans == k || ans >= len - 1) {
                     return arr[0];
                 }
             }
@@ -1127,14 +1132,15 @@ public class Daily202405 {
     /**
      * 1542. 找出最长的超赞子字符串:
      * 给你一个字符串 s 。请返回 s 中最长的 超赞子字符串 的长度。
-     *
+     * <p>
      * 「超赞子字符串」需满足满足下述两个条件：
-     *
+     * <p>
      * 该字符串是 s 的一个非空子字符串
      * 进行任意次数的字符交换后，该字符串可以变成一个回文字符串
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/20 20:26
      */
     class Solution_20_1 {
@@ -1165,40 +1171,42 @@ public class Daily202405 {
     /**
      * 2769. 找出最大的可达成数字:
      * 给你两个整数 num 和 t 。
-     *
+     * <p>
      * 如果整数 x 可以在执行下述操作不超过 t 次的情况下变为与 num 相等，则称其为 可达成数字 ：
-     *
+     * <p>
      * 每次操作将 x 的值增加或减少 1 ，同时可以选择将 num 的值增加或减少 1 。
      * 返回所有可达成数字中的最大值。可以证明至少存在一个可达成数字。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/21 9:22
      */
     class Solution_21_1 {
         public int theMaximumAchievableX(int num, int t) {
-            return num+(t<<1);
+            return num + (t << 1);
         }
     }
 
     /**
      * 2225. 找出输掉零场或一场比赛的玩家:
      * 给你一个整数数组 matches 其中 matches[i] = [winneri, loseri] 表示在一场比赛中 winneri 击败了 loseri 。
-     *
+     * <p>
      * 返回一个长度为 2 的列表 answer ：
-     *
+     * <p>
      * answer[0] 是所有 没有 输掉任何比赛的玩家列表。
      * answer[1] 是所有恰好输掉 一场 比赛的玩家列表。
      * 两个列表中的值都应该按 递增 顺序返回。
-     *
+     * <p>
      * 注意：
-     *
+     * <p>
      * 只考虑那些参与 至少一场 比赛的玩家。
      * 生成的测试用例保证 不存在 两场比赛结果 相同 。
      * 超时
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/22 16:14
      */
     class Solution_22_1 {
@@ -1212,27 +1220,27 @@ public class Daily202405 {
                 owin.add(match[0]);
                 oloseone.add(match[1]);
             }
-            while (!owin.isEmpty()){
+            while (!owin.isEmpty()) {
                 int temp = owin.poll();
-                if (!oloseone.contains(temp) || !win.contains(temp)){
+                if (!oloseone.contains(temp) || !win.contains(temp)) {
                     win.add(temp);
                 }
             }
             int pre = oloseone.poll();
             int time = 1;
-            while (!oloseone.isEmpty()){
+            while (!oloseone.isEmpty()) {
                 int temp = oloseone.poll();
-                if (pre==temp){
+                if (pre == temp) {
                     time++;
-                }else {
-                    if (time==1){
+                } else {
+                    if (time == 1) {
                         loseone.add(pre);
                     }
-                    pre=temp;
-                    time=1;
+                    pre = temp;
+                    time = 1;
                 }
             }
-            if (time==1){
+            if (time == 1) {
                 loseone.add(pre);
             }
             ans.add(win);
@@ -1267,16 +1275,16 @@ public class Daily202405 {
     }
 
 
-
     /**
      * 2831. 找出最长等值子数组:
      * 给你一个下标从 0 开始的整数数组 nums 和一个整数 k 。
-     *
+     * <p>
      * 如果子数组中所有元素都相等，则认为子数组是一个 等值子数组 。注意，空数组是 等值子数组 。
-     *
+     * <p>
      * 从 nums 中删除最多 k 个元素后，返回可能的最长等值子数组的长度。
-     *
+     * <p>
      * 子数组 是数组中一个连续且可能为空的元素序列。
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -1312,9 +1320,9 @@ public class Daily202405 {
     /**
      * 1673. 找出最具竞争力的子序列:
      * 给你一个整数数组 nums 和一个正整数 k ，返回长度为 k 且最具 竞争力 的 nums 子序列。
-     *
+     * <p>
      * 数组的子序列是从数组中删除一些元素（可能不删除元素）得到的序列。
-     *
+     * <p>
      * 在子序列 a 和子序列 b 第一个不相同的位置上，如果 a 中的数字小于 b 中对应的数字，
      * 那么我们称子序列 a 比子序列 b（相同长度下）更具 竞争力 。 例如，[1,3,4] 比 [1,3,5] 更具竞争力，
      * 在第一个不相同的位置，也就是最后一个位置上， 4 小于 5 。
@@ -1341,48 +1349,50 @@ public class Daily202405 {
             return st;
         }
     }
-    
-    
+
+
     /**
      * 2903. 找出满足差值条件的下标 I:
      * 给你一个下标从 0 开始、长度为 n 的整数数组 nums ，以及整数 indexDifference 和整数 valueDifference 。
-     *
+     * <p>
      * 你的任务是从范围 [0, n - 1] 内找出  2 个满足下述所有条件的下标 i 和 j ：
-     *
+     * <p>
      * abs(i - j) >= indexDifference 且
      * abs(nums[i] - nums[j]) >= valueDifference
      * 返回整数数组 answer。如果存在满足题目要求的两个下标，则 answer = [i, j] ；否则，answer = [-1, -1] 。
      * 如果存在多组可供选择的下标对，只需要返回其中任意一组即可。
-     *
+     * <p>
      * 注意：i 和 j 可能 相等 。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/25 15:58
      */
     class Solution_25_1 {
         public int[] findIndices(int[] nums, int indexDifference, int valueDifference) {
             int right = indexDifference;
-            for (int i = 0; i < nums.length-indexDifference; i++) {
+            for (int i = 0; i < nums.length - indexDifference; i++) {
                 for (int j = right; j < nums.length; j++) {
-                    if (Math.abs(nums[i] - nums[j]) >= valueDifference){
-                        return new int[]{i,j};
+                    if (Math.abs(nums[i] - nums[j]) >= valueDifference) {
+                        return new int[]{i, j};
                     }
                 }
                 right++;
             }
-            return new int[]{-1,-1};
+            return new int[]{-1, -1};
         }
 
         /**
          * findIndicesGF:
          * 官方一次遍历，记录left的最大值和最小值
-         * @author hui
-         * @version 1.0
+         *
          * @param nums
          * @param indexDifference
          * @param valueDifference
          * @return int[]
+         * @author hui
+         * @version 1.0
          * @date 2024/5/25 16:07
          */
         public int[] findIndicesGF(int[] nums, int indexDifference, int valueDifference) {
@@ -1407,33 +1417,36 @@ public class Daily202405 {
 
     }
 
-    
+
     /**
      * 1738. 找出第 K 大的异或坐标值:
      * 给你一个二维矩阵 matrix 和一个整数 k ，矩阵大小为 m x n 由非负整数组成。
-     *
+     * <p>
      * 矩阵中坐标 (a, b) 的 值 可由对所有满足 0 <= i <= a < m 且 0 <= j <= b < n 的元素 matrix[i][j]（下标从 0 开始计数）执行异或运算得到。
-     *
+     * <p>
      * 请你找出 matrix 的所有坐标中第 k 大的值（k 的值从 1 开始计数）。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/5/26 18:02
      */
     class Solution_26_1 {
         public int kthLargestValue(int[][] matrix, int k) {
-            PriorityQueue<Integer> queue = new PriorityQueue<>((o1,o2) -> {return o2-o1;});
+            PriorityQueue<Integer> queue = new PriorityQueue<>((o1, o2) -> {
+                return o2 - o1;
+            });
             int pre = 0;
             int[] prearr = new int[matrix[0].length];
-            for(int i = 0;i<matrix.length;i++){
-                for(int j = 0;j<matrix[0].length;j++){
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix[0].length; j++) {
                     pre = matrix[i][j] ^ pre;
                     prearr[j] = pre ^ prearr[j];
                     queue.add(prearr[j]);
                 }
                 pre = 0;
             }
-            for(int i = 0;i<k-1;i++){
+            for (int i = 0; i < k - 1; i++) {
                 queue.poll();
             }
             return queue.poll();
@@ -1442,21 +1455,22 @@ public class Daily202405 {
         /**
          * kthLargestValueARR:
          * 用数组比用堆块很多。。。
-         * @author hui
-         * @version 1.0
+         *
          * @param matrix
          * @param k
          * @return int
+         * @author hui
+         * @version 1.0
          * @date 2024/5/26 18:10
          */
         public int kthLargestValueARR(int[][] matrix, int k) {
             // PriorityQueue<Integer> queue = new PriorityQueue<>((o1,o2) -> {return o2-o1;});
-            int[] ans = new int[matrix.length*matrix[0].length];
+            int[] ans = new int[matrix.length * matrix[0].length];
             int pre = 0;
             int[] prearr = new int[matrix[0].length];
             int ai = 0;
-            for(int i = 0;i<matrix.length;i++){
-                for(int j = 0;j<matrix[0].length;j++,ai++){
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix[0].length; j++, ai++) {
                     pre = matrix[i][j] ^ pre;
                     prearr[j] = pre ^ prearr[j];
                     // queue.add(prearr[j]);
@@ -1469,11 +1483,94 @@ public class Daily202405 {
             // }
             Arrays.sort(ans);
             // return queue.poll();
-            return ans[ans.length-k];
+            return ans[ans.length - k];
         }
     }
-    
-    
+
+
+    /**
+     * 2028. 找出缺失的观测数据:
+     * 现有一份 n + m 次投掷单个 六面 骰子的观测数据，骰子的每个面从 1 到 6 编号。观测数据中缺失了 n 份，
+     * 你手上只拿到剩余 m 次投掷的数据。幸好你有之前计算过的这 n + m 次投掷数据的 平均值 。
+     * <p>
+     * 给你一个长度为 m 的整数数组 rolls ，其中 rolls[i] 是第 i 次观测的值。同时给你两个整数 mean 和 n 。
+     * <p>
+     * 返回一个长度为 n 的数组，包含所有缺失的观测数据，且满足这 n + m 次投掷的 平均值 是 mean 。
+     * 如果存在多组符合要求的答案，只需要返回其中任意一组即可。如果不存在答案，返回一个空数组。
+     * <p>
+     * k 个数字的 平均值 为这些数字求和后再除以 k 。
+     * <p>
+     * 注意 mean 是一个整数，所以 n + m 次投掷的总和需要被 n + m 整除。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/5/27 16:17
+     */
+    class Solution_27_1 {
+        public int[] missingRolls(int[] rolls, int mean, int n) {
+            int summ = Arrays.stream(rolls).sum();
+            int sumn = mean * (rolls.length + n) - summ;
+
+            if (n * 6 < sumn || n * 1 > sumn) {
+                return new int[]{};
+            }
+            int[] an = new int[n];
+            Arrays.fill(an, sumn / n);
+            if (sumn % n != 0) {
+                for (int i = 0; i < sumn % n; i++) {
+                    an[i] = sumn / n + 1;
+                }
+            }
+            return an;
+        }
+    }
+
+    /**
+     * 2951. 找出峰值:
+     * 给你一个下标从 0 开始的数组 mountain 。你的任务是找出数组 mountain 中的所有 峰值。
+     *
+     * 以数组形式返回给定数组中 峰值 的下标，顺序不限 。
+     *
+     * 注意：
+     *
+     * 峰值 是指一个严格大于其相邻元素的元素。
+     * 数组的第一个和最后一个元素 不 是峰值。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/5/28 9:29
+     */
+    class Solution_28_1 {
+        public List<Integer> findPeaks(int[] mountain) {
+            int left = 1;
+            int right = mountain.length - 2;
+            List<Integer> ans = new ArrayList<Integer>();
+            while (left < right) {
+                if (left < (mountain.length - 1)) {
+                    if (mountain[left] > mountain[left - 1] && mountain[left] > mountain[left + 1]) {
+                        ans.add(left);
+                        left += 2;
+                    } else {
+                        left ++;
+                    }
+                }
+                if (right > 0) {
+                    if (mountain[right] > mountain[right - 1] && mountain[right] > mountain[right + 1]) {
+                        ans.add(right);
+                        right -= 2;
+                    } else {
+                        right--;
+                    }
+                }
+            }
+            if(left==right && mountain[left] > mountain[left - 1] && mountain[left] > mountain[left + 1]){
+                ans.add(left);
+            }
+            return ans;
+        }
+    }
+
 }
 
     
