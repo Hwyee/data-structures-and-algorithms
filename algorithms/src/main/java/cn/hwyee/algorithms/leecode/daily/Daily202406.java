@@ -480,4 +480,75 @@ public class Daily202406 {
 
     }
 
+    /**
+     * 312. 戳气球:
+     * 有 n 个气球，编号为0 到 n - 1，每个气球上都标有一个数字，这些数字存在数组 nums 中。
+     *
+     * 现在要求你戳破所有的气球。戳破第 i 个气球，你可以获得 nums[i - 1] * nums[i] * nums[i + 1] 枚硬币。
+     * 这里的 i - 1 和 i + 1 代表和 i 相邻的两个气球的序号。如果 i - 1或 i + 1 超出了数组的边界，那么就当它是一个数字为 1 的气球。
+     *
+     * 求所能获得硬币的最大数量。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/9 20:37
+     */
+    class Solution_9_1 {
+        public int maxCoinsGF(int[] nums) {
+            int n = nums.length;
+            int[][] rec = new int[n + 2][n + 2];
+            int[] val = new int[n + 2];
+            val[0] = val[n + 1] = 1;
+            for (int i = 1; i <= n; i++) {
+                val[i] = nums[i - 1];
+            }
+            for (int i = n - 1; i >= 0; i--) {
+                for (int j = i + 2; j <= n + 1; j++) {
+                    for (int k = i + 1; k < j; k++) {
+                        int sum = val[i] * val[k] * val[j];
+                        sum += rec[i][k] + rec[k][j];
+                        rec[i][j] = Math.max(rec[i][j], sum);
+                    }
+                }
+            }
+            return rec[0][n + 1];
+
+
+        }
+    }
+
+    /**
+     * 881. 救生艇:
+     * 给定数组 people 。people[i]表示第 i 个人的体重 ，船的数量不限，每艘船可以承载的最大重量为 limit。
+     *
+     * 每艘船最多可同时载两人，但条件是这些人的重量之和最多为 limit。
+     *
+     * 返回 承载所有人所需的最小船数 。
+     *
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/10 22:22
+     */
+    class Solution_10_1 {
+        public int numRescueBoats(int[] people, int limit) {
+            Arrays.sort(people);
+            int left = 0;
+            int right = people.length-1;
+            int ans = 0;while(left < right){
+                if(people[right] + people[left] > limit){
+                    right--;
+
+                }else {
+                    left++;
+                    right--;
+                }
+                ans++;
+            }
+            return left==right?ans+1:ans;
+
+        }
+    }
+
 }
