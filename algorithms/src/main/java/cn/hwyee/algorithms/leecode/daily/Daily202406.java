@@ -2,11 +2,15 @@ package cn.hwyee.algorithms.leecode.daily;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author hwyee@foxmail.com
@@ -24,6 +28,8 @@ public class Daily202406 {
         solution61.minimumSteps("0111");
         Solution_8_1 solution81 = new Solution_8_1();
         solution81.maxOperations(new int[]{3, 2, 1, 2, 3, 4});
+        Solution_14_1 solution141 = new Solution_14_1();
+        solution141.maxScore(new int[]{2,3,6,1,9,2},5);
     }
 
     /**
@@ -608,6 +614,165 @@ public class Daily202406 {
         public int accountBalanceAfterPurchase(int purchaseAmount) {
             int i = purchaseAmount%10;
             return i<5?100-purchaseAmount+i:90-purchaseAmount+i;
+        }
+    }
+    
+    /**
+     * 2813. 子序列最大优雅度
+     * 给你一个长度为 n 的二维整数数组 items 和一个整数 k 。
+     *
+     * items[i] = [profiti, categoryi]，其中 profiti 和 categoryi 分别表示第 i 个项目的利润和类别。
+     *
+     * 现定义 items 的 子序列 的 优雅度 可以用 total_profit + distinct_categories2 计算，其中 total_profit 是子序列中所有项目的利润总和，distinct_categories 是所选子序列所含的所有类别中不同类别的数量。
+     *
+     * 你的任务是从 items 所有长度为 k 的子序列中，找出 最大优雅度 。
+     *
+     * 用整数形式表示并返回 items 中所有长度恰好为 k 的子序列的最大优雅度。
+     *
+     * 注意：数组的子序列是经由原数组删除一些元素（可能不删除）而产生的新数组，且删除不改变其余元素相对顺序。:
+     * 
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/6/13 11:02
+     */
+    class Solution_13_1 {
+        public long findMaximumElegance(int[][] items, int k) {
+            // 把利润从大到小排序
+            Arrays.sort(items, (a, b) -> b[0] - a[0]);
+            long ans = 0;
+            long totalProfit = 0;
+            Set<Integer> vis = new HashSet<>();
+            Deque<Integer> duplicate = new ArrayDeque<>(); // 重复类别的利润
+            for (int i = 0; i < items.length; i++) {
+                int profit = items[i][0];
+                int category = items[i][1];
+                if (i < k) {
+                    totalProfit += profit; // 累加前 k 个项目的利润
+                    if (!vis.add(category)) { // 重复类别
+                        duplicate.push(profit);
+                    }
+                } else if (!duplicate.isEmpty() && vis.add(category)) { // 之前没有的类别
+                    totalProfit += profit - duplicate.pop(); // 选一个重复类别中的最小利润替换
+                } // else：比前面的利润小，而且类别还重复了，选它只会让 totalProfit 变小，vis.size() 不变，优雅度不会变大
+                ans = Math.max(ans, totalProfit + (long) vis.size() * vis.size()); // 注意 1e5*1e5 会溢出
+            }
+            return ans;
+        }
+    }
+
+
+    static class Solution_14_1 {
+        long[][] a ;
+        public long maxScore(int[] nums, int x) {
+            a = new long[nums.length][2];
+//            return dfs(nums, x, 1, nums[0], nums[0] % 2);
+            return dfs1(nums, x, 1, nums[0] % 2)+nums[0];
+        }
+
+        public long dfs(int[] nums, int x, int i, int ans, int flag) {
+            if (i == nums.length) {
+                return ans;
+            }
+            if(a[i][flag]!= 0){
+                return a[i][flag];
+            }
+            if (nums[i] % 2 == flag) {
+                return a[i][flag] = dfs(nums, x, i + 1, ans + nums[i], flag);
+
+            } else {
+                long r2 = dfs(nums, x, i + 1, ans, flag);
+                long r1 = dfs(nums, x, i + 1, ans - x + nums[i], nums[i] % 2);
+                return a[i][flag]=Math.max(r1,r2 );
+
+            }
+        }
+
+        public long dfs1(int[] nums, int x, int i, int flag) {
+            if (i == nums.length) {
+                return 0;
+            }
+            if(a[i][flag]!= 0){
+                return a[i][flag];
+            }
+            if (nums[i] % 2 == flag) {
+                return a[i][flag] = dfs1(nums, x, i + 1,  flag)+nums[i];
+
+            } else {
+                long r2 = dfs1(nums, x, i + 1, flag);
+                long r1 = dfs1(nums, x, i + 1,  nums[i] % 2);
+                return a[i][flag]=Math.max(r1-x+nums[i],r2 );
+
+            }
+        }
+    }
+
+    public long maxScoreLS(int[] nums, int x) {
+        long[] f = new long[2];
+        for (int i = nums.length - 1; i >= 0; i--) {
+            int v = nums[i];
+            int r = v & 1; // 比 % 2 快一点
+            f[r] = Math.max(f[r], f[r ^ 1] - x) + v;
+        }
+        return f[nums[0] & 1];
+    }
+
+    /**
+     * 2779. 数组的最大美丽值:
+     * 给你一个下标从 0 开始的整数数组 nums 和一个 非负 整数 k 。
+     *
+     * 在一步操作中，你可以执行下述指令：
+     *
+     * 在范围 [0, nums.length - 1] 中选择一个 此前没有选过 的下标 i 。
+     * 将 nums[i] 替换为范围 [nums[i] - k, nums[i] + k] 内的任一整数。
+     * 数组的 美丽值 定义为数组中由相等元素组成的最长子序列的长度。
+     *
+     * 对数组 nums 执行上述操作任意次后，返回数组可能取得的 最大 美丽值。
+     *
+     * 注意：你 只 能对每个下标执行 一次 此操作。
+     *
+     * 数组的 子序列 定义是：经由原数组删除一些元素（也可能不删除）得到的一个新数组，且在此过程中剩余元素的顺序不发生改变。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/16 12:53
+     */
+    class Solution_15_1 {
+        public int maximumBeauty(int[] nums, int k) {
+            int res = 0, n = nums.length;
+            Arrays.sort(nums);
+            for (int i = 0, j = 0; i < n; i++) {
+                while (nums[i] - 2 * k > nums[j]) {
+                    j++;
+                }
+                res = Math.max(res, i - j + 1);
+            }
+            return res;
+        }
+    }
+
+    /**
+     * 521. 最长特殊序列 Ⅰ:
+     * 给你两个字符串 a 和 b，请返回 这两个字符串中 最长的特殊序列  的长度。如果不存在，则返回 -1 。
+     *
+     * 「最长特殊序列」 定义如下：该序列为 某字符串独有的最长
+     * 子序列
+     * （即不能是其他字符串的子序列） 。
+     *
+     * 字符串 s 的子序列是在从 s 中删除任意数量的字符后可以获得的字符串。
+     *
+     * 例如，"abc" 是 "aebdc" 的子序列，因为删除 "aebdc" 中斜体加粗的字符可以得到 "abc" 。
+     * "aebdc" 的子序列还包括 "aebdc" 、 "aeb" 和 "" (空字符串)。
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/16 12:54
+     */
+    class Solution_16_1 {
+        public int findLUSlength(String a, String b) {
+            return !a.equals(b) ? Math.max(a.length(), b.length()) : -1;
+
         }
     }
 
