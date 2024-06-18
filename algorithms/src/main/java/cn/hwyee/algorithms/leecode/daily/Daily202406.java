@@ -2,6 +2,10 @@ package cn.hwyee.algorithms.leecode.daily;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +34,9 @@ public class Daily202406 {
         solution81.maxOperations(new int[]{3, 2, 1, 2, 3, 4});
         Solution_14_1 solution141 = new Solution_14_1();
         solution141.maxScore(new int[]{2,3,6,1,9,2},5);
+
+        Solution_18_1 solution181 = new Solution_18_1();
+        System.out.println(solution181.discountPrices("$81 $9606986 brwa $3 $1351 $96 89m h7lbe $4", 38));
     }
 
     /**
@@ -775,5 +782,91 @@ public class Daily202406 {
 
         }
     }
+
+    /**
+     * 522. 最长特殊序列 II:
+     * 给定字符串列表 strs ，返回其中 最长的特殊序列 的长度。如果最长特殊序列不存在，返回 -1 。
+     *
+     * 特殊序列 定义如下：该序列为某字符串 独有的子序列（即不能是其他字符串的子序列）。
+     *
+     *  s 的 子序列可以通过删去字符串 s 中的某些字符实现。
+     *
+     * 例如，"abc" 是 "aebdc" 的子序列，因为您可以删除"aebdc"中的下划线字符来得到 "abc" 。"aebdc"的子序列还包括"aebdc"、 "aeb" 和 "" (空字符串)。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/17 9:53
+     */
+    class Solution_17_1 {
+        public int findLUSlength(String[] strs) {
+            int ans = -1;
+            next:
+            for (int i = 0; i < strs.length; i++) {
+                if (strs[i].length() <= ans) { // 不会让 ans 变大
+                    continue;
+                }
+                for (int j = 0; j < strs.length; j++) {
+                    if (j != i && isSubseq(strs[i], strs[j])) {
+                        continue next;
+                    }
+                }
+                ans = strs[i].length();
+            }
+            return ans;
+        }
+
+        // 判断 s 是否为 t 的子序列
+        private boolean isSubseq(String s, String t) {
+            int i = 0;
+            for (char c : t.toCharArray()) {
+                if (s.charAt(i) == c && ++i == s.length()) { // 所有字符匹配完毕
+                    return true; // s 是 t 的子序列
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
+     * 2288. 价格减免:
+     * 句子 是由若干个单词组成的字符串，单词之间用单个空格分隔，其中每个单词可以包含数字、小写字母、和美元符号 '$' 。如果单词的形式为美元符号后跟着一个非负实数，那么这个单词就表示一个 价格 。
+     *
+     * 例如 "$100"、"$23" 和 "$6" 表示价格，而 "100"、"$" 和 "$1e5 不是。
+     * 给你一个字符串 sentence 表示一个句子和一个整数 discount 。对于每个表示价格的单词，都在价格的基础上减免 discount% ，并 更新 该单词到句子中。所有更新后的价格应该表示为一个 恰好保留小数点后两位 的数字。
+     *
+     * 返回表示修改后句子的字符串。
+     *
+     * 注意：所有价格 最多 为  10 位数字。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/18 10:13
+     */
+    static class Solution_18_1 {
+        public String discountPrices(String sentence, int discount) {
+            String[] words = sentence.split(" ");
+            for (int i = 0; i < words.length; i++) {
+                if (words[i].charAt(0) == '$') {
+                    try {
+                        boolean flag = true;
+                        for (int i1 = 1; i1 < words[i].toCharArray().length; i1++) {
+                            if (words[i].charAt(i1)>'A'){
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag){
+
+                            words[i] = "$" + BigDecimal.valueOf((Double.parseDouble(words[i].substring(1)) * ((100-discount) / 100.0))).setScale(2,4).toPlainString();
+                        }
+
+                    }catch (Exception e){
+                    }
+                }
+            }
+            return String.join(" ", words);
+        }
+    }
+
 
 }
