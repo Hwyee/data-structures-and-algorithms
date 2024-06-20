@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * @author hwyee@foxmail.com
@@ -37,6 +38,11 @@ public class Daily202406 {
 
         Solution_18_1 solution181 = new Solution_18_1();
         System.out.println(solution181.discountPrices("$81 $9606986 brwa $3 $1351 $96 89m h7lbe $4", 38));
+
+        Solution_19_1 solution191 = new Solution_19_1();
+        System.out.println(solution191.maxIncreasingCells(new int[][]{{1, 2}, {3, 4}}));
+        System.out.println((int)'2');
+        System.out.println('2'-'0');//int
     }
 
     /**
@@ -867,6 +873,122 @@ public class Daily202406 {
             return String.join(" ", words);
         }
     }
+
+    /**
+     * 2713. 矩阵中严格递增的单元格数:
+     * 给你一个下标从 1 开始、大小为 m x n 的整数矩阵 mat，你可以选择任一单元格作为 起始单元格 。
+     *
+     * 从起始单元格出发，你可以移动到 同一行或同一列 中的任何其他单元格，但前提是目标单元格的值 严格大于 当前单元格的值。
+     *
+     * 你可以多次重复这一过程，从一个单元格移动到另一个单元格，直到无法再进行任何移动。
+     *
+     * 请你找出从某个单元开始访问矩阵所能访问的 单元格的最大数量 。
+     *
+     * 返回一个表示可访问单元格最大数量的整数。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/19 18:09
+     */
+    static class Solution_19_1 {
+        public int maxIncreasingCells(int[][] mat) {
+            int m = mat.length;
+            int n = mat[0].length;
+            TreeMap<Integer, List<int[]>> g = new TreeMap<>();
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    // 相同元素放在同一组，统计位置
+                    g.computeIfAbsent(mat[i][j], k -> new ArrayList<>()).add(new int[]{i, j});
+                }
+            }
+
+            int ans = 0;
+            int[] rowMax = new int[m];
+            int[] colMax = new int[n];
+            for (List<int[]> pos : g.values()) {
+                // 先把所有 f 值都算出来，再更新 rowMax 和 colMax
+                int[] fs = new int[pos.size()];
+                for (int k = 0; k < pos.size(); k++) {
+                    int[] p = pos.get(k);
+                    int i = p[0];
+                    int j = p[1];
+                    fs[k] = Math.max(rowMax[i], colMax[j]) + 1;
+                    ans = Math.max(ans, fs[k]);
+                }
+                for (int k = 0; k < pos.size(); k++) {
+                    int[] p = pos.get(k);
+                    int i = p[0];
+                    int j = p[1];
+                    rowMax[i] = Math.max(rowMax[i], fs[k]); // 更新第 i 行的最大 f 值
+                    colMax[j] = Math.max(colMax[j], fs[k]); // 更新第 j 列的最大 f 值
+                }
+            }
+            return ans;
+
+
+        }
+    }
+
+    /**
+     * 2748. 美丽下标对的数目:
+     * 给你一个下标从 0 开始的整数数组 nums 。如果下标对 i、j 满足 0 ≤ i < j < nums.length ，
+     * 如果 nums[i] 的 第一个数字 和 nums[j] 的 最后一个数字 互质 ，则认为 nums[i] 和 nums[j] 是一组 美丽下标对 。
+     *
+     * 返回 nums 中 美丽下标对 的总数目。
+     *
+     * 对于两个整数 x 和 y ，如果不存在大于 1 的整数可以整除它们，则认为 x 和 y 互质 。换而言之，
+     * 如果 gcd(x, y) == 1 ，则认为 x 和 y 互质，其中 gcd(x, y) 是 x 和 y 的 最大公因数 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/20 8:37
+     */
+    class Solution_20_1 {
+        public int countBeautifulPairs(int[] nums) {
+            int ans = 0;
+            for(int i = 0;i<nums.length;i++){
+                int x= String.valueOf(nums[i]).charAt(0)-'0';
+                for(int j = i+1;j<nums.length;j++){
+                    String ys = String.valueOf(nums[j]);
+                    if(gcd(x,ys.charAt(ys.length()-1)-'0')){
+                        ans++;
+                    }
+                }
+            }
+            return ans;
+        }
+        public boolean gcd(int x,int y){
+            int m = x>y?y:x;
+            for(int i = 2;i<=m;i++){
+                if(x%i==0&&y%i==0){
+                    return false;
+                }
+            }
+            return true;
+        }
+        public int countBeautifulPairsLS(int[] nums) {
+            int ans = 0;
+            int[] cnt = new int[10];
+            for (int x : nums) {
+                for (int y = 1; y < 10; y++) {
+                    if (cnt[y] > 0 && gcd1(y, x % 10) == 1) {
+                        ans += cnt[y];
+                    }
+                }
+                while (x >= 10) {
+                    x /= 10;
+                }
+                cnt[x]++; // 统计最高位的出现次数
+            }
+            return ans;
+        }
+
+        private int gcd1(int a, int b) {
+            return b == 0 ? a : gcd1(b, a % b);
+        }
+    }
+
+
 
 
 }
