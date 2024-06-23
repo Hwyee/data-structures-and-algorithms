@@ -34,15 +34,15 @@ public class Daily202406 {
         Solution_8_1 solution81 = new Solution_8_1();
         solution81.maxOperations(new int[]{3, 2, 1, 2, 3, 4});
         Solution_14_1 solution141 = new Solution_14_1();
-        solution141.maxScore(new int[]{2,3,6,1,9,2},5);
+        solution141.maxScore(new int[]{2, 3, 6, 1, 9, 2}, 5);
 
         Solution_18_1 solution181 = new Solution_18_1();
         System.out.println(solution181.discountPrices("$81 $9606986 brwa $3 $1351 $96 89m h7lbe $4", 38));
 
         Solution_19_1 solution191 = new Solution_19_1();
         System.out.println(solution191.maxIncreasingCells(new int[][]{{1, 2}, {3, 4}}));
-        System.out.println((int)'2');
-        System.out.println('2'-'0');//int
+        System.out.println((int) '2');
+        System.out.println('2' - '0');//int
     }
 
     /**
@@ -502,14 +502,15 @@ public class Daily202406 {
     /**
      * 312. 戳气球:
      * 有 n 个气球，编号为0 到 n - 1，每个气球上都标有一个数字，这些数字存在数组 nums 中。
-     *
+     * <p>
      * 现在要求你戳破所有的气球。戳破第 i 个气球，你可以获得 nums[i - 1] * nums[i] * nums[i + 1] 枚硬币。
      * 这里的 i - 1 和 i + 1 代表和 i 相邻的两个气球的序号。如果 i - 1或 i + 1 超出了数组的边界，那么就当它是一个数字为 1 的气球。
-     *
+     * <p>
      * 求所能获得硬币的最大数量。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/9 20:37
      */
     class Solution_9_1 {
@@ -539,33 +540,33 @@ public class Daily202406 {
     /**
      * 881. 救生艇:
      * 给定数组 people 。people[i]表示第 i 个人的体重 ，船的数量不限，每艘船可以承载的最大重量为 limit。
-     *
+     * <p>
      * 每艘船最多可同时载两人，但条件是这些人的重量之和最多为 limit。
-     *
+     * <p>
      * 返回 承载所有人所需的最小船数 。
      *
-     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/10 22:22
      */
     class Solution_10_1 {
         public int numRescueBoats(int[] people, int limit) {
             Arrays.sort(people);
             int left = 0;
-            int right = people.length-1;
-            int ans = 0;while(left < right){
-                if(people[right] + people[left] > limit){
+            int right = people.length - 1;
+            int ans = 0;
+            while (left < right) {
+                if (people[right] + people[left] > limit) {
                     right--;
 
-                }else {
+                } else {
                     left++;
                     right--;
                 }
                 ans++;
             }
-            return left==right?ans+1:ans;
+            return left == right ? ans + 1 : ans;
 
         }
     }
@@ -574,11 +575,12 @@ public class Daily202406 {
     /**
      * 419. 甲板上的战舰:
      * 给你一个大小为 m x n 的矩阵 board 表示甲板，其中，每个单元格可以是一艘战舰 'X' 或者是一个空位 '.' ，返回在甲板 board 上放置的 战舰 的数量。
-     *
+     * <p>
      * 战舰 只能水平或者垂直放置在 board 上。换句话说，战舰只能按 1 x k（1 行，k 列）或 k x 1（k 行，1 列）的形状建造，其中 k 可以是任意大小。两艘战舰之间至少有一个水平或垂直的空位分隔 （即没有相邻的战舰）。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/11 15:46
      */
     class Solution_11_1 {
@@ -586,16 +588,16 @@ public class Daily202406 {
             int m = board.length;
             int n = board[0].length;
             int ans = 0;
-            for(int i  = 0;i<m;i++){
-                for(int j = 0;j<n;j++){
-                    if(board[i][j] == 'X'){
-                        if(i==0 && j==0){
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (board[i][j] == 'X') {
+                        if (i == 0 && j == 0) {
                             ans++;
-                        }else if(i==0 && board[i][j-1] == '.'){
+                        } else if (i == 0 && board[i][j - 1] == '.') {
                             ans++;
-                        }else if(j == 0 && board[i-1][j] == '.'){
+                        } else if (j == 0 && board[i - 1][j] == '.') {
                             ans++;
-                        }else if(i>0 && j>0 && board[i-1][j] == '.' && board[i][j-1] == '.'){
+                        } else if (i > 0 && j > 0 && board[i - 1][j] == '.' && board[i][j - 1] == '.') {
                             ans++;
                         }
                     }
@@ -608,42 +610,43 @@ public class Daily202406 {
     /**
      * 2806. 取整购买后的账户余额:
      * 一开始，你的银行账户里有 100 块钱。
-     *
+     * <p>
      * 给你一个整数purchaseAmount ，它表示你在一次购买中愿意支出的金额。
-     *
+     * <p>
      * 在一个商店里，你进行一次购买，实际支出的金额会向 最近 的 10 的 倍数 取整。换句话说，你实际会支付一个 非负 金额 roundedAmount ，满足 roundedAmount 是 10 的倍数且 abs(roundedAmount - purchaseAmount) 的值 最小 。
-     *
+     * <p>
      * 如果存在多于一个最接近的 10 的倍数，较大的倍数 是你的实际支出金额。
-     *
+     * <p>
      * 请你返回一个整数，表示你在愿意支出金额为 purchaseAmount 块钱的前提下，购买之后剩下的余额。
-     *
+     * <p>
      * 注意： 0 也是 10 的倍数。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/12 20:47
      */
     class Solution_12_1 {
         public int accountBalanceAfterPurchase(int purchaseAmount) {
-            int i = purchaseAmount%10;
-            return i<5?100-purchaseAmount+i:90-purchaseAmount+i;
+            int i = purchaseAmount % 10;
+            return i < 5 ? 100 - purchaseAmount + i : 90 - purchaseAmount + i;
         }
     }
-    
+
     /**
      * 2813. 子序列最大优雅度
      * 给你一个长度为 n 的二维整数数组 items 和一个整数 k 。
-     *
+     * <p>
      * items[i] = [profiti, categoryi]，其中 profiti 和 categoryi 分别表示第 i 个项目的利润和类别。
-     *
+     * <p>
      * 现定义 items 的 子序列 的 优雅度 可以用 total_profit + distinct_categories2 计算，其中 total_profit 是子序列中所有项目的利润总和，distinct_categories 是所选子序列所含的所有类别中不同类别的数量。
-     *
+     * <p>
      * 你的任务是从 items 所有长度为 k 的子序列中，找出 最大优雅度 。
-     *
+     * <p>
      * 用整数形式表示并返回 items 中所有长度恰好为 k 的子序列的最大优雅度。
-     *
+     * <p>
      * 注意：数组的子序列是经由原数组删除一些元素（可能不删除）而产生的新数组，且删除不改变其余元素相对顺序。:
-     * 
+     *
      * @author hui
      * @version 1.0
      * @return
@@ -676,18 +679,19 @@ public class Daily202406 {
 
 
     static class Solution_14_1 {
-        long[][] a ;
+        long[][] a;
+
         public long maxScore(int[] nums, int x) {
             a = new long[nums.length][2];
 //            return dfs(nums, x, 1, nums[0], nums[0] % 2);
-            return dfs1(nums, x, 1, nums[0] % 2)+nums[0];
+            return dfs1(nums, x, 1, nums[0] % 2) + nums[0];
         }
 
         public long dfs(int[] nums, int x, int i, int ans, int flag) {
             if (i == nums.length) {
                 return ans;
             }
-            if(a[i][flag]!= 0){
+            if (a[i][flag] != 0) {
                 return a[i][flag];
             }
             if (nums[i] % 2 == flag) {
@@ -696,7 +700,7 @@ public class Daily202406 {
             } else {
                 long r2 = dfs(nums, x, i + 1, ans, flag);
                 long r1 = dfs(nums, x, i + 1, ans - x + nums[i], nums[i] % 2);
-                return a[i][flag]=Math.max(r1,r2 );
+                return a[i][flag] = Math.max(r1, r2);
 
             }
         }
@@ -705,16 +709,16 @@ public class Daily202406 {
             if (i == nums.length) {
                 return 0;
             }
-            if(a[i][flag]!= 0){
+            if (a[i][flag] != 0) {
                 return a[i][flag];
             }
             if (nums[i] % 2 == flag) {
-                return a[i][flag] = dfs1(nums, x, i + 1,  flag)+nums[i];
+                return a[i][flag] = dfs1(nums, x, i + 1, flag) + nums[i];
 
             } else {
                 long r2 = dfs1(nums, x, i + 1, flag);
-                long r1 = dfs1(nums, x, i + 1,  nums[i] % 2);
-                return a[i][flag]=Math.max(r1-x+nums[i],r2 );
+                long r1 = dfs1(nums, x, i + 1, nums[i] % 2);
+                return a[i][flag] = Math.max(r1 - x + nums[i], r2);
 
             }
         }
@@ -733,21 +737,22 @@ public class Daily202406 {
     /**
      * 2779. 数组的最大美丽值:
      * 给你一个下标从 0 开始的整数数组 nums 和一个 非负 整数 k 。
-     *
+     * <p>
      * 在一步操作中，你可以执行下述指令：
-     *
+     * <p>
      * 在范围 [0, nums.length - 1] 中选择一个 此前没有选过 的下标 i 。
      * 将 nums[i] 替换为范围 [nums[i] - k, nums[i] + k] 内的任一整数。
      * 数组的 美丽值 定义为数组中由相等元素组成的最长子序列的长度。
-     *
+     * <p>
      * 对数组 nums 执行上述操作任意次后，返回数组可能取得的 最大 美丽值。
-     *
+     * <p>
      * 注意：你 只 能对每个下标执行 一次 此操作。
-     *
+     * <p>
      * 数组的 子序列 定义是：经由原数组删除一些元素（也可能不删除）得到的一个新数组，且在此过程中剩余元素的顺序不发生改变。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/16 12:53
      */
     class Solution_15_1 {
@@ -767,19 +772,19 @@ public class Daily202406 {
     /**
      * 521. 最长特殊序列 Ⅰ:
      * 给你两个字符串 a 和 b，请返回 这两个字符串中 最长的特殊序列  的长度。如果不存在，则返回 -1 。
-     *
+     * <p>
      * 「最长特殊序列」 定义如下：该序列为 某字符串独有的最长
      * 子序列
      * （即不能是其他字符串的子序列） 。
-     *
+     * <p>
      * 字符串 s 的子序列是在从 s 中删除任意数量的字符后可以获得的字符串。
-     *
+     * <p>
      * 例如，"abc" 是 "aebdc" 的子序列，因为删除 "aebdc" 中斜体加粗的字符可以得到 "abc" 。
      * "aebdc" 的子序列还包括 "aebdc" 、 "aeb" 和 "" (空字符串)。
      *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/16 12:54
      */
     class Solution_16_1 {
@@ -792,15 +797,16 @@ public class Daily202406 {
     /**
      * 522. 最长特殊序列 II:
      * 给定字符串列表 strs ，返回其中 最长的特殊序列 的长度。如果最长特殊序列不存在，返回 -1 。
-     *
+     * <p>
      * 特殊序列 定义如下：该序列为某字符串 独有的子序列（即不能是其他字符串的子序列）。
-     *
-     *  s 的 子序列可以通过删去字符串 s 中的某些字符实现。
-     *
+     * <p>
+     * s 的 子序列可以通过删去字符串 s 中的某些字符实现。
+     * <p>
      * 例如，"abc" 是 "aebdc" 的子序列，因为您可以删除"aebdc"中的下划线字符来得到 "abc" 。"aebdc"的子序列还包括"aebdc"、 "aeb" 和 "" (空字符串)。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/17 9:53
      */
     class Solution_17_1 {
@@ -836,16 +842,17 @@ public class Daily202406 {
     /**
      * 2288. 价格减免:
      * 句子 是由若干个单词组成的字符串，单词之间用单个空格分隔，其中每个单词可以包含数字、小写字母、和美元符号 '$' 。如果单词的形式为美元符号后跟着一个非负实数，那么这个单词就表示一个 价格 。
-     *
+     * <p>
      * 例如 "$100"、"$23" 和 "$6" 表示价格，而 "100"、"$" 和 "$1e5 不是。
      * 给你一个字符串 sentence 表示一个句子和一个整数 discount 。对于每个表示价格的单词，都在价格的基础上减免 discount% ，并 更新 该单词到句子中。所有更新后的价格应该表示为一个 恰好保留小数点后两位 的数字。
-     *
+     * <p>
      * 返回表示修改后句子的字符串。
-     *
+     * <p>
      * 注意：所有价格 最多 为  10 位数字。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/18 10:13
      */
     static class Solution_18_1 {
@@ -856,17 +863,17 @@ public class Daily202406 {
                     try {
                         boolean flag = true;
                         for (int i1 = 1; i1 < words[i].toCharArray().length; i1++) {
-                            if (words[i].charAt(i1)>'A'){
+                            if (words[i].charAt(i1) > 'A') {
                                 flag = false;
                                 break;
                             }
                         }
-                        if (flag){
+                        if (flag) {
 
-                            words[i] = "$" + BigDecimal.valueOf((Double.parseDouble(words[i].substring(1)) * ((100-discount) / 100.0))).setScale(2,4).toPlainString();
+                            words[i] = "$" + BigDecimal.valueOf((Double.parseDouble(words[i].substring(1)) * ((100 - discount) / 100.0))).setScale(2, 4).toPlainString();
                         }
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                     }
                 }
             }
@@ -877,17 +884,18 @@ public class Daily202406 {
     /**
      * 2713. 矩阵中严格递增的单元格数:
      * 给你一个下标从 1 开始、大小为 m x n 的整数矩阵 mat，你可以选择任一单元格作为 起始单元格 。
-     *
+     * <p>
      * 从起始单元格出发，你可以移动到 同一行或同一列 中的任何其他单元格，但前提是目标单元格的值 严格大于 当前单元格的值。
-     *
+     * <p>
      * 你可以多次重复这一过程，从一个单元格移动到另一个单元格，直到无法再进行任何移动。
-     *
+     * <p>
      * 请你找出从某个单元开始访问矩阵所能访问的 单元格的最大数量 。
-     *
+     * <p>
      * 返回一个表示可访问单元格最大数量的整数。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/19 18:09
      */
     static class Solution_19_1 {
@@ -933,39 +941,42 @@ public class Daily202406 {
      * 2748. 美丽下标对的数目:
      * 给你一个下标从 0 开始的整数数组 nums 。如果下标对 i、j 满足 0 ≤ i < j < nums.length ，
      * 如果 nums[i] 的 第一个数字 和 nums[j] 的 最后一个数字 互质 ，则认为 nums[i] 和 nums[j] 是一组 美丽下标对 。
-     *
+     * <p>
      * 返回 nums 中 美丽下标对 的总数目。
-     *
+     * <p>
      * 对于两个整数 x 和 y ，如果不存在大于 1 的整数可以整除它们，则认为 x 和 y 互质 。换而言之，
      * 如果 gcd(x, y) == 1 ，则认为 x 和 y 互质，其中 gcd(x, y) 是 x 和 y 的 最大公因数 。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/20 8:37
      */
     class Solution_20_1 {
         public int countBeautifulPairs(int[] nums) {
             int ans = 0;
-            for(int i = 0;i<nums.length;i++){
-                int x= String.valueOf(nums[i]).charAt(0)-'0';
-                for(int j = i+1;j<nums.length;j++){
+            for (int i = 0; i < nums.length; i++) {
+                int x = String.valueOf(nums[i]).charAt(0) - '0';
+                for (int j = i + 1; j < nums.length; j++) {
                     String ys = String.valueOf(nums[j]);
-                    if(gcd(x,ys.charAt(ys.length()-1)-'0')){
+                    if (gcd(x, ys.charAt(ys.length() - 1) - '0')) {
                         ans++;
                     }
                 }
             }
             return ans;
         }
-        public boolean gcd(int x,int y){
-            int m = x>y?y:x;
-            for(int i = 2;i<=m;i++){
-                if(x%i==0&&y%i==0){
+
+        public boolean gcd(int x, int y) {
+            int m = x > y ? y : x;
+            for (int i = 2; i <= m; i++) {
+                if (x % i == 0 && y % i == 0) {
                     return false;
                 }
             }
             return true;
         }
+
         public int countBeautifulPairsLS(int[] nums) {
             int ans = 0;
             int[] cnt = new int[10];
@@ -991,41 +1002,140 @@ public class Daily202406 {
     /**
      * LCP 61. 气温变化趋势:
      * 力扣城计划在两地设立「力扣嘉年华」的分会场，气象小组正在分析两地区的气温变化趋势，对于第 i ~ (i+1) 天的气温变化趋势，将根据以下规则判断：
-     *
+     * <p>
      * 若第 i+1 天的气温 高于 第 i 天，为 上升 趋势
      * 若第 i+1 天的气温 等于 第 i 天，为 平稳 趋势
      * 若第 i+1 天的气温 低于 第 i 天，为 下降 趋势
      * 已知 temperatureA[i] 和 temperatureB[i] 分别表示第 i 天两地区的气温。 组委会希望找到一段天数尽可能多，且两地气温变化趋势相同的时间举办嘉年华活动。请分析并返回两地气温变化趋势相同的最大连续天数。
+     *
      * @author hui
-     * @version 1.0 
-     * @return 
+     * @version 1.0
+     * @return
      * @date 2024/6/21 12:35
      */
     class Solution_21_1 {
         public int temperatureTrend(int[] temperatureA, int[] temperatureB) {
             int ans = 0;
             int max = 0;
-            for(int i = 0;i<temperatureA.length-1;i++){
-                if(judge(temperatureA[i+1],temperatureA[i])==judge(temperatureB[i+1],temperatureB[i])){
+            for (int i = 0; i < temperatureA.length - 1; i++) {
+                if (judge(temperatureA[i + 1], temperatureA[i]) == judge(temperatureB[i + 1], temperatureB[i])) {
                     ans++;
-                    max=Math.max(ans,max);
-                }else{
-                    ans=0;
+                    max = Math.max(ans, max);
+                } else {
+                    ans = 0;
                 }
             }
             return max;
         }
-        public int judge(int x,int y){
-            if(x>y){
+
+        public int judge(int x, int y) {
+            if (x > y) {
                 return -1;
-            }else if(x==y){
+            } else if (x == y) {
                 return 0;
-            }else{
+            } else {
                 return 1;
             }
         }
     }
 
+
+    /**
+     * 2663. 字典序最小的美丽字符串:
+     * 如果一个字符串满足以下条件，则称其为 美丽字符串 ：
+     * <p>
+     * 它由英语小写字母表的前 k 个字母组成。
+     * 它不包含任何长度为 2 或更长的回文子字符串。
+     * 给你一个长度为 n 的美丽字符串 s 和一个正整数 k 。
+     * <p>
+     * 请你找出并返回一个长度为 n 的美丽字符串，该字符串还满足：在字典序大于 s 的所有美丽字符串中字典序最小。如果不存在这样的字符串，则返回一个空字符串。
+     * <p>
+     * 对于长度相同的两个字符串 a 和 b ，如果字符串 a 在与字符串 b 不同的第一个位置上的字符字典序更大，则字符串 a 的字典序大于字符串 b 。
+     * <p>
+     * 例如，"abcd" 的字典序比 "abcc" 更大，因为在不同的第一个位置（第四个字符）上 d 的字典序大于 c 。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/6/22 10:09
+     */
+    class Solution_22_1 {
+        public String smallestBeautifulString(String S, int k) {
+            k += 'a';
+            char[] s = S.toCharArray();
+            int n = s.length;
+            int i = n - 1; // 从最后一个字母开始
+            s[i]++; // 先加一
+            while (i < n) {
+                if (s[i] == k) { // 需要进位
+                    if (i == 0) { // 无法进位
+                        return "";
+                    }
+                    // 进位
+                    s[i] = 'a';
+                    s[--i]++;
+                } else if (i > 0 && s[i] == s[i - 1] || i > 1 && s[i] == s[i - 2]) {
+                    s[i]++; // 如果 s[i] 和左侧的字符形成回文串，就继续增加 s[i]
+                } else {
+                    i++; // 反过来检查后面是否有回文串
+                }
+            }
+            return new String(s);
+        }
+
+
+    }
+
+    /**
+     * 520. 检测大写字母:
+     * 我们定义，在以下情况时，单词的大写用法是正确的：
+     * <p>
+     * 全部字母都是大写，比如 "USA" 。
+     * 单词中所有字母都不是大写，比如 "leetcode" 。
+     * 如果单词不只含有一个字母，只有首字母大写， 比如 "Google" 。
+     * 给你一个字符串 word 。如果大写用法正确，返回 true ；否则，返回 false 。
+     *
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/6/23 11:05
+     */
+    class Solution_23_1 {
+        public boolean detectCapitalUse(String word) {
+            if (word.length() == 1) {
+                return true;
+            }
+            int ans = 0;
+            if (word.charAt(0) - 'a' >= 0) {
+                if (word.charAt(1) - 'a' < 0) {
+                    return false;
+                }
+                ans = 2;
+            } else if (word.charAt(1) - 'a' < 0) {
+                ans = 1;
+            } else {
+                ans = 3;
+            }
+            for (int i = 2; i < word.length(); i++) {
+                if ((ans == 1 && word.charAt(i) - 'a' >= 0) || (ans > 1 && word.charAt(i) - 'a' < 0)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public boolean detectCapitalUseLS(String word) {
+            int cnt = 0;
+            for (char c : word.toCharArray()) {
+                if (Character.isUpperCase(c)) {
+                    cnt++;
+                }
+            }
+            return cnt == 0 || cnt == word.length() || cnt == 1 && Character.isUpperCase(word.charAt(0));
+        }
+
+
+    }
 
 
 }
