@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeMap;
 
 /**
@@ -1134,6 +1135,57 @@ public class Daily202406 {
             return cnt == 0 || cnt == word.length() || cnt == 1 && Character.isUpperCase(word.charAt(0));
         }
 
+
+    }
+
+    /**
+     * 503. 下一个更大元素 II:
+     * 给定一个循环数组 nums （ nums[nums.length - 1] 的下一个元素是 nums[0] ），返回 nums 中每个元素的 下一个更大元素 。
+     *
+     * 数字 x 的 下一个更大的元素 是按数组遍历顺序，这个数字之后的第一个比它更大的数，这意味着你应该循环地搜索它的下一个更大的数。如果不存在，则输出 -1 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/24 13:48
+     */
+    class Solution_24_1 {
+        public int[] nextGreaterElements(int[] nums) {
+            int[] ans = new int[nums.length];
+            for(int i = 0;i<nums.length;i++){
+                int temp = nums[i];
+                boolean b = true;
+                for(int j = 1;j<nums.length;j++){
+                    int find = nums[(j+i)%nums.length];
+                    if(find>temp){
+                        ans[i] = find;
+                        b = false;
+                        break;
+                    }
+                }
+                if(b){
+                    ans[i] = -1;
+                }
+            }
+            return ans;
+        }
+
+        public int[] nextGreaterElementsStack(int[] nums) {
+            int len = nums.length;
+            int[] ans = new int[len];
+            Arrays.fill(ans,-1);
+            Stack<Integer> stack = new Stack<Integer>();
+            for(int i = 0;i<2*len-1;i++){
+                int temp = nums[i%len];
+                while(!stack.isEmpty() && nums[stack.peek()]<temp ){
+                    ans[stack.pop()] = temp;
+                }
+                if(i<len){
+                    stack.push(i);
+                }
+
+            }
+            return ans;
+        }
 
     }
 
