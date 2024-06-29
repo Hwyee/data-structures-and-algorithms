@@ -1189,5 +1189,243 @@ public class Daily202406 {
 
     }
 
+    /**
+     * 2732. 找到矩阵中的好子集:
+     * 给你一个下标从 0 开始大小为 m x n 的二进制矩阵 grid 。
+     *
+     * 从原矩阵中选出若干行构成一个行的 非空 子集，如果子集中任何一列的和至多为子集大小的一半，那么我们称这个子集是 好子集。
+     *
+     * 更正式的，如果选出来的行子集大小（即行的数量）为 k，那么每一列的和至多为 floor(k / 2) 。
+     *
+     * 请你返回一个整数数组，它包含好子集的行下标，请你将子集中的元素 升序 返回。
+     *
+     * 如果有多个好子集，你可以返回任意一个。如果没有好子集，请你返回一个空数组。
+     *
+     * 一个矩阵 grid 的行 子集 ，是删除 grid 中某些（也可能不删除）行后，剩余行构成的元素集合。
+     *
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/25 10:56
+     */
+    class Solution_25_1 {
+        public List<Integer> goodSubsetofBinaryMatrixGF(int[][] grid) {
+            List<Integer> ans = new ArrayList<Integer>();
+            Map<Integer, Integer> mp = new HashMap<Integer, Integer>();
+            int m = grid.length;
+            int n = grid[0].length;
 
+            for (int j = 0; j < m; j++) {
+                int st = 0;
+                for (int i = 0; i < n; i++) {
+                    st |= (grid[j][i] << i);
+                }
+                mp.put(st, j);
+            }
+
+            if (mp.containsKey(0)) {
+                ans.add(mp.get(0));
+                return ans;
+            }
+
+            for (Map.Entry<Integer, Integer> entry1 : mp.entrySet()) {
+                int x = entry1.getKey(), i = entry1.getValue();
+                for (Map.Entry<Integer, Integer> entry2 : mp.entrySet()) {
+                    int y = entry2.getKey(), j = entry2.getValue();
+                    if ((x & y) == 0) {
+                        List<Integer> list = new ArrayList<Integer>();
+                        list.add(Math.min(i, j));
+                        list.add(Math.max(i, j));
+                        return list;
+                    }
+                }
+            }
+
+            return ans;
+
+        }
+    }
+
+    /**
+     * 46. 全排列:
+     * 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/6/26 12:14
+     */
+    class Solution_26_1 {
+        public List<List<Integer>> permuteError(int[] nums) {
+            List<Integer> list = new ArrayList<Integer>(nums.length);
+            List<List<Integer>> ans = new ArrayList<List<Integer>>();
+            ans.add(list);
+            for(int i : nums){
+                list.add(i);
+            }
+            for(int i = 0;i<nums.length-1;i++){
+                for(int j  = i+1;j<nums.length;j++){
+                    swap(list,i,j);
+                    ans.add(new ArrayList<Integer>(list));
+                    swap(list,i,j);
+                }
+            }
+            return ans;
+        }
+        public void swap(List<Integer> list,int x,int y){
+            int temp = list.get(x);
+            list.set(x, list.get(y));
+            list.set(y, temp);
+        }
+
+        private int[] nums;
+        private List<Integer> path;
+        private boolean[] onPath;
+        private final List<List<Integer>> ans = new ArrayList<>();
+
+        public List<List<Integer>> permute(int[] nums) {
+            this.nums = nums;
+            path = Arrays.asList(new Integer[nums.length]);
+            onPath = new boolean[nums.length];
+            dfs(0);
+            return ans;
+        }
+
+        private void dfs(int i) {
+            if (i == nums.length) {
+                ans.add(new ArrayList<>(path));
+                return;
+            }
+            for (int j = 0; j < nums.length; ++j) {
+                if (!onPath[j]) {
+                    path.set(i, nums[j]);
+                    onPath[j] = true;
+                    dfs(i + 1);
+                    onPath[j] = false; // 恢复现场
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * 2741. 特别的排列:
+     * 给你一个下标从 0 开始的整数数组 nums ，它包含 n 个 互不相同 的正整数。如果 nums 的一个排列满足以下条件，我们称它是一个特别的排列：
+     *
+     * 对于 0 <= i < n - 1 的下标 i ，要么 nums[i] % nums[i+1] == 0 ，要么 nums[i+1] % nums[i] == 0 。
+     * 请你返回特别排列的总数目，由于答案可能很大，请将它对 109 + 7 取余 后返回。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/27 22:06
+     */
+    class Solution_26_2 {
+        int mod = 1_000_000_007;
+        public int specialPerm(int[] nums) {
+            int n = nums.length;
+            int u = (1 << n) - 1;
+            long[][] f = new long[u][n];
+            Arrays.fill(f[0], 1L);
+            for (int s = 1; s < u; s++) {
+                for (int i = 0; i < n; i++) {
+                    if ((s >> i & 1) != 0) {
+                        continue;
+                    }
+                    for (int j = 0; j < n; j++) {
+                        if ((s >> j & 1) != 0 && (nums[i] % nums[j] == 0 || nums[j] % nums[i] == 0)) {
+                            f[s][i] += f[s ^ (1 << j)][j];
+                        }
+                    }
+                }
+            }
+            long ans = 0;
+            for (int i = 0; i < n; i++) {
+                ans += f[u ^ (1 << i)][i];
+            }
+            return (int) (ans % 1_000_000_007);
+
+        }
+    }
+
+    /**
+     * 2734. 执行子串操作后的字典序最小字符串:
+     * 给你一个仅由小写英文字母组成的字符串 s 。在一步操作中，你可以完成以下行为：
+     *
+     * 选择 s 的任一非空子字符串，可能是整个字符串，接着将字符串中的每一个字符替换为英文字母表中的前一个字符。例如，'b' 用 'a' 替换，'a' 用 'z' 替换。
+     * 返回执行上述操作 恰好一次 后可以获得的 字典序最小 的字符串。
+     *
+     * 子字符串 是字符串中的一个连续字符序列。
+     *
+     * 现有长度相同的两个字符串 x 和 字符串 y ，在满足 x[i] != y[i] 的第一个位置 i 上，如果  x[i] 在字母表中先于 y[i] 出现，则认为字符串 x 比字符串 y 字典序更小 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/27 22:07
+     */
+    class Solution_27_1 {
+        public String smallestString(String S) {
+            char[] s = S.toCharArray();
+            int n = s.length;
+            for (int i = 0; i < n; i++) {
+                if (s[i] > 'a') {
+                    // 继续向后遍历
+                    for (; i < n && s[i] > 'a'; i++) {
+                        s[i]--;
+                    }
+                    return new String(s);
+                }
+            }
+            // 所有字母均为 a
+            s[n - 1] = 'z';
+            return new String(s);
+        }
+    }
+    
+    /**
+     * 2742. 给墙壁刷油漆:
+     * 给你两个长度为 n 下标从 0 开始的整数数组 cost 和 time ，分别表示给 n 堵不同的墙刷油漆需要的开销和时间。你有两名油漆匠：
+     *
+     * 一位需要 付费 的油漆匠，刷第 i 堵墙需要花费 time[i] 单位的时间，开销为 cost[i] 单位的钱。
+     * 一位 免费 的油漆匠，刷 任意 一堵墙的时间为 1 单位，开销为 0 。但是必须在付费油漆匠 工作 时，免费油漆匠才会工作。
+     * 请你返回刷完 n 堵墙最少开销为多少。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/6/28 11:16
+     */
+    class Solution {
+        public int paintWalls(int[] cost, int[] time) {
+            int n = cost.length;
+            int[] f = new int[n + 2];
+            Arrays.fill(f, Integer.MAX_VALUE / 2);
+            f[0] = 0;
+            for (int i = 0; i < n; ++i) {
+                for (int j = n + 1; j >= 0; --j) {
+                    f[Math.min(j + time[i], n) + 1] = Math.min(f[Math.min(j + time[i], n) + 1], f[j] + cost[i]);
+                }
+            }
+            return Math.min(f[n], f[n + 1]);
+
+        }
+    }
+
+    /**
+     * 2710. 移除字符串中的尾随零:
+     * 给你一个用字符串表示的正整数 num ，请你以字符串形式返回不含尾随零的整数 num 。
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/6/29 16:05
+     */
+    class Solution_29_1 {
+        public String removeTrailingZeros(String num) {
+            int len = num.length();
+            while(num.charAt(len-1)=='0'){
+                len--;
+            }
+            return num.substring(0,len);
+        }
+    }
+    
 }
