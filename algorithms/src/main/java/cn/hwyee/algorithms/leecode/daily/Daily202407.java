@@ -116,4 +116,35 @@ public class Daily202407 {
             return true;
         }
     }
+
+    /**
+     * 3099. 哈沙德数:
+     * 如果一个整数能够被其各个数位上的数字之和整除，则称之为 哈沙德数（Harshad number）。给你一个整数 x 。如果 x 是 哈沙德数 ，则返回 x 各个数位上的数字之和，否则，返回 -1 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/7/3 12:22
+     */
+    class Solutiond3q1 {
+        public int sumOfTheDigitsOfHarshadNumber(int x) {
+            int tmp = x;
+            int ans = 0;
+            while(x/10>0){
+                ans+=(x%10);
+                x/=10;
+            }
+            ans+=x;
+            return tmp%ans==0?ans:-1;
+        }
+
+        public int sumOfTheDigitsOfHarshadNumberGF(int x) {
+            int s = 0;
+            for (int y = x; y != 0; y /= 10) {
+                s += y % 10;
+            }
+            return x % s != 0 ? -1 : s;
+        }
+
+
+    }
 }
