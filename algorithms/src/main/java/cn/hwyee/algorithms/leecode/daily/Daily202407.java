@@ -220,7 +220,7 @@ public class Daily202407 {
      * @return 
      * @date 2024/7/5 23:34
      */
-    class Solution {
+    class Solutiond5q1 {
         public int[][] modifiedMatrix(int[][] matrix) {
             int[][] ans = new int [matrix.length][matrix[0].length];
 
@@ -240,4 +240,97 @@ public class Daily202407 {
             return ans;
         }
     }
+
+    /**
+     * 3101. 交替子数组计数:
+     * 给你一个
+     * 二进制数组
+     * nums 。
+     *
+     * 如果一个
+     * 子数组
+     * 中 不存在 两个 相邻 元素的值 相同 的情况，我们称这样的子数组为 交替子数组 。
+     *
+     * 返回数组 nums 中交替子数组的数量。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/7/6 14:03
+     */
+    class Solutiond6q1 {
+        public long countAlternatingSubarrays(int[] nums) {
+            // (n+1/2)*n
+            int n = nums.length;
+            long ans = 0;
+            long sl = 1L;//子数组长度
+            for (int i = 1; i < n; i++) {
+                if (nums[i] != nums[i - 1]) {
+                    sl++;
+                } else {
+                    if(sl == 1) {
+                        ans += 1;
+                    }else{
+                        ans += ((sl+1)*sl/2);
+                        sl=1L;
+                    }
+                }
+            }
+            if(sl == 1) {
+                ans += 1;
+            }else{
+                ans += ((sl+1)*sl/2);
+            }
+            return ans;
+        }
+    }
+
+    /**
+     * 1958. 检查操作是否合法:
+     * 给你一个下标从 0 开始的 8 x 8 网格 board ，其中 board[r][c] 表示游戏棋盘上的格子 (r, c) 。棋盘上空格用 '.' 表示，白色格子用 'W' 表示，黑色格子用 'B' 表示。
+     *
+     * 游戏中每次操作步骤为：选择一个空格子，将它变成你正在执行的颜色（要么白色，要么黑色）。但是，合法 操作必须满足：涂色后这个格子是 好线段的一个端点 （好线段可以是水平的，竖直的或者是对角线）。
+     *
+     * 好线段 指的是一个包含 三个或者更多格子（包含端点格子）的线段，线段两个端点格子为 同一种颜色 ，且中间剩余格子的颜色都为 另一种颜色 （线段上不能有任何空格子）。你可以在下图找到好线段的例子：
+     *
+     * 给你两个整数 rMove 和 cMove 以及一个字符 color ，表示你正在执行操作的颜色（白或者黑），如果将格子 (rMove, cMove) 变成颜色 color 后，是一个 合法 操作，那么返回 true ，如果不是合法操作返回 false 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/7/7 12:47
+     */
+    class Solutiond7q1 {
+
+        public boolean checkMove(char[][] board, int rMove, int cMove, char color) {
+            int[][] dirs = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}};
+            for (int[] dir : dirs) {
+                int x = rMove + dir[0];
+                int y = cMove + dir[1];
+                if (x < 0 || x >= 8 || y < 0 || y >= 8 || board[x][y] == color || board[x][y] == '.'){
+                    continue;
+                }
+                int cnt = 0;
+                while (x >= 0 && x < 8 && y >= 0 && y < 8 ) {
+                    if (board[x][y] == color ) {
+                        if (cnt >= 1){
+                            return true;
+                        }else {
+                            break;
+                        }
+                    }
+                    if (board[x][y] == '.') {
+                        break;
+                    }else {
+                        cnt++;
+                        x += dir[0];
+                        y += dir[1];
+                    }
+                }
+            }
+            return false;
+        }
+
+
+    }
+
+
 }
