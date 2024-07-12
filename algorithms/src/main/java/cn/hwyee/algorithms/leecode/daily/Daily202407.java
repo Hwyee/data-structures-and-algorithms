@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * @author hwyee@foxmail.com
@@ -358,6 +359,164 @@ public class Daily202407 {
                 }
             }
             return -1;
+        }
+    }
+
+    /**
+     * 3102. 最小化曼哈顿距离:
+     * 给你一个下标从 0 开始的数组 points ，它表示二维平面上一些点的整数坐标，其中 points[i] = [xi, yi] 。
+     *
+     * 两点之间的距离定义为它们的
+     * 曼哈顿距离
+     * 曼哈顿距离
+     * 两个单元格 (xi, yi) 和 (xj, yj) 之间的曼哈顿距离为 |xi - xj| + |yi - yj|。
+     *
+     * 请你恰好移除一个点，返回移除后任意两点之间的 最大 距离可能的 最小 值。
+     *
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/7/9 12:22
+     */
+    class Solutiond9q1 {
+        public int minimumDistanceLS(int[][] points) {
+            TreeMap<Integer, Integer> xs = new TreeMap<>();
+            TreeMap<Integer, Integer> ys = new TreeMap<>();
+            for (int[] p : points) {
+                xs.merge(p[0] + p[1], 1, Integer::sum);
+                ys.merge(p[1] - p[0], 1, Integer::sum);
+            }
+
+            int ans = Integer.MAX_VALUE;
+            for (int[] p : points) {
+                int x = p[0] + p[1];
+                int y = p[1] - p[0];
+                if (xs.get(x) == 1) xs.remove(x);
+                else xs.merge(x, -1, Integer::sum); // 移除一个 x
+                if (ys.get(y) == 1) ys.remove(y);
+                else ys.merge(y, -1, Integer::sum); // 移除一个 y
+
+                int dx = xs.lastKey() - xs.firstKey();
+                int dy = ys.lastKey() - ys.firstKey();
+                ans = Math.min(ans, Math.max(dx, dy));
+
+                xs.merge(x, 1, Integer::sum);
+                ys.merge(y, 1, Integer::sum);
+            }
+            return ans;
+        }
+    }
+
+
+    /**
+     * 2970. 统计移除递增子数组的数目 I:
+     * 给你一个下标从 0 开始的 正 整数数组 nums 。
+     *
+     * 如果 nums 的一个子数组满足：移除这个子数组后剩余元素 严格递增 ，那么我们称这个子数组为 移除递增 子数组。比方说，[5, 3, 4, 6, 7] 中的 [3, 4] 是一个移除递增子数组，因为移除该子数组后，[5, 3, 4, 6, 7] 变为 [5, 6, 7] ，是严格递增的。
+     *
+     * 请你返回 nums 中 移除递增 子数组的总数目。
+     *
+     * 注意 ，剩余元素为空的数组也视为是递增的。
+     *
+     * 子数组 指的是一个数组中一段非空且连续的元素序列。
+     *
+     *
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/7/12 23:28
+     */
+    class Solutiond10q1 {
+        public int incremovableSubarrayCountLS(int[] a) {
+            int n = a.length;
+            int i = 0;
+            while (i < n - 1 && a[i] < a[i + 1]) {
+                i++;
+            }
+            if (i == n - 1) { // 每个非空子数组都可以移除
+                return n * (n + 1) / 2;
+            }
+
+            int ans = i + 2; // 不保留后缀的情况，一共 i+2 个
+            // 枚举保留的后缀为 a[j:]
+            for (int j = n - 1; j == n - 1 || a[j] < a[j + 1]; j--) {
+                while (i >= 0 && a[i] >= a[j]) {
+                    i--;
+                }
+                // 可以保留前缀 a[:i+1], a[:i], ..., a[:0] 一共 i+2 个
+                ans += i + 2;
+            }
+            return ans;
+
+
+        }
+    }
+
+
+    /**
+     * 2972. 统计移除递增子数组的数目 II:
+     * 给你一个下标从 0 开始的 正 整数数组 nums 。
+     *
+     * 如果 nums 的一个子数组满足：移除这个子数组后剩余元素 严格递增 ，那么我们称这个子数组为 移除递增 子数组。比方说，[5, 3, 4, 6, 7] 中的 [3, 4] 是一个移除递增子数组，因为移除该子数组后，[5, 3, 4, 6, 7] 变为 [5, 6, 7] ，是严格递增的。
+     *
+     * 请你返回 nums 中 移除递增 子数组的总数目。
+     *
+     * 注意 ，剩余元素为空的数组也视为是递增的。
+     *
+     * 子数组 指的是一个数组中一段连续的元素序列。
+     * @author hui
+     * @version 1.0
+     * @return
+     * @date 2024/7/12 23:29
+     */
+    class Solutiond11q1 {
+        public long incremovableSubarrayCount(int[] a) {
+            int n = a.length;
+            int i = 0;
+            while (i < n - 1 && a[i] < a[i + 1]) {
+                i++;
+            }
+            if (i == n - 1) { // 每个非空子数组都可以移除
+                return (long) n * (n + 1) / 2;
+            }
+
+            long ans = i + 2; // 不保留后缀的情况，一共 i+2 个
+            // 枚举保留的后缀为 a[j:]
+            for (int j = n - 1; j == n - 1 || a[j] < a[j + 1]; j--) {
+                while (i >= 0 && a[i] >= a[j]) {
+                    i--;
+                }
+                // 可以保留前缀 a[:i+1], a[:i], ..., a[:0] 一共 i+2 个
+                ans += i + 2;
+            }
+            return ans;
+
+        }
+    }
+
+    /**
+     * 2974. 最小数字游戏: 
+     * 你有一个下标从 0 开始、长度为 偶数 的整数数组 nums ，同时还有一个空数组 arr 。Alice 和 Bob 决定玩一个游戏，游戏中每一轮 Alice 和 Bob 都会各自执行一次操作。游戏规则如下：
+     *
+     * 每一轮，Alice 先从 nums 中移除一个 最小 元素，然后 Bob 执行同样的操作。
+     * 接着，Bob 会将移除的元素添加到数组 arr 中，然后 Alice 也执行同样的操作。
+     * 游戏持续进行，直到 nums 变为空。
+     * 返回结果数组 arr 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/7/12 23:34
+     */
+    class Solutiond12q1 {
+        public int[] numberGame(int[] nums) {
+            int[] ans = new int[nums.length];
+            Arrays.sort(nums);
+            for(int i = 0;i<nums.length;i+=2){
+                ans[i+1] = nums[i];
+                ans[i] = nums[i+1];
+            }
+            return ans;
         }
     }
 
