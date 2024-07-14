@@ -520,5 +520,88 @@ public class Daily202407 {
         }
     }
 
+    /**
+     * 3011. 判断一个数组是否可以变为有序:
+     * 给你一个下标从 0 开始且全是 正 整数的数组 nums 。
+     *
+     * 一次 操作 中，如果两个 相邻 元素在二进制下数位为 1 的数目 相同 ，那么你可以将这两个元素交换。你可以执行这个操作 任意次 （也可以 0 次）。
+     *
+     * 如果你可以使数组变有序，请你返回 true ，否则返回 false 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/7/13 7:16
+     */
+    class Solutiond13q1 {
+        public boolean canSortArray(int[] nums) {
+            int n = nums.length;
+            int preMax = 0;
+            for (int i = 0; i < n;) {
+                int mx = 0;
+                int ones = Integer.bitCount(nums[i]);
+                while (i < n && Integer.bitCount(nums[i]) == ones) {
+                    if (nums[i] < preMax) { // 无法排成有序的
+                        return false;
+                    }
+                    mx = Math.max(mx, nums[i++]); // 更新本组最大值
+                }
+                preMax = mx;
+            }
+            return true;
+
+       }
+    }
+
+    
+    /**
+     * 807. 保持城市天际线:
+     * 给你一座由 n x n 个街区组成的城市，每个街区都包含一座立方体建筑。给你一个下标从 0 开始的 n x n 整数矩阵 grid ，其中 grid[r][c] 表示坐落于 r 行 c 列的建筑物的 高度 。
+     *
+     * 城市的 天际线 是从远处观察城市时，所有建筑物形成的外部轮廓。从东、南、西、北四个主要方向观测到的 天际线 可能不同。
+     *
+     * 我们被允许为 任意数量的建筑物 的高度增加 任意增量（不同建筑物的增量可能不同） 。 高度为 0 的建筑物的高度也可以增加。然而，增加的建筑物高度 不能影响 从任何主要方向观察城市得到的 天际线 。
+     *
+     * 在 不改变 从任何主要方向观测到的城市 天际线 的前提下，返回建筑物可以增加的 最大高度增量总和 。
+     * @author hui
+     * @version 1.0 
+     * @return 
+     * @date 2024/7/14 13:07
+     */
+    class Solutiond14q1 {
+        public int maxIncreaseKeepingSkyline(int[][] grid) {
+            int ans = 0;
+            int len = grid.length;
+            int[] row = new int[len];
+            int[] col = new int[len];
+            for (int i = 0; i < len; i++) {
+                int rm = 0;
+                int cm = 0;
+                for (int j = 0; j < len; j++) {
+                    rm = Math.max(rm, grid[i][j]);
+                }
+                for (int j = 0; j < len; j++) {
+                    cm = Math.max(cm, grid[j][i]);
+                }
+                row[i] = rm;
+                col[i] = cm;
+                int min = Math.min(rm, cm);
+                if (grid[i][i] < min) {
+                    ans += (min - grid[i][i]);
+                }
+                for (int j = 0; j < i; j++) {
+                    min = Math.min(row[i], col[j]);
+                    if (grid[i][j] < min) {
+                        ans += (min - grid[i][j]);
+                    }
+                    min = Math.min(row[j], col[i]);
+                    if (grid[j][i] < min) {
+                        ans += (min - grid[j][i]);
+                    }
+                }
+            }
+            return ans;
+        }
+    }
+
 
 }
